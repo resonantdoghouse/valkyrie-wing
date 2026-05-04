@@ -4,6 +4,7 @@ import { GameCanvas } from './components/GameCanvas';
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay';
 import { LCDPanel } from './components/ui/LCDPanel';
 import { TerminalText } from './components/ui/TerminalText';
+import { initAudio } from './utils/audio';
 
 function App() {
   const { currentMode, setMode } = useGameStore();
@@ -26,7 +27,10 @@ function App() {
             <TerminalText as="h1" className="terminal-title" text="Wing Commando" />
             <TerminalText as="p" text="> SYSTEM INITIALIZED." delay={20} />
             <TerminalText as="p" text="> AWAITING PILOT INPUT..." delay={30} />
-            <button className="interactive-btn" onClick={() => setMode('BAR')} style={{ marginTop: '1rem' }}>
+            <button className="interactive-btn" onClick={() => {
+              initAudio();
+              setMode('BAR');
+            }} style={{ marginTop: '1rem' }}>
               INITIATE LAUNCH SEQUENCE
             </button>
           </LCDPanel>

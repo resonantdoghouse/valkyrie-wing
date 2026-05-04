@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import * as THREE from 'three';
 import { useMissionStore } from './useMissionStore';
+import { playLaserSound, playExplosionSound } from '../utils/audio';
 
 export interface LaserData {
   id: number;
@@ -51,6 +52,8 @@ export const useCombatStore = create<CombatState>((set) => ({
         inactiveLaser.life = 0;
         inactiveLaser.position.copy(position).add(direction.clone().multiplyScalar(2));
         inactiveLaser.velocity.copy(direction).multiplyScalar(LASER_SPEED).add(shipVelocity);
+        
+        playLaserSound();
       }
       return { lasers };
     });
@@ -90,9 +93,10 @@ export const useCombatStore = create<CombatState>((set) => ({
           if (totalDamage > 0 && e.active) {
             const newHealth = Math.max(0, e.health - totalDamage);
             
-            // If enemy just died, update mission store objective
+            // If enemy just died, update mission store objective and play explosion
             if (newHealth === 0) {
               useMissionStore.getState().updateObjective('obj_kill_1', 1);
+              playExplosionSound();
             }
             
             return { ...e, health: newHealth, active: newHealth > 0 };
