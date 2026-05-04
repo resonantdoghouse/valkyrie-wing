@@ -1,4 +1,5 @@
 import { useGameStore } from './state/useGameStore';
+import { useMissionStore } from './state/useMissionStore';
 import { GameCanvas } from './components/GameCanvas';
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay';
 import { LCDPanel } from './components/ui/LCDPanel';
@@ -6,6 +7,9 @@ import { TerminalText } from './components/ui/TerminalText';
 
 function App() {
   const { currentMode, setMode } = useGameStore();
+  const { activeMission, startMission, completeMission } = useMissionStore();
+
+  const isMissionComplete = activeMission?.objectives.every(o => o.completed) || false;
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -57,7 +61,10 @@ function App() {
             <button className="interactive-btn" onClick={() => setMode('BAR')} style={{ marginTop: '1rem' }}>
               BACK TO BAR
             </button>
-            <button className="interactive-btn" onClick={() => setMode('FLIGHT')} style={{ marginTop: '0.5rem', background: 'rgba(255, 51, 102, 0.2)' }}>
+            <button className="interactive-btn" onClick={() => {
+              startMission('m1_escort_alpha');
+              setMode('FLIGHT');
+            }} style={{ marginTop: '0.5rem', background: 'rgba(255, 51, 102, 0.2)' }}>
               LAUNCH MISSION
             </button>
           </LCDPanel>
@@ -80,17 +87,50 @@ function App() {
       {currentMode === 'FLIGHT' && (
         <div className="overlay" style={{ backgroundColor: 'transparent', pointerEvents: 'none', justifyContent: 'space-between', padding: '2rem' }}>
           {/* Top HUD */}
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-            <TerminalText as="h2" text="SYS: ONLINE" className="terminal-text" style={{ color: '#00ffcc', textShadow: '0 0 10px #00ffcc' }} />
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <TerminalText as="h2" text="SYS: ONLINE" className="terminal-text" style={{ color: '#00ffcc', textShadow: '0 0 10px #00ffcc' }} />
+              
+              {/* Mission Objectives */}
+              {activeMission && (
+                <div style={{ marginTop: '1rem', padding: '1rem', border: '1px solid #00ffcc', background: 'rgba(0, 255, 204, 0.1)' }}>
+                  <TerminalText as="h2" text={`MISSION: ${activeMission.title}`} className="terminal-text" style={{ color: '#ffffff', fontSize: '1.2rem' }} />
+                  {activeMission.objectives.map(obj => (
+                    <div key={obj.id} style={{ color: obj.completed ? '#00ffcc' : '#ffaa00', marginTop: '0.5rem', fontFamily: "'Share Tech Mono', monospace", fontSize: '1.2rem' }}>
+                      {obj.completed ? '[✓]' : '[ ]'} {obj.type}: {obj.target} ({obj.currentCount}/{obj.count})
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
             <TerminalText as="h2" text="TARGETING: ACQUIRED" className="terminal-text" style={{ color: '#ff3366', textShadow: '0 0 10px #ff3366' }} />
           </div>
+
+          {/* Mission Complete Overlay */}
+          {isMissionComplete && (
+            <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'auto', textAlign: 'center' }}>
+              <TerminalText as="h1" text="MISSION COMPLETE" className="terminal-title" style={{ color: '#00ffcc', textShadow: '0 0 20px #00ffcc' }} />
+              <button className="interactive-btn" onClick={() => {
+                completeMission();
+                setMode('BAR');
+              }} style={{ marginTop: '1rem', padding: '1rem 2rem', fontSize: '1.5rem', background: 'rgba(0, 255, 204, 0.2)' }}>
+                RETURN TO BASE
+              </button>
+            </div>
+          )}
 
           {/* Bottom HUD */}
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <div style={{ pointerEvents: 'auto' }}>
-              <button className="interactive-btn" onClick={() => setMode('BAR')} style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', background: 'rgba(0,0,0,0.5)' }}>
-                ABORT MISSION
-              </button>
+              {!isMissionComplete && (
+                <button className="interactive-btn" onClick={() => {
+                  completeMission();
+                  setMode('BAR');
+                }} style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', background: 'rgba(0,0,0,0.5)' }}>
+                  ABORT MISSION
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import * as THREE from 'three';
+import { useMissionStore } from './useMissionStore';
 
 export interface LaserData {
   id: number;
@@ -88,6 +89,12 @@ export const useCombatStore = create<CombatState>((set) => ({
           const totalDamage = hits.filter(h => h.enemyId === e.id).reduce((sum, h) => sum + h.damage, 0);
           if (totalDamage > 0 && e.active) {
             const newHealth = Math.max(0, e.health - totalDamage);
+            
+            // If enemy just died, update mission store objective
+            if (newHealth === 0) {
+              useMissionStore.getState().updateObjective('obj_kill_1', 1);
+            }
+            
             return { ...e, health: newHealth, active: newHealth > 0 };
           }
           return e;
