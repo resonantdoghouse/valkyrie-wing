@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+:root {
+  font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  --theme-color: #00ffcc;
+  --theme-bg: #0a0a0a;
+  --theme-glow: rgba(0, 255, 204, 0.6);
+  --danger-color: #ff3366;
+  
+  color: var(--theme-color);
+  background-color: var(--theme-bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: #000;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* CRT and Scanlines */
+.crt-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.06),
+      rgba(0, 255, 0, 0.02),
+      rgba(0, 0, 255, 0.06)
+    );
+  background-size: 100% 2px, 3px 100%;
+  animation: flicker 0.15s infinite;
+}
+
+@keyframes flicker {
+  0% { opacity: 0.95; }
+  50% { opacity: 0.90; }
+  100% { opacity: 0.95; }
+}
+
+.crt-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 90;
+  background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  background-color: rgba(10, 10, 10, 0.85);
+}
+
+.lcd-panel {
+  background: rgba(0, 20, 10, 0.8);
+  border: 1px solid var(--theme-color);
+  box-shadow: 0 0 10px var(--theme-glow), inset 0 0 20px rgba(0, 255, 204, 0.1);
+  padding: 2rem;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  backdrop-filter: blur(4px);
+  position: relative;
+}
+
+.lcd-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 10px; height: 10px;
+  border-top: 2px solid var(--theme-color);
+  border-left: 2px solid var(--theme-color);
+}
+.lcd-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 10px; height: 10px;
+  border-bottom: 2px solid var(--theme-color);
+  border-right: 2px solid var(--theme-color);
+}
+
+.terminal-text {
+  font-size: 1.5rem;
+  text-shadow: 0 0 5px var(--theme-color);
+  margin: 0;
+}
+
+.terminal-title {
+  font-size: 3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  text-shadow: 0 0 10px var(--theme-color);
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--theme-color);
+  padding-bottom: 0.5rem;
+}
+
+.interactive-btn {
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  color: var(--theme-color);
+  background: rgba(0, 255, 204, 0.05);
+  border: 1px solid var(--theme-color);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.1s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.interactive-btn:hover {
+  background: var(--theme-color);
+  color: var(--theme-bg);
+  box-shadow: 0 0 15px var(--theme-glow);
+}
+
+.interactive-btn:active {
+  transform: translateY(2px);
+}
+
+/* Sound reactive mock effect on hover */
+.interactive-btn:hover::before {
+  content: '';
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.2);
+  animation: sweep 0.5s linear;
+}
+
+@keyframes sweep {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
