@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useGameStore } from '../../state/useGameStore';
+import { useMissionStore } from '../../state/useMissionStore';
+import { useCombatStore } from '../../state/useCombatStore';
 import { LCDPanel } from '../../components/ui/LCDPanel';
 import { TerminalText } from '../../components/ui/TerminalText';
 
 export function BarUI() {
   const { setMode, playerStats, updateCredits } = useGameStore();
-  const [currentView, setCurrentView] = useState<'MAIN' | 'BARTENDER' | 'COMMANDOS' | 'CONVERSATION'>('MAIN');
+  const { startMission } = useMissionStore();
+  const [currentView, setCurrentView] = useState<'MAIN' | 'BARTENDER' | 'COMMANDOS' | 'CONVERSATION' | 'ARCADE'>('MAIN');
   const [dialogue, setDialogue] = useState<string[]>([]);
   const credits = playerStats.credits;
   const [activeCharacter, setActiveCharacter] = useState<{ id: string, name: string, drank: boolean } | null>(null);
@@ -97,7 +100,7 @@ export function BarUI() {
 
   return (
     <div className="overlay" style={{ backgroundColor: 'transparent', pointerEvents: 'auto' }}>
-      <LCDPanel style={{ position: 'absolute', bottom: '10%', left: '10%', maxWidth: '600px', pointerEvents: 'auto' }}>
+      <LCDPanel style={{ position: 'absolute', top: '20px', left: '50%', transform: 'translateX(-50%)', width: '90vw', maxWidth: '1000px', maxHeight: '85vh', overflowY: 'auto', pointerEvents: 'auto' }}>
         {currentView === 'MAIN' && (
           <>
             <TerminalText as="h2" className="terminal-title" text="The Vanguard Bar" />
@@ -109,6 +112,9 @@ export function BarUI() {
               </button>
               <button className="interactive-btn" onClick={() => setCurrentView('COMMANDOS')}>
                 MINGLE WITH WING COMMANDOS
+              </button>
+              <button className="interactive-btn" onClick={() => setCurrentView('ARCADE')}>
+                PLAY ARCADE FLIGHT SIM
               </button>
               <button className="interactive-btn" onClick={() => setMode('BRIEFING')}>
                 GO TO BRIEFING ROOM
@@ -123,20 +129,75 @@ export function BarUI() {
           </>
         )}
 
-        {currentView === 'BARTENDER' && (
-          <>
-            <TerminalText as="h2" className="terminal-title" text="Bartender Unit 7" />
-            <TerminalText as="p" text={`> Credits: ${credits} C`} style={{ color: '#00ffcc' }} />
-            
-            <div style={{ marginTop: '1rem', minHeight: '60px', padding: '10px', border: '1px solid #0055ff', background: 'rgba(0, 85, 255, 0.1)' }}>
-              {dialogue.length > 0 ? (
-                dialogue.map((line, i) => <TerminalText key={i} as="p" text={line} delay={5} />)
-              ) : (
-                <TerminalText as="p" text="Bartender Unit 7: 'What can I get you, Ensign?'" delay={10} />
-              )}
+        {currentView === 'ARCADE' && (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--theme-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+              <TerminalText as="h2" text="Vanguard Defender Cabinet" style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.1rem' }} />
+              <TerminalText as="p" text={`> Credits: ${credits} C`} style={{ margin: 0, color: 'var(--text-highlight)' }} />
             </div>
 
-            <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+              <div style={{ flex: '1 1 400px' }}>
+                <div style={{ minHeight: '60px', padding: '10px', border: '1px solid var(--theme-color)', background: 'rgba(51, 133, 255, 0.1)' }}>
+                  {dialogue.length > 0 ? (
+                    dialogue.map((line, i) => <TerminalText key={i} as="p" text={line} delay={5} />)
+                  ) : (
+                    <>
+                      <TerminalText as="p" text="> Insert 5 Credits to play 'Vanguard Defender'." delay={10} />
+                      <TerminalText as="p" text="> High Score: Lt. Viper - 50,000 pts" delay={20} />
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <TerminalText as="h3" text="ARCADE OPTIONS" style={{ margin: 0, marginBottom: '0.5rem', borderBottom: '1px solid var(--theme-color)', paddingBottom: '0.5rem', color: 'var(--text-highlight)' }} />
+                <button className="interactive-btn" onClick={() => {
+                  if (credits >= 5) {
+                    updateCredits(-5);
+                    startMission('arcade_sim_1');
+                    useCombatStore.getState().startArcadeWave(1);
+                    setMode('FLIGHT');
+                  } else {
+                    setDialogue(['> ERROR: Insufficient Credits.']);
+                  }
+                }}>
+                  INSERT 5 C & PLAY
+                </button>
+                <button className="interactive-btn" onClick={() => {
+                  setCurrentView('MAIN');
+                  setDialogue([]);
+                }} style={{ marginTop: '1rem' }}>
+                  STEP AWAY
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {currentView === 'BARTENDER' && (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {/* Top Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--theme-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+              <TerminalText as="h2" text="Bartender Unit 7" style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.1rem' }} />
+              <TerminalText as="p" text={`> Credits: ${credits} C`} style={{ margin: 0, color: 'var(--text-highlight)' }} />
+            </div>
+
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+              {/* Left Side: Dialogue */}
+              <div style={{ flex: '1 1 400px' }}>
+                <div style={{ minHeight: '60px', padding: '10px', border: '1px solid var(--theme-color)', background: 'rgba(51, 133, 255, 0.1)' }}>
+                  {dialogue.length > 0 ? (
+                    dialogue.map((line, i) => <TerminalText key={i} as="p" text={line} delay={5} />)
+                  ) : (
+                    <TerminalText as="p" text="Bartender Unit 7: 'What can I get you, Ensign?'" delay={10} />
+                  )}
+                </div>
+              </div>
+
+            {/* Right Side: Options */}
+            <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <TerminalText as="h3" text="ACTIONS & ORDERS" style={{ margin: 0, marginBottom: '0.5rem', borderBottom: '1px solid var(--theme-color)', paddingBottom: '0.5rem', color: 'var(--text-highlight)' }} />
               <button className="interactive-btn" onClick={() => handleOrder('Nebula Stout', 10)}>
                 ORDER NEBULA STOUT (10 C)
               </button>
@@ -164,23 +225,33 @@ export function BarUI() {
                 STEP AWAY
               </button>
             </div>
-          </>
+            </div>
+          </div>
         )}
 
         {currentView === 'COMMANDOS' && (
-          <>
-            <TerminalText as="h2" className="terminal-title" text="Crew Lounge" />
-            <TerminalText as="p" text="> Off-duty pilots are gathered around the tables." delay={10} />
-            
-            <div style={{ marginTop: '1rem', minHeight: '60px', padding: '10px', border: '1px solid #ff3366', background: 'rgba(255, 51, 102, 0.1)' }}>
-              {dialogue.length > 0 ? (
-                dialogue.map((line, i) => <TerminalText key={i} as="p" text={line} delay={5} />)
-              ) : (
-                <TerminalText as="p" text="> Select a commando to speak with." delay={10} />
-              )}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {/* Top Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--theme-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+              <TerminalText as="h2" text="Crew Lounge" style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.1rem' }} />
+              <TerminalText as="p" text="> Off-duty pilots are gathered around the tables." style={{ margin: 0, color: 'var(--text-highlight)' }} />
             </div>
 
-            <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+              {/* Left Side: Dialogue/Status */}
+              <div style={{ flex: '1 1 400px' }}>
+                <div style={{ minHeight: '60px', padding: '10px', border: '1px solid var(--theme-color)', background: 'rgba(51, 133, 255, 0.1)' }}>
+                  {dialogue.length > 0 ? (
+                    dialogue.map((line, i) => <TerminalText key={i} as="p" text={line} delay={5} />)
+                  ) : (
+                    <TerminalText as="p" text="> Select a commando to speak with." delay={10} />
+                  )}
+                </div>
+              </div>
+
+            {/* Right Side: Options */}
+            <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <TerminalText as="h3" text="PILOTS" style={{ margin: 0, marginBottom: '0.5rem', borderBottom: '1px solid var(--theme-color)', paddingBottom: '0.5rem', color: 'var(--text-highlight)' }} />
               <button className="interactive-btn" onClick={() => initiateConversation('VIPER', 'Lt. Sarah "Viper" Jenkins')}>
                 APPROACH LT. JENKINS (VIPER)
               </button>
@@ -197,26 +268,37 @@ export function BarUI() {
                 BACK TO MAIN AREA
               </button>
             </div>
-          </>
+            </div>
+          </div>
         )}
 
         {currentView === 'CONVERSATION' && activeCharacter && (
-          <>
-            <TerminalText as="h2" className="terminal-title" text={activeCharacter.name} />
-            <TerminalText as="p" text={`> Credits: ${credits} C`} style={{ color: '#00ffcc' }} />
-            
-            <div style={{ marginTop: '1rem', minHeight: '80px', padding: '10px', border: '1px solid #ffaa00', background: 'rgba(255, 170, 0, 0.1)' }}>
-              {dialogue.map((line, i) => <TerminalText key={i} as="p" text={line} delay={5} />)}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {/* Top Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--theme-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+              <TerminalText as="h2" text={activeCharacter.name} style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.1rem' }} />
+              <TerminalText as="p" text={`> Credits: ${credits} C`} style={{ margin: 0, color: 'var(--text-highlight)' }} />
             </div>
 
-            <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+              {/* Left Side: Dialogue */}
+              <div style={{ flex: '1 1 400px' }}>
+                <div style={{ minHeight: '80px', padding: '10px', border: '1px solid var(--theme-color)', background: 'rgba(51, 133, 255, 0.1)' }}>
+                  {dialogue.map((line, i) => <TerminalText key={i} as="p" text={line} delay={5} />)}
+                </div>
+              </div>
+
+            {/* Right Side: Options */}
+            <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <TerminalText as="h3" text="RESPONSES & ACTIONS" style={{ margin: 0, marginBottom: '0.5rem', borderBottom: '1px solid var(--theme-color)', paddingBottom: '0.5rem', color: 'var(--text-highlight)' }} />
               {conversationOptions.map((opt, i) => (
                 <button key={i} className="interactive-btn" onClick={opt.action}>
                   {opt.label}
                 </button>
               ))}
             </div>
-          </>
+            </div>
+          </div>
         )}
       </LCDPanel>
     </div>

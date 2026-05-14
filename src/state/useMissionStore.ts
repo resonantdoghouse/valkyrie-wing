@@ -23,10 +23,15 @@ export interface Mission {
 interface MissionState {
   activeMission: Mission | null;
   availableMissions: Mission[];
+  arcadeScore: number;
+  arcadeLevel: number;
   startMission: (missionId: string) => void;
   updateObjective: (objectiveId: string, amount: number) => void;
   completeMission: () => void;
   failMission: () => void;
+  addArcadeScore: (points: number) => void;
+  levelUpArcade: () => void;
+  resetArcade: () => void;
 }
 
 // Mock initial missions
@@ -50,16 +55,27 @@ const mockMissions: Mission[] = [
       { id: 'obj_protect_1', type: 'PROTECT', target: 'CMS Vanguard', count: 1, currentCount: 0, completed: false },
       { id: 'obj_kill_2', type: 'KILL', target: 'Remnant Bomber', count: 5, currentCount: 0, completed: false }
     ]
+  },
+  {
+    id: 'arcade_sim_1',
+    title: 'Arcade: Vanguard Defender',
+    description: 'High-score simulation. Survive and destroy Remnant targets.',
+    dialogueTreeId: 'dt_arcade_intro',
+    objectives: [
+      { id: 'obj_kill_arcade', type: 'KILL', target: 'Simulated Interceptor', count: 10, currentCount: 0, completed: false }
+    ]
   }
 ];
 
 export const useMissionStore = create<MissionState>((set) => ({
   activeMission: null,
   availableMissions: mockMissions,
+  arcadeScore: 0,
+  arcadeLevel: 1,
   
   startMission: (missionId) => set((state) => {
     const mission = state.availableMissions.find(m => m.id === missionId);
-    return { activeMission: mission || null };
+    return { activeMission: mission || null, arcadeScore: 0, arcadeLevel: 1 };
   }),
 
   updateObjective: (objectiveId, amount) => set((state) => {
@@ -86,5 +102,8 @@ export const useMissionStore = create<MissionState>((set) => ({
   }),
 
   completeMission: () => set({ activeMission: null }),
-  failMission: () => set({ activeMission: null })
+  failMission: () => set({ activeMission: null }),
+  addArcadeScore: (points) => set(state => ({ arcadeScore: state.arcadeScore + points })),
+  levelUpArcade: () => set(state => ({ arcadeLevel: state.arcadeLevel + 1 })),
+  resetArcade: () => set({ arcadeScore: 0, arcadeLevel: 1 })
 }));

@@ -32,6 +32,7 @@ interface CombatState {
   updateEnemies: (delta: number, playerPosition: THREE.Vector3) => void;
   targetId: string | null;
   setTarget: (id: string | null) => void;
+  startArcadeWave: (level: number) => void;
 }
 
 const MAX_LASERS = 50;
@@ -119,7 +120,14 @@ export const useCombatStore = create<CombatState>((set) => ({
             
             // If enemy just died, update mission store objective and play explosion
             if (newHealth === 0) {
-              useMissionStore.getState().updateObjective('obj_kill_1', 1);
+              const missionStore = useMissionStore.getState();
+              const activeMission = missionStore.activeMission;
+              
+              if (activeMission?.id.startsWith('arcade_sim')) {
+                missionStore.addArcadeScore(100);
+              } else {
+                missionStore.updateObjective('obj_kill_1', 1);
+              }
               playExplosionSound();
             }
             
@@ -127,6 +135,21 @@ export const useCombatStore = create<CombatState>((set) => ({
           }
           return e;
         });
+
+        // Check if arcade wave is complete
+        const activeMission = useMissionStore.getState().activeMission;
+        if (activeMission?.id.startsWith('arcade_sim')) {
+          const activeEnemies = newEnemies.filter(e => e.active);
+          if (activeEnemies.length === 0 && newEnemies.length > 0) {
+            // Next wave!
+            setTimeout(() => {
+               const ms = useMissionStore.getState();
+               ms.levelUpArcade();
+               useCombatStore.getState().startArcadeWave(ms.arcadeLevel);
+            }, 2000);
+          }
+        }
+
         return { lasers, enemies: newEnemies };
       }
 
@@ -234,4 +257,24 @@ export const useCombatStore = create<CombatState>((set) => ({
 
   targetId: null,
   setTarget: (id) => set({ targetId: id }),
+
+  startArcadeWave: (level) => set(() => {
+    const numEnemies = 10 + (level - 1) * 5;
+    const newEnemies = Array.from({ length: numEnemies }).map((_, i) => ({
+      id: `arcade_enemy_${level}_${i}`,
+      position: new THREE.Vector3(
+        (Math.random() - 0.5) * 400,
+        (Math.random() - 0.5) * 400,
+        -100 - Math.random() * 500
+      ),
+      velocity: new THREE.Vector3(
+        (Math.random() - 0.5) * 20,
+        (Math.random() - 0.5) * 20,
+        Math.random() * 20
+      ),
+      health: 100,
+      active: true
+    }));
+    return { enemies: newEnemies };
+  }),
 }));

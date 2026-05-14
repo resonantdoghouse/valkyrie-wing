@@ -1,5 +1,6 @@
 import { useGameStore } from './state/useGameStore';
 import { useMissionStore } from './state/useMissionStore';
+import { useCombatStore } from './state/useCombatStore';
 import { GameCanvas } from './components/GameCanvas';
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay';
 import { LCDPanel } from './components/ui/LCDPanel';
@@ -9,9 +10,10 @@ import { initAudio } from './utils/audio';
 
 function App() {
   const { currentMode, setMode } = useGameStore();
-  const { activeMission, startMission, completeMission } = useMissionStore();
+  const { activeMission, startMission, completeMission, arcadeLevel, arcadeScore } = useMissionStore();
+  const combatEnemies = useCombatStore(state => state.enemies);
 
-  const isMissionComplete = activeMission?.objectives.every(o => o.completed) || false;
+  const isMissionComplete = activeMission && !activeMission.id.startsWith('arcade') && activeMission.objectives.every(o => o.completed);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -32,7 +34,7 @@ function App() {
               initAudio();
               setMode('BAR');
             }} style={{ marginTop: '1rem' }}>
-              INITIATE LAUNCH SEQUENCE
+              START GAME
             </button>
           </LCDPanel>
         </div>
@@ -54,7 +56,7 @@ function App() {
             <button className="interactive-btn" onClick={() => {
               startMission('m1_escort_alpha');
               setMode('LAUNCH');
-            }} style={{ marginTop: '0.5rem', background: 'rgba(255, 51, 102, 0.2)' }}>
+            }} style={{ marginTop: '0.5rem', background: 'rgba(255, 51, 51, 0.2)' }}>
               LAUNCH MISSION
             </button>
           </LCDPanel>
@@ -79,32 +81,51 @@ function App() {
           {/* Top HUD */}
           <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <TerminalText as="h2" text="SYS: ONLINE" className="terminal-text" style={{ color: '#00ffcc', textShadow: '0 0 10px #00ffcc' }} />
-              
+              <TerminalText as="h2" text="SYS: ONLINE" className="terminal-text" style={{ color: 'var(--theme-color)', textShadow: '0 0 10px var(--theme-glow)' }} />
+
               {/* Mission Objectives */}
               {activeMission && (
-                <div style={{ marginTop: '1rem', padding: '1rem', border: '1px solid #00ffcc', background: 'rgba(0, 255, 204, 0.1)' }}>
+                <div style={{ marginTop: '1rem', padding: '1rem', border: '1px solid var(--theme-color)', background: 'rgba(51, 133, 255, 0.1)' }}>
                   <TerminalText as="h2" text={`MISSION: ${activeMission.title}`} className="terminal-text" style={{ color: '#ffffff', fontSize: '1.2rem' }} />
-                  {activeMission.objectives.map(obj => (
-                    <div key={obj.id} style={{ color: obj.completed ? '#00ffcc' : '#ffaa00', marginTop: '0.5rem', fontFamily: "'Share Tech Mono', monospace", fontSize: '1.2rem' }}>
-                      {obj.completed ? '[✓]' : '[ ]'} {obj.type}: {obj.target} ({obj.currentCount}/{obj.count})
-                    </div>
-                  ))}
+                  {activeMission.id.startsWith('arcade_sim') ? (
+                    <>
+                      <div style={{ color: 'var(--text-highlight)', marginTop: '0.5rem', fontFamily: "'Share Tech Mono', monospace", fontSize: '1.2rem' }}>
+                        WAVE: {arcadeLevel}
+                      </div>
+                      <div style={{ color: 'var(--text-highlight)', marginTop: '0.5rem', fontFamily: "'Share Tech Mono', monospace", fontSize: '1.2rem' }}>
+                        SCORE: {arcadeScore}
+                      </div>
+                      <div style={{ color: 'var(--accent-orange)', marginTop: '0.5rem', fontFamily: "'Share Tech Mono', monospace", fontSize: '1.2rem' }}>
+                        ENEMIES REMAINING: {combatEnemies.filter(e => e.active).length}
+                      </div>
+                    </>
+                  ) : (
+                    activeMission.objectives.map(obj => (
+                      <div key={obj.id} style={{ color: obj.completed ? 'var(--text-highlight)' : 'var(--accent-orange)', marginTop: '0.5rem', fontFamily: "'Share Tech Mono', monospace", fontSize: '1.2rem' }}>
+                        {obj.completed ? '[✓]' : '[ ]'} {obj.type}: {obj.target} ({obj.currentCount}/{obj.count})
+                      </div>
+                    ))
+                  )}
                 </div>
               )}
             </div>
-            
-            <TerminalText as="h2" text="TARGETING: ACQUIRED" className="terminal-text" style={{ color: '#ff3366', textShadow: '0 0 10px #ff3366' }} />
+
+            <TerminalText as="h2" text="TARGETING: ACQUIRED" className="terminal-text" style={{ color: 'var(--danger-color)', textShadow: '0 0 10px var(--danger-color)' }} />
           </div>
 
           {/* Mission Complete Overlay */}
           {isMissionComplete && (
             <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'auto', textAlign: 'center' }}>
-              <TerminalText as="h1" text="MISSION COMPLETE" className="terminal-title" style={{ color: '#00ffcc', textShadow: '0 0 20px #00ffcc' }} />
+              <TerminalText as="h1" text={activeMission?.id.startsWith('arcade') ? "ARCADE SIMULATION COMPLETE" : "MISSION COMPLETE"} className="terminal-title" style={{ color: 'var(--text-highlight)', textShadow: '0 0 20px var(--text-highlight)' }} />
               <button className="interactive-btn" onClick={() => {
-                setMode('LANDING');
-              }} style={{ marginTop: '1rem', padding: '1rem 2rem', fontSize: '1.5rem', background: 'rgba(0, 255, 204, 0.2)' }}>
-                RETURN TO BASE
+                completeMission();
+                if (activeMission?.id.startsWith('arcade')) {
+                  setMode('BAR');
+                } else {
+                  setMode('LANDING');
+                }
+              }} style={{ marginTop: '1rem', padding: '1rem 2rem', fontSize: '1.5rem', background: 'rgba(51, 133, 255, 0.2)' }}>
+                {activeMission?.id.startsWith('arcade') ? "EXIT SIMULATOR" : "RETURN TO BASE"}
               </button>
             </div>
           )}
@@ -127,12 +148,12 @@ function App() {
 
       {(currentMode === 'LAUNCH' || currentMode === 'LANDING') && (
         <div className="overlay" style={{ backgroundColor: 'transparent', pointerEvents: 'none' }}>
-           <TerminalText 
-             as="h2" 
-             text={currentMode === 'LAUNCH' ? "LAUNCH SEQUENCE INITIATED" : "AUTO-LANDING ENGAGED"} 
-             className="terminal-title" 
-             style={{ color: '#00ffcc', position: 'absolute', top: '10%', textShadow: '0 0 10px #00ffcc' }} 
-           />
+          <TerminalText
+            as="h2"
+            text={currentMode === 'LAUNCH' ? "LAUNCH SEQUENCE INITIATED" : "AUTO-LANDING ENGAGED"}
+            className="terminal-title"
+            style={{ color: 'var(--theme-color)', position: 'absolute', top: '10%', textShadow: '0 0 10px var(--theme-glow)' }}
+          />
         </div>
       )}
     </div>
