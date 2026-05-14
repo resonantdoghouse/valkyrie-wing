@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type GameMode = 'MENU' | 'BAR' | 'BRIEFING' | 'FLIGHT_DECK' | 'FLIGHT' | 'QUARTERS';
+type GameMode = 'MENU' | 'BAR' | 'BRIEFING' | 'FLIGHT_DECK' | 'LAUNCH' | 'FLIGHT' | 'LANDING' | 'QUARTERS';
 
 interface GameState {
   currentMode: GameMode;

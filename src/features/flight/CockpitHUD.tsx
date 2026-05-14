@@ -3,15 +3,19 @@ import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { usePlayerControls } from '../../hooks/usePlayerControls';
 import { useCombatStore } from '../../state/useCombatStore';
+import * as THREE from 'three';
+import { useMissionStore } from '../../state/useMissionStore';
 
 interface CockpitHUDProps {
   throttle: MutableRefObject<number>;
+  shipRef: React.RefObject<THREE.Group>;
 }
 
-export function CockpitHUD({ throttle }: CockpitHUDProps) {
+export function CockpitHUD({ throttle, shipRef }: CockpitHUDProps) {
   const controls = usePlayerControls();
   const targetId = useCombatStore(state => state.targetId);
   const targetEnemy = useCombatStore(state => state.enemies.find(e => e.id === targetId && e.active));
+  const radarCanvasRef = useRef<HTMLCanvasElement>(null);
   
   const throttleBarRef = useRef<HTMLDivElement>(null);
   const throttleTextRef = useRef<HTMLParagraphElement>(null);
@@ -25,6 +29,63 @@ export function CockpitHUD({ throttle }: CockpitHUDProps) {
       if (controls.throttleUp) throttleTextRef.current.innerText = 'ACCELERATING';
       else if (controls.throttleDown) throttleTextRef.current.innerText = 'DECELERATING';
       else throttleTextRef.current.innerText = `THRUST: ${Math.round(throttle.current * 100)}%`;
+    }
+
+    if (radarCanvasRef.current && shipRef.current) {
+      const ctx = radarCanvasRef.current.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, 200, 200);
+        
+        // Draw radar rings
+        ctx.strokeStyle = 'rgba(0, 255, 204, 0.3)';
+        ctx.beginPath(); ctx.arc(100, 100, 50, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(100, 100, 90, 0, Math.PI * 2); ctx.stroke();
+        
+        // Draw crosshair
+        ctx.beginPath(); ctx.moveTo(100, 0); ctx.lineTo(100, 200); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, 100); ctx.lineTo(200, 100); ctx.stroke();
+
+        const MAX_RADAR_DIST = 1000;
+
+        // Draw Enemies
+        const enemies = useCombatStore.getState().enemies;
+        enemies.forEach(enemy => {
+          if (!enemy.active) return;
+          const localPos = shipRef.current!.worldToLocal(enemy.position.clone());
+          
+          // Map to 2D
+          const rx = 100 + (localPos.x / MAX_RADAR_DIST) * 100;
+          const ry = 100 + (localPos.z / MAX_RADAR_DIST) * 100; // z is forward/back
+
+          if (rx >= 0 && rx <= 200 && ry >= 0 && ry <= 200) {
+             ctx.fillStyle = '#ff3366';
+             ctx.beginPath(); ctx.arc(rx, ry, 3, 0, Math.PI * 2); ctx.fill();
+          }
+        });
+
+        // Draw Waypoints
+        const activeMission = useMissionStore.getState().activeMission;
+        if (activeMission) {
+          activeMission.objectives.forEach(obj => {
+            if (!obj.completed && obj.position) {
+               const worldPos = new THREE.Vector3(...obj.position);
+               const localPos = shipRef.current!.worldToLocal(worldPos);
+               
+               const rx = 100 + (localPos.x / MAX_RADAR_DIST) * 100;
+               const ry = 100 + (localPos.z / MAX_RADAR_DIST) * 100;
+
+               if (rx >= 0 && rx <= 200 && ry >= 0 && ry <= 200) {
+                 ctx.fillStyle = '#ffff00';
+                 ctx.beginPath(); ctx.arc(rx, ry, 4, 0, Math.PI * 2); ctx.fill();
+               }
+            }
+          });
+        }
+        
+        // Draw Player Ship (Center)
+        ctx.fillStyle = '#00ffcc';
+        ctx.beginPath(); ctx.moveTo(100, 95); ctx.lineTo(105, 105); ctx.lineTo(95, 105); ctx.fill();
+      }
     }
   });
   
@@ -61,6 +122,24 @@ export function CockpitHUD({ throttle }: CockpitHUDProps) {
             }} />
           </div>
           <p ref={throttleTextRef} style={{ marginTop: '15px', fontSize: '1.5rem', fontWeight: 'bold' }}>THRUST: 0%</p>
+        </div>
+      </Html>
+
+      {/* Map Nav / Radar */}
+      <Html transform position={[0, -0.6, -0.7]} rotation={[-0.4, 0, 0]} scale={0.1} center>
+        <div style={{
+          width: '220px',
+          height: '220px',
+          background: 'rgba(0, 20, 10, 0.9)',
+          border: '3px solid #00ffcc',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: 'inset 0 0 20px rgba(0, 255, 204, 0.2)',
+          overflow: 'hidden'
+        }}>
+           <canvas ref={radarCanvasRef} width={200} height={200} style={{ borderRadius: '50%' }} />
         </div>
       </Html>
 

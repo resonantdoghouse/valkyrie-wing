@@ -67,7 +67,7 @@ function App() {
             </button>
             <button className="interactive-btn" onClick={() => {
               startMission('m1_escort_alpha');
-              setMode('FLIGHT');
+              setMode('LAUNCH');
             }} style={{ marginTop: '0.5rem', background: 'rgba(255, 51, 102, 0.2)' }}>
               LAUNCH MISSION
             </button>
@@ -116,8 +116,7 @@ function App() {
             <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'auto', textAlign: 'center' }}>
               <TerminalText as="h1" text="MISSION COMPLETE" className="terminal-title" style={{ color: '#00ffcc', textShadow: '0 0 20px #00ffcc' }} />
               <button className="interactive-btn" onClick={() => {
-                completeMission();
-                setMode('BAR');
+                setMode('LANDING');
               }} style={{ marginTop: '1rem', padding: '1rem 2rem', fontSize: '1.5rem', background: 'rgba(0, 255, 204, 0.2)' }}>
                 RETURN TO BASE
               </button>
@@ -137,6 +136,17 @@ function App() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {(currentMode === 'LAUNCH' || currentMode === 'LANDING') && (
+        <div className="overlay" style={{ backgroundColor: 'transparent', pointerEvents: 'none' }}>
+           <TerminalText 
+             as="h2" 
+             text={currentMode === 'LAUNCH' ? "LAUNCH SEQUENCE INITIATED" : "AUTO-LANDING ENGAGED"} 
+             className="terminal-title" 
+             style={{ color: '#00ffcc', position: 'absolute', top: '10%', textShadow: '0 0 10px #00ffcc' }} 
+           />
         </div>
       )}
     </div>

@@ -4,6 +4,8 @@ import { BarScene } from '../features/bar/BarScene';
 import { BriefingScene } from '../features/briefing/BriefingScene';
 import { QuartersScene } from '../features/quarters/QuartersScene';
 import { FlightScene } from '../features/flight/FlightScene';
+import { LaunchScene } from '../features/flight/LaunchScene';
+import { LandingScene } from '../features/flight/LandingScene';
 
 function SceneManager() {
   const currentMode = useGameStore((state) => state.currentMode);
@@ -17,6 +19,10 @@ function SceneManager() {
       return <QuartersScene />;
     case 'FLIGHT':
       return <FlightScene />;
+    case 'LAUNCH':
+      return <LaunchScene />;
+    case 'LANDING':
+      return <LandingScene />;
     // MENU fallback
     default:
       return null;

@@ -3,6 +3,43 @@ import * as THREE from 'three';
 import { PlayerShip } from './PlayerShip';
 import { Lasers } from './Lasers';
 import { Enemies } from './Enemies';
+import { useMissionStore } from '../../state/useMissionStore';
+import { Html } from '@react-three/drei';
+
+function Waypoints() {
+  const activeMission = useMissionStore(state => state.activeMission);
+  if (!activeMission) return null;
+
+  return (
+    <>
+      {activeMission.objectives.map(obj => {
+        if (!obj.completed && obj.position) {
+          return (
+            <group key={obj.id} position={obj.position}>
+              <mesh>
+                <octahedronGeometry args={[5, 0]} />
+                <meshBasicMaterial color="#ffff00" wireframe />
+              </mesh>
+              <Html center position={[0, -8, 0]}>
+                <div style={{
+                  color: '#ffff00',
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: '12px',
+                  background: 'rgba(0,0,0,0.5)',
+                  padding: '2px 5px',
+                  border: '1px solid #ffff00'
+                }}>
+                  {obj.target}
+                </div>
+              </Html>
+            </group>
+          );
+        }
+        return null;
+      })}
+    </>
+  );
+}
 
 function Ring({ position }: { position: [number, number, number] }) {
   return (
@@ -46,6 +83,7 @@ export function FlightScene() {
       <Starfield />
       <Enemies />
       <Lasers />
+      <Waypoints />
       <PlayerShip />
 
       {/* Three floating rings */}

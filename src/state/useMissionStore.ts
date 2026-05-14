@@ -9,6 +9,7 @@ export interface Objective {
   count: number;
   currentCount: number;
   completed: boolean;
+  position?: [number, number, number];
 }
 
 export interface Mission {
@@ -36,7 +37,7 @@ const mockMissions: Mission[] = [
     description: 'Ensure the Vanguard Cargo reaches Waypoint Alpha safely. Nebula Remnant presence expected.',
     dialogueTreeId: 'dt_m1_intro',
     objectives: [
-      { id: 'obj_nav_1', type: 'NAV', target: 'Waypoint Alpha', count: 1, currentCount: 0, completed: false },
+      { id: 'obj_nav_1', type: 'NAV', target: 'Waypoint Alpha', count: 1, currentCount: 0, completed: false, position: [0, 0, -500] },
       { id: 'obj_kill_1', type: 'KILL', target: 'Remnant Interceptor', count: 3, currentCount: 0, completed: false }
     ]
   },

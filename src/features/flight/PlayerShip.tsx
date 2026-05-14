@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { usePlayerControls } from '../../hooks/usePlayerControls';
 import { CockpitHUD } from './CockpitHUD';
 import { useCombatStore } from '../../state/useCombatStore';
+import { useMissionStore } from '../../state/useMissionStore';
 
 const MAX_SPEED = 40;
 const TURN_SPEED = 1.5;
@@ -95,7 +96,20 @@ export function PlayerShip() {
       setTarget(bestTarget);
     }
 
-    // 6. Update Camera to Follow Ship (First Person Cockpit View)
+    // 6. Mission Objective Checking (Waypoints)
+    const activeMission = useMissionStore.getState().activeMission;
+    if (activeMission) {
+      activeMission.objectives.forEach(obj => {
+        if (!obj.completed && obj.type === 'NAV' && obj.position) {
+          const waypointPos = new THREE.Vector3(...obj.position);
+          if (shipPos.distanceTo(waypointPos) < 50) { // 50 units arrival radius
+            useMissionStore.getState().updateObjective(obj.id, 1);
+          }
+        }
+      });
+    }
+
+    // 7. Update Camera to Follow Ship (First Person Cockpit View)
     // Position camera inside the ship slightly above and slightly back so the dashboard is visible
     const cameraOffset = new THREE.Vector3(0, 0.4, 0.5);
     const shipPosition = meshRef.current.position.clone();
@@ -149,7 +163,7 @@ export function PlayerShip() {
       </mesh>
 
       {/* Mount the 3D Cockpit HUD inside the ship */}
-      <CockpitHUD throttle={throttle} />
+      <CockpitHUD throttle={throttle} shipRef={meshRef} />
     </group>
   );
 }
