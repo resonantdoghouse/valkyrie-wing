@@ -10,6 +10,7 @@ interface Controls {
   throttleUp: boolean;
   throttleDown: boolean;
   fire: boolean;
+  boost: boolean;
 }
 
 export function usePlayerControls() {
@@ -23,6 +24,7 @@ export function usePlayerControls() {
     throttleUp: false,
     throttleDown: false,
     fire: false,
+    boost: false,
   });
 
   useEffect(() => {
@@ -43,6 +45,8 @@ export function usePlayerControls() {
         case 'Minus':
         case 'NumpadSubtract': setControls((c) => ({ ...c, throttleDown: true })); break;
         case 'Space': setControls((c) => ({ ...c, fire: true })); break;
+        case 'ShiftLeft':
+        case 'ShiftRight': setControls((c) => ({ ...c, boost: true })); break;
       }
     };
 
@@ -63,6 +67,8 @@ export function usePlayerControls() {
         case 'Minus':
         case 'NumpadSubtract': setControls((c) => ({ ...c, throttleDown: false })); break;
         case 'Space': setControls((c) => ({ ...c, fire: false })); break;
+        case 'ShiftLeft':
+        case 'ShiftRight': setControls((c) => ({ ...c, boost: false })); break;
       }
     };
 

@@ -77,8 +77,9 @@ function Starfield() {
 export function FlightScene() {
   return (
     <group>
-      <ambientLight intensity={0.2} color="#ffffff" />
-      <directionalLight position={[50, 50, 50]} intensity={1} color="#ffeedd" />
+      <ambientLight intensity={0.8} color="#ffffff" />
+      <directionalLight position={[100, 100, 50]} intensity={2.5} color="#ffeedd" />
+      <directionalLight position={[-100, -50, -50]} intensity={1.5} color="#aaddff" />
       
       <Starfield />
       <Enemies />

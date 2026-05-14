@@ -18,7 +18,7 @@ export function PlayerShip() {
   
   // Persistent physics state
   const velocity = useRef(new THREE.Vector3());
-  const throttle = useRef(0); // 0 to 1
+  const throttle = useRef(0.5); // 0 to 1
   const lastFireTime = useRef(0);
   const { camera } = useThree();
   
@@ -53,7 +53,8 @@ export function PlayerShip() {
     direction.negate();
     
     // Calculate target velocity based on throttle and direction
-    targetVelocity.copy(direction).multiplyScalar(MAX_SPEED * throttle.current);
+    const activeMaxSpeed = controls.boost ? MAX_SPEED * 2.5 : MAX_SPEED;
+    targetVelocity.copy(direction).multiplyScalar(activeMaxSpeed * throttle.current);
     
     // Smoothly interpolate current velocity to target velocity (acts as inertia/acceleration)
     velocity.current.lerp(targetVelocity, delta * 2);
@@ -120,7 +121,7 @@ export function PlayerShip() {
     const shipRotation = meshRef.current.quaternion.clone();
     
     cameraOffset.applyQuaternion(shipRotation);
-    camera.position.lerp(shipPosition.clone().add(cameraOffset), 0.5); // Faster lerp for tighter 1st person feel
+    camera.position.copy(shipPosition.clone().add(cameraOffset)); // Static cockpit view
     
     // Look ahead of the ship
     const lookAtTarget = shipPosition.clone().add(direction.clone().multiplyScalar(10));

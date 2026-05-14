@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useCombatStore, EnemyData } from '../../state/useCombatStore';
-import { Html } from '@react-three/drei';
+import { Html, useGLTF } from '@react-three/drei';
+import enemyShipUrl from '../../assets/models/enemy-ship.glb';
 
 export function Enemies() {
   const enemies = useCombatStore((state) => state.enemies);
@@ -47,6 +48,8 @@ function Explosion({ position }: { position: THREE.Vector3 }) {
 
 function EnemyShip({ enemy }: { enemy: EnemyData }) {
   const meshRef = useRef<THREE.Group>(null);
+  const { scene } = useGLTF(enemyShipUrl);
+  const clonedScene = useMemo(() => scene.clone(), [scene]);
   
   useFrame(() => {
     if (meshRef.current && enemy.velocity.lengthSq() > 0.1) {
@@ -57,11 +60,8 @@ function EnemyShip({ enemy }: { enemy: EnemyData }) {
 
   return (
     <group ref={meshRef} position={enemy.position}>
-      <mesh>
-        <octahedronGeometry args={[5]} />
-        <meshStandardMaterial color="#222222" emissive="#ff3366" emissiveIntensity={0.2} metalness={0.8} roughness={0.2} />
-      </mesh>
-      {/* Engine glow */}
+      <primitive object={clonedScene} scale={5} />
+      {/* Engine glow - might need adjustment based on the new model's scale/origin */}
       <mesh position={[0, 0, -5]}>
         <sphereGeometry args={[1]} />
         <meshBasicMaterial color="#ff3366" transparent opacity={0.8} />
@@ -82,3 +82,5 @@ function EnemyShip({ enemy }: { enemy: EnemyData }) {
     </group>
   );
 }
+
+useGLTF.preload(enemyShipUrl);
