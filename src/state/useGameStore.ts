@@ -19,10 +19,14 @@ interface GameState {
   };
   takeDamage: (direction: 'front' | 'rear' | 'left' | 'right', amount: number) => void;
   rechargeShields: (delta: number) => void;
+  isPlayerDead: boolean;
+  setPlayerDead: (dead: boolean) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
   currentMode: 'MENU',
+  isPlayerDead: false,
+  setPlayerDead: (dead) => set({ isPlayerDead: dead }),
   playerStats: { kills: 0, credits: 300, rank: 'Ensign' },
   updateCredits: (amount: number) => set((state) => ({ playerStats: { ...state.playerStats, credits: state.playerStats.credits + amount } })),
   missionId: null,
@@ -31,7 +35,7 @@ export const useGameStore = create<GameState>((set) => ({
     shields: { front: 100, rear: 100, left: 100, right: 100 }
   },
   setMode: (mode) => set({ currentMode: mode }),
-  startMission: (id) => set({ missionId: id, currentMode: 'FLIGHT', playerHealth: {
+  startMission: (id) => set({ missionId: id, currentMode: 'FLIGHT', isPlayerDead: false, playerHealth: {
     hull: { front: 100, rear: 100, left: 100, right: 100 },
     shields: { front: 100, rear: 100, left: 100, right: 100 }
   }}),
@@ -53,7 +57,9 @@ export const useGameStore = create<GameState>((set) => ({
       newHealth.hull[direction] = Math.max(0, newHealth.hull[direction] - remainingDamage);
     }
     
-    return { playerHealth: newHealth };
+    const isDead = newHealth.hull.front === 0 || newHealth.hull.rear === 0 || newHealth.hull.left === 0 || newHealth.hull.right === 0;
+    
+    return { playerHealth: newHealth, isPlayerDead: state.isPlayerDead || isDead };
   }),
   rechargeShields: (delta) => set((state) => {
     // Recharge 5 units per second

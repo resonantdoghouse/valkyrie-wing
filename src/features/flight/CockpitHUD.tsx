@@ -12,12 +12,28 @@ interface CockpitHUDProps {
   shipRef: React.RefObject<THREE.Group>;
 }
 
+const getHealthColor = (val: number) => {
+  if (val > 60) return '#00ffaa';
+  if (val > 30) return '#ffaa00';
+  return '#ff3333';
+};
+
+const StatBar = ({ label, value, color }: { label: string, value: number, color: string }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}>
+    <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', letterSpacing: '1px' }}>{label}</div>
+    <div style={{ width: '100%', height: '8px', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+      <div style={{ width: `${Math.max(0, Math.min(100, value))}%`, height: '100%', background: color, boxShadow: `0 0 8px ${color}`, transition: 'width 0.2s ease-out' }} />
+    </div>
+  </div>
+);
+
 export function CockpitHUD({ throttle, shipRef }: CockpitHUDProps) {
   const controls = usePlayerControls();
   const targetId = useCombatStore(state => state.targetId);
   const targetEnemy = useCombatStore(state => state.enemies.find(e => e.id === targetId && e.active));
   const radarCanvasRef = useRef<HTMLCanvasElement>(null);
   const playerHealth = useGameStore(state => state.playerHealth);
+  const radarSweep = useRef(0);
   
   const throttleBarRef = useRef<HTMLDivElement>(null);
   const throttleTextRef = useRef<HTMLParagraphElement>(null);
@@ -28,24 +44,55 @@ export function CockpitHUD({ throttle, shipRef }: CockpitHUDProps) {
       throttleBarRef.current.style.width = `${percentage}%`;
     }
     if (throttleTextRef.current) {
-      if (controls.throttleUp) throttleTextRef.current.innerText = 'ACCELERATING';
-      else if (controls.throttleDown) throttleTextRef.current.innerText = 'DECELERATING';
+      if (controls.throttleUp) throttleTextRef.current.innerText = 'ENG: ACCELERATING';
+      else if (controls.throttleDown) throttleTextRef.current.innerText = 'ENG: DECELERATING';
       else throttleTextRef.current.innerText = `THRUST: ${Math.round(throttle.current * 100)}%`;
     }
 
     if (radarCanvasRef.current && shipRef.current) {
       const ctx = radarCanvasRef.current.getContext('2d');
       if (ctx) {
-        ctx.clearRect(0, 0, 200, 200);
+        const center = 120;
+        const radius = 115;
         
-        // Draw radar rings
-        ctx.strokeStyle = 'rgba(0, 255, 204, 0.3)';
-        ctx.beginPath(); ctx.arc(100, 100, 50, 0, Math.PI * 2); ctx.stroke();
-        ctx.beginPath(); ctx.arc(100, 100, 90, 0, Math.PI * 2); ctx.stroke();
+        ctx.clearRect(0, 0, 240, 240);
+        
+        // Update sweep
+        radarSweep.current = (radarSweep.current + 0.03) % (Math.PI * 2);
+
+        // Draw radar background
+        ctx.fillStyle = 'rgba(2, 6, 12, 0.8)';
+        ctx.beginPath(); ctx.arc(center, center, radius, 0, Math.PI * 2); ctx.fill();
+
+        // Draw radar rings (dashed)
+        ctx.strokeStyle = 'rgba(0, 229, 255, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 5]);
+        [40, 75, 110].forEach(r => {
+          ctx.beginPath(); ctx.arc(center, center, r, 0, Math.PI * 2); ctx.stroke();
+        });
+        ctx.setLineDash([]);
         
         // Draw crosshair
-        ctx.beginPath(); ctx.moveTo(100, 0); ctx.lineTo(100, 200); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(0, 100); ctx.lineTo(200, 100); ctx.stroke();
+        ctx.strokeStyle = 'rgba(0, 229, 255, 0.15)';
+        ctx.beginPath(); ctx.moveTo(center, 5); ctx.lineTo(center, 235); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(5, center); ctx.lineTo(235, center); ctx.stroke();
+
+        // Draw sweep
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(radarSweep.current);
+        const gradient = ctx.createConicGradient(0, 0, 0);
+        gradient.addColorStop(0, 'rgba(0, 229, 255, 0)');
+        gradient.addColorStop(0.8, 'rgba(0, 229, 255, 0.05)');
+        gradient.addColorStop(1, 'rgba(0, 229, 255, 0.4)');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius, 0, Math.PI / 3);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
 
         const MAX_RADAR_DIST = 1000;
 
@@ -55,13 +102,15 @@ export function CockpitHUD({ throttle, shipRef }: CockpitHUDProps) {
           if (!enemy.active) return;
           const localPos = shipRef.current!.worldToLocal(enemy.position.clone());
           
-          // Map to 2D
-          const rx = 100 + (localPos.x / MAX_RADAR_DIST) * 100;
-          const ry = 100 + (localPos.z / MAX_RADAR_DIST) * 100; // z is forward/back
+          const rx = center + (localPos.x / MAX_RADAR_DIST) * 110;
+          const ry = center + (localPos.z / MAX_RADAR_DIST) * 110;
 
-          if (rx >= 0 && rx <= 200 && ry >= 0 && ry <= 200) {
+          if (rx >= 5 && rx <= 235 && ry >= 5 && ry <= 235) {
              ctx.fillStyle = '#ff3366';
-             ctx.beginPath(); ctx.arc(rx, ry, 3, 0, Math.PI * 2); ctx.fill();
+             ctx.shadowColor = '#ff3366';
+             ctx.shadowBlur = 8;
+             ctx.beginPath(); ctx.arc(rx, ry, 4, 0, Math.PI * 2); ctx.fill();
+             ctx.shadowBlur = 0;
           }
         });
 
@@ -73,170 +122,216 @@ export function CockpitHUD({ throttle, shipRef }: CockpitHUDProps) {
                const worldPos = new THREE.Vector3(...obj.position);
                const localPos = shipRef.current!.worldToLocal(worldPos);
                
-               const rx = 100 + (localPos.x / MAX_RADAR_DIST) * 100;
-               const ry = 100 + (localPos.z / MAX_RADAR_DIST) * 100;
+               const rx = center + (localPos.x / MAX_RADAR_DIST) * 110;
+               const ry = center + (localPos.z / MAX_RADAR_DIST) * 110;
 
-               if (rx >= 0 && rx <= 200 && ry >= 0 && ry <= 200) {
-                 ctx.fillStyle = '#ffff00';
-                 ctx.beginPath(); ctx.arc(rx, ry, 4, 0, Math.PI * 2); ctx.fill();
+               if (rx >= 5 && rx <= 235 && ry >= 5 && ry <= 235) {
+                 ctx.fillStyle = '#ffcc00';
+                 ctx.shadowColor = '#ffcc00';
+                 ctx.shadowBlur = 10;
+                 ctx.beginPath(); ctx.moveTo(rx, ry-6); ctx.lineTo(rx+6, ry+6); ctx.lineTo(rx-6, ry+6); ctx.fill();
+                 ctx.shadowBlur = 0;
                }
             }
           });
         }
         
         // Draw Player Ship (Center)
-        ctx.fillStyle = '#00ffcc';
-        ctx.beginPath(); ctx.moveTo(100, 95); ctx.lineTo(105, 105); ctx.lineTo(95, 105); ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 5;
+        ctx.beginPath(); ctx.moveTo(center, center-8); ctx.lineTo(center+6, center+6); ctx.lineTo(center, center+3); ctx.lineTo(center-6, center+6); ctx.fill();
+        ctx.shadowBlur = 0;
       }
     }
   });
   
   return (
     <group position={[0, -0.5, -2]}>
+      <Html>
+        <style>{`
+          @keyframes hud-spin { 100% { transform: rotate(360deg); } }
+          @keyframes hud-pulse { 0% { opacity: 0.8; } 50% { opacity: 0.3; } 100% { opacity: 0.8; } }
+        `}</style>
+      </Html>
+      
       {/* Physical dashboard placeholder */}
       <mesh position={[0, -0.8, -1]} rotation={[-0.2, 0, 0]}>
-        <boxGeometry args={[4, 1.5, 0.5]} />
-        <meshStandardMaterial color="#112222" metalness={0.9} roughness={0.4} />
+        <boxGeometry args={[4.5, 1.5, 0.5]} />
+        <meshStandardMaterial color="#050a10" metalness={0.9} roughness={0.6} />
       </mesh>
 
       {/* Center Console UI (Speed & Thrust) */}
       <Html transform position={[0, -0.2, -0.7]} rotation={[-0.2, 0, 0]} scale={0.1} center>
         <div style={{
-          width: '350px',
-          height: '250px',
-          background: 'rgba(0, 20, 10, 0.9)',
-          border: '3px solid #00ffcc',
-          borderRadius: '10px',
+          width: '420px',
+          height: '120px',
+          background: 'linear-gradient(180deg, rgba(6, 15, 30, 0.4) 0%, rgba(2, 6, 12, 0.85) 100%)',
+          borderBottom: '3px solid rgba(0, 229, 255, 0.6)',
+          borderRadius: '20px 20px 8px 8px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
-          color: '#00ffcc',
+          justifyContent: 'flex-end',
+          paddingBottom: '20px',
+          color: '#e0f7fa',
           fontFamily: "'Share Tech Mono', monospace",
-          boxShadow: 'inset 0 0 20px rgba(0, 255, 204, 0.2)'
+          backdropFilter: 'blur(6px)',
+          clipPath: 'polygon(10% 0, 90% 0, 100% 100%, 0 100%)'
         }}>
-          <h2 style={{ margin: 0, fontSize: '2.5rem', textShadow: '0 0 10px #00ffcc' }}>ENGINE</h2>
-          <div style={{ marginTop: '20px', width: '80%', height: '30px', border: '2px solid #00ffcc' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '75%', marginBottom: '12px' }}>
+            <span style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.6)' }}>PROPULSION</span>
+            <span ref={throttleTextRef} style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#00e5ff', textShadow: '0 0 8px rgba(0,229,255,0.5)' }}>THRUST: 0%</span>
+          </div>
+          
+          <div style={{ width: '80%', height: '24px', background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(0,229,255,0.4)', borderRadius: '12px', overflow: 'hidden', position: 'relative', boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8)' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', justifyContent: 'space-between', padding: '0 15px', pointerEvents: 'none', zIndex: 2 }}>
+               {[...Array(10)].map((_, i) => <div key={i} style={{ width: '2px', height: '100%', background: 'rgba(0,0,0,0.8)' }} />)}
+            </div>
             <div ref={throttleBarRef} style={{ 
               width: '0%', 
               height: '100%', 
-              background: '#00ffcc',
+              background: 'linear-gradient(90deg, #0088ff 0%, #00e5ff 100%)',
+              boxShadow: '0 0 15px rgba(0,229,255,0.8)',
+              transition: 'width 0.1s linear',
+              position: 'relative',
+              zIndex: 1
             }} />
           </div>
-          <p ref={throttleTextRef} style={{ marginTop: '15px', fontSize: '1.5rem', fontWeight: 'bold' }}>THRUST: 0%</p>
         </div>
       </Html>
 
       {/* Map Nav / Radar */}
-      <Html transform position={[0, -0.6, -0.7]} rotation={[-0.4, 0, 0]} scale={0.1} center>
+      <Html transform position={[0, -0.65, -0.65]} rotation={[-0.5, 0, 0]} scale={0.1} center>
         <div style={{
-          width: '220px',
-          height: '220px',
-          background: 'rgba(0, 20, 10, 0.9)',
-          border: '3px solid #00ffcc',
+          width: '280px',
+          height: '280px',
+          background: 'linear-gradient(135deg, rgba(6, 15, 30, 0.9) 0%, rgba(2, 6, 12, 0.95) 100%)',
+          border: '2px solid rgba(0, 229, 255, 0.4)',
           borderRadius: '50%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: 'inset 0 0 20px rgba(0, 255, 204, 0.2)',
-          overflow: 'hidden'
+          boxShadow: '0 10px 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(0, 229, 255, 0.2)',
+          position: 'relative',
+          backdropFilter: 'blur(8px)'
         }}>
-           <canvas ref={radarCanvasRef} width={200} height={200} style={{ borderRadius: '50%' }} />
+           <div style={{ position: 'absolute', width: '100%', height: '100%', border: '1px dashed rgba(0, 229, 255, 0.3)', borderRadius: '50%', animation: 'hud-spin 30s linear infinite reverse' }} />
+           
+           <canvas ref={radarCanvasRef} width={240} height={240} style={{ borderRadius: '50%', zIndex: 1 }} />
+           
+           <div style={{ position: 'absolute', top: '15px', fontSize: '0.8rem', color: '#00e5ff', fontFamily: "'Share Tech Mono', monospace", letterSpacing: '2px', zIndex: 2, textShadow: '0 0 5px #00e5ff' }}>TACTICAL MAP</div>
+           <div style={{ position: 'absolute', bottom: '15px', fontSize: '0.8rem', color: '#00e5ff', fontFamily: "'Share Tech Mono', monospace", letterSpacing: '1px', zIndex: 2, opacity: 0.7 }}>RANGE: 1.0 KM</div>
         </div>
       </Html>
 
       {/* Left Console UI (VDU / Ship Status) */}
-      <Html transform position={[-1.6, -0.1, -0.6]} rotation={[-0.2, 0.3, 0]} scale={0.1} center>
+      <Html transform position={[-1.7, -0.1, -0.6]} rotation={[-0.2, 0.4, 0]} scale={0.1} center>
         <div style={{
-          width: '320px',
-          height: '240px',
-          background: 'rgba(0, 15, 30, 0.95)',
-          border: '4px solid #0055ff',
-          borderRadius: '10px',
-          padding: '10px',
-          color: '#00ccff',
+          width: '380px',
+          height: '300px',
+          background: 'linear-gradient(135deg, rgba(6, 15, 30, 0.85) 0%, rgba(2, 6, 12, 0.95) 100%)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(0, 229, 255, 0.3)',
+          borderTop: '4px solid #00e5ff',
+          borderRadius: '16px',
+          padding: '20px',
+          color: '#e0f7fa',
           fontFamily: "'Share Tech Mono', monospace",
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: 'inset 0 0 20px rgba(0, 85, 255, 0.3)',
-          overflow: 'hidden'
+          boxShadow: '0 15px 35px rgba(0,0,0,0.6), inset 0 0 25px rgba(0, 229, 255, 0.1)',
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #0055ff', paddingBottom: '5px', marginBottom: '10px' }}>
-            <span style={{ fontWeight: 'bold' }}>VDU</span>
-            <span>SYSTEMS / COMMS</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(0, 229, 255, 0.3)', paddingBottom: '10px', marginBottom: '16px' }}>
+             <span style={{ fontWeight: 'bold', fontSize: '1.3rem', color: '#00e5ff', letterSpacing: '2px', textShadow: '0 0 8px rgba(0,229,255,0.4)' }}>VDU // STATUS</span>
+             <span style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.6)', animation: 'hud-pulse 2s infinite' }}>SYS: NOMINAL</span>
           </div>
           
-          <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Ship Diagram */}
-            <div style={{ position: 'absolute', width: '60px', height: '100px', background: '#334455', clipPath: 'polygon(50% 0%, 100% 30%, 80% 100%, 20% 100%, 0% 30%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-               <div style={{ fontSize: '0.8rem', color: '#00ccff', textAlign: 'center' }}>HULL</div>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            {/* Left Data Column - Shields */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '30%' }}>
+              <StatBar label="SHIELD F" value={playerHealth.shields.front} color="#00e5ff" />
+              <StatBar label="SHIELD L" value={playerHealth.shields.left} color="#00e5ff" />
+              <StatBar label="SHIELD R" value={playerHealth.shields.right} color="#00e5ff" />
+              <StatBar label="SHIELD B" value={playerHealth.shields.rear} color="#00e5ff" />
             </div>
-            
-            {/* Shields (Outer Ring) & Hull Values (Inner) */}
-            <div style={{ position: 'absolute', top: '10px', left: '130px', textAlign: 'center' }}>
-              <div style={{ color: `hsl(${playerHealth.shields.front}, 100%, 50%)` }}>S: {Math.round(playerHealth.shields.front)}%</div>
-              <div style={{ color: `hsl(${playerHealth.hull.front}, 100%, 50%)`, fontSize: '0.8rem' }}>H: {Math.round(playerHealth.hull.front)}%</div>
+
+            {/* Ship Diagram Center */}
+            <div style={{ position: 'relative', width: '120px', height: '160px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <div style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', border: '2px solid rgba(0, 229, 255, 0.3)', boxShadow: '0 0 20px rgba(0, 229, 255, 0.15)' }} />
+               <svg width="60" height="100" viewBox="0 0 60 100" style={{ filter: 'drop-shadow(0 0 8px rgba(0,229,255,0.6))', zIndex: 2 }}>
+                 <polygon points="30,10 50,40 60,90 40,80 30,90 20,80 0,90 10,40" fill="rgba(0, 30, 60, 0.8)" stroke="#00e5ff" strokeWidth="2" />
+                 <polygon points="30,30 40,70 30,80 20,70" fill="rgba(0, 229, 255, 0.4)" />
+               </svg>
             </div>
-            
-            <div style={{ position: 'absolute', bottom: '10px', left: '130px', textAlign: 'center' }}>
-              <div style={{ color: `hsl(${playerHealth.hull.rear}, 100%, 50%)`, fontSize: '0.8rem' }}>H: {Math.round(playerHealth.hull.rear)}%</div>
-              <div style={{ color: `hsl(${playerHealth.shields.rear}, 100%, 50%)` }}>S: {Math.round(playerHealth.shields.rear)}%</div>
+
+            {/* Right Data Column - Hull */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '30%' }}>
+              <StatBar label="HULL F" value={playerHealth.hull.front} color={getHealthColor(playerHealth.hull.front)} />
+              <StatBar label="HULL L" value={playerHealth.hull.left} color={getHealthColor(playerHealth.hull.left)} />
+              <StatBar label="HULL R" value={playerHealth.hull.right} color={getHealthColor(playerHealth.hull.right)} />
+              <StatBar label="HULL B" value={playerHealth.hull.rear} color={getHealthColor(playerHealth.hull.rear)} />
             </div>
-            
-            <div style={{ position: 'absolute', left: '10px', top: '90px', textAlign: 'right' }}>
-              <div style={{ color: `hsl(${playerHealth.shields.left}, 100%, 50%)` }}>S: {Math.round(playerHealth.shields.left)}%</div>
-              <div style={{ color: `hsl(${playerHealth.hull.left}, 100%, 50%)`, fontSize: '0.8rem' }}>H: {Math.round(playerHealth.hull.left)}%</div>
-            </div>
-            
-            <div style={{ position: 'absolute', right: '10px', top: '90px', textAlign: 'left' }}>
-              <div style={{ color: `hsl(${playerHealth.shields.right}, 100%, 50%)` }}>S: {Math.round(playerHealth.shields.right)}%</div>
-              <div style={{ color: `hsl(${playerHealth.hull.right}, 100%, 50%)`, fontSize: '0.8rem' }}>H: {Math.round(playerHealth.hull.right)}%</div>
-            </div>
-          </div>
-          
-          <div style={{ borderTop: '2px solid #0055ff', paddingTop: '5px', marginTop: '10px', fontSize: '0.8rem', opacity: 0.8 }}>
-            &gt; COMMS CHANNEL OPEN...
           </div>
         </div>
       </Html>
 
       {/* Right Console UI (Targeting) */}
-      <Html transform position={[1.5, -0.1, -0.5]} rotation={[-0.2, -0.3, 0]} scale={0.1} center>
+      <Html transform position={[1.6, -0.1, -0.5]} rotation={[-0.2, -0.4, 0]} scale={0.1} center>
         <div style={{
-          width: '250px',
-          height: '200px',
-          background: targetEnemy ? 'rgba(50, 0, 0, 0.9)' : 'rgba(0, 10, 20, 0.9)',
-          border: `3px solid ${targetEnemy ? '#ff3366' : '#33ccff'}`,
-          borderRadius: '10px',
-          padding: '15px',
-          color: targetEnemy ? '#ff3366' : '#33ccff',
+          width: '340px',
+          height: '300px',
+          background: targetEnemy ? 'linear-gradient(135deg, rgba(30, 5, 10, 0.9) 0%, rgba(12, 2, 4, 0.95) 100%)' : 'linear-gradient(135deg, rgba(6, 15, 30, 0.85) 0%, rgba(2, 6, 12, 0.95) 100%)',
+          backdropFilter: 'blur(10px)',
+          border: `1px solid ${targetEnemy ? 'rgba(255, 51, 102, 0.4)' : 'rgba(0, 229, 255, 0.3)'}`,
+          borderTop: `4px solid ${targetEnemy ? '#ff3366' : '#00e5ff'}`,
+          borderRadius: '16px',
+          padding: '20px',
+          color: targetEnemy ? '#ffb3c6' : '#e0f7fa',
           fontFamily: "'Share Tech Mono', monospace",
-          transition: 'all 0.2s'
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: targetEnemy ? '0 15px 35px rgba(255,51,102,0.3), inset 0 0 25px rgba(255, 51, 102, 0.15)' : '0 15px 35px rgba(0,0,0,0.6), inset 0 0 25px rgba(0, 229, 255, 0.1)',
+          transition: 'all 0.3s ease'
         }}>
-          <h3 style={{ margin: 0, fontSize: '2rem' }}>{targetEnemy ? 'LOCKED' : 'TARGET'}</h3>
-          <div style={{ 
-            border: `2px dashed ${targetEnemy ? '#ff3366' : '#33ccff'}`, 
-            height: '80px', 
-            margin: '15px 0', 
-            display: 'flex', 
-            flexDirection: 'column',
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            fontSize: '1.5rem',
-            animation: targetEnemy ? 'flicker 1s infinite' : 'none'
-          }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${targetEnemy ? 'rgba(255,51,102,0.3)' : 'rgba(0,229,255,0.3)'}`, paddingBottom: '10px', marginBottom: '20px' }}>
+             <span style={{ fontWeight: 'bold', fontSize: '1.3rem', color: targetEnemy ? '#ff3366' : '#00e5ff', letterSpacing: '2px', textShadow: `0 0 8px ${targetEnemy ? 'rgba(255,51,102,0.4)' : 'rgba(0,229,255,0.4)'}` }}>
+               {targetEnemy ? 'TARGET LOCKED' : 'TARGETING SYS'}
+             </span>
+          </div>
+
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             {targetEnemy ? (
               <>
-                <span>HULL: {targetEnemy.health}%</span>
-                <span>{targetEnemy.id.toUpperCase()}</span>
+                <div style={{ position: 'relative', width: '130px', height: '130px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '25px' }}>
+                   <div style={{ position: 'absolute', width: '100%', height: '100%', border: '2px dashed #ff3366', borderRadius: '50%', animation: 'hud-spin 10s linear infinite' }} />
+                   <div style={{ position: 'absolute', width: '140%', height: '2px', background: 'rgba(255,51,102,0.3)' }} />
+                   <div style={{ position: 'absolute', height: '140%', width: '2px', background: 'rgba(255,51,102,0.3)' }} />
+                   
+                   <svg width="50" height="50" viewBox="0 0 40 40" style={{ filter: 'drop-shadow(0 0 8px #ff3366)' }}>
+                     <polygon points="20,5 35,35 20,28 5,35" fill="rgba(255,51,102,0.2)" stroke="#ff3366" strokeWidth="2" />
+                   </svg>
+                </div>
+                
+                <div style={{ width: '100%', padding: '0 5px' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                     <span>ID: {targetEnemy.id.substring(0, 6).toUpperCase()}</span>
+                     <span>DIST: {shipRef.current ? Math.round(shipRef.current.position.distanceTo(targetEnemy.position)) : 0}m</span>
+                   </div>
+                   <StatBar label="TARGET INTEGRITY" value={targetEnemy.health} color="#ff3366" />
+                </div>
               </>
             ) : (
-              '[ NO LOCK ]'
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: 0.6 }}>
+                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="1" strokeDasharray="4 4" style={{ animation: 'hud-spin 8s linear infinite', marginBottom: '25px' }}>
+                   <circle cx="12" cy="12" r="10" />
+                   <path d="M12 2 L12 22 M2 12 L22 12" />
+                 </svg>
+                 <span style={{ fontSize: '1.1rem', letterSpacing: '2px' }}>NO SIGNAL</span>
+                 <span style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '5px' }}>SEARCHING SECTOR...</span>
+              </div>
             )}
           </div>
-          <p style={{ margin: 0, fontSize: '1.2rem' }}>
-            {targetEnemy ? '> FIRING SOLUTION ACQUIRED' : 'RADAR: SEARCHING'}
-          </p>
         </div>
       </Html>
     </group>

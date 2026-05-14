@@ -259,7 +259,7 @@ export const useCombatStore = create<CombatState>((set) => ({
   setTarget: (id) => set({ targetId: id }),
 
   startArcadeWave: (level) => set(() => {
-    const numEnemies = 10 + (level - 1) * 5;
+    const numEnemies = 3 + (level - 1) * 2;
     const newEnemies = Array.from({ length: numEnemies }).map((_, i) => ({
       id: `arcade_enemy_${level}_${i}`,
       position: new THREE.Vector3(

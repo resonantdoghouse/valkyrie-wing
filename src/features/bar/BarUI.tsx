@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGameStore } from '../../state/useGameStore';
 import { useMissionStore } from '../../state/useMissionStore';
 import { useCombatStore } from '../../state/useCombatStore';
@@ -13,6 +13,14 @@ export function BarUI() {
   const credits = playerStats.credits;
   const [activeCharacter, setActiveCharacter] = useState<{ id: string, name: string, drank: boolean } | null>(null);
   const [conversationOptions, setConversationOptions] = useState<Array<{ label: string, action: () => void }>>([]);
+  const [leaderboard, setLeaderboard] = useState<{name: string, score: number}[]>([]);
+
+  useEffect(() => {
+    if (currentView === 'ARCADE') {
+      const lb = JSON.parse(localStorage.getItem('vanguard_arcade_leaderboard') || '[]');
+      setLeaderboard(lb);
+    }
+  }, [currentView]);
 
   const handleOrder = (item: string, cost: number) => {
     if (credits >= cost) {
@@ -144,7 +152,22 @@ export function BarUI() {
                   ) : (
                     <>
                       <TerminalText as="p" text="> Insert 5 Credits to play 'Vanguard Defender'." delay={10} />
-                      <TerminalText as="p" text="> High Score: Lt. Viper - 50,000 pts" delay={20} />
+                      <div style={{ marginTop: '1rem', borderTop: '1px solid var(--theme-color)', paddingTop: '0.5rem' }}>
+                        <TerminalText as="h3" text="HIGH SCORES" style={{ margin: 0, marginBottom: '0.5rem', color: 'var(--text-highlight)' }} />
+                        {leaderboard.length > 0 ? (
+                          leaderboard.map((entry, index) => (
+                            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '250px', fontFamily: "'Share Tech Mono', monospace" }}>
+                              <span>{index + 1}. {entry.name}</span>
+                              <span style={{ color: 'var(--accent-orange)' }}>{entry.score}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '250px', fontFamily: "'Share Tech Mono', monospace" }}>
+                            <span>1. Lt. Viper</span>
+                            <span style={{ color: 'var(--accent-orange)' }}>500</span>
+                          </div>
+                        )}
+                      </div>
                     </>
                   )}
                 </div>

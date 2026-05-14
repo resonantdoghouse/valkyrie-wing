@@ -9,7 +9,7 @@ import { BarUI } from './features/bar/BarUI';
 import { initAudio } from './utils/audio';
 
 function App() {
-  const { currentMode, setMode } = useGameStore();
+  const { currentMode, setMode, isPlayerDead } = useGameStore();
   const { activeMission, startMission, completeMission, arcadeLevel, arcadeScore } = useMissionStore();
   const combatEnemies = useCombatStore(state => state.enemies);
 
@@ -114,7 +114,7 @@ function App() {
           </div>
 
           {/* Mission Complete Overlay */}
-          {isMissionComplete && (
+          {isMissionComplete && !isPlayerDead && (
             <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'auto', textAlign: 'center' }}>
               <TerminalText as="h1" text={activeMission?.id.startsWith('arcade') ? "ARCADE SIMULATION COMPLETE" : "MISSION COMPLETE"} className="terminal-title" style={{ color: 'var(--text-highlight)', textShadow: '0 0 20px var(--text-highlight)' }} />
               <button className="interactive-btn" onClick={() => {
@@ -130,11 +130,43 @@ function App() {
             </div>
           )}
 
+          {/* Game Over Overlay */}
+          {isPlayerDead && (
+            <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'auto', textAlign: 'center' }}>
+              <TerminalText as="h1" text={activeMission?.id.startsWith('arcade') ? "SIMULATION FAILED" : "KIA"} className="terminal-title" style={{ color: 'var(--danger-color)', textShadow: '0 0 20px var(--danger-color)' }} />
+              {activeMission?.id.startsWith('arcade') && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <TerminalText as="h2" text={`FINAL SCORE: ${arcadeScore}`} style={{ color: 'var(--text-highlight)' }} />
+                </div>
+              )}
+              <button className="interactive-btn" onClick={() => {
+                if (activeMission?.id.startsWith('arcade')) {
+                  // Save to leaderboard
+                  const lb = JSON.parse(localStorage.getItem('vanguard_arcade_leaderboard') || '[]');
+                  lb.push({ name: 'Ensign', score: arcadeScore });
+                  lb.sort((a: any, b: any) => b.score - a.score);
+                  localStorage.setItem('vanguard_arcade_leaderboard', JSON.stringify(lb.slice(0, 10)));
+                }
+                completeMission();
+                setMode('BAR'); // Respawn at the bar for now
+              }} style={{ marginTop: '1rem', padding: '1rem 2rem', fontSize: '1.5rem', background: 'rgba(255, 51, 51, 0.2)' }}>
+                {activeMission?.id.startsWith('arcade') ? "EXIT SIMULATOR" : "RESPAWN"}
+              </button>
+            </div>
+          )}
+
           {/* Bottom HUD */}
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <div style={{ pointerEvents: 'auto' }}>
-              {!isMissionComplete && (
+              {!isMissionComplete && !isPlayerDead && (
                 <button className="interactive-btn" onClick={() => {
+                  if (activeMission?.id.startsWith('arcade')) {
+                    // Save to leaderboard
+                    const lb = JSON.parse(localStorage.getItem('vanguard_arcade_leaderboard') || '[]');
+                    lb.push({ name: 'Ensign', score: arcadeScore });
+                    lb.sort((a: any, b: any) => b.score - a.score);
+                    localStorage.setItem('vanguard_arcade_leaderboard', JSON.stringify(lb.slice(0, 10)));
+                  }
                   completeMission();
                   setMode('BAR');
                 }} style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', background: 'rgba(0,0,0,0.5)' }}>
