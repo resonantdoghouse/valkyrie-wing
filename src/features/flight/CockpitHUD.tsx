@@ -5,6 +5,7 @@ import { usePlayerControls } from '../../hooks/usePlayerControls';
 import { useCombatStore } from '../../state/useCombatStore';
 import * as THREE from 'three';
 import { useMissionStore } from '../../state/useMissionStore';
+import { useGameStore } from '../../state/useGameStore';
 
 interface CockpitHUDProps {
   throttle: MutableRefObject<number>;
@@ -16,6 +17,7 @@ export function CockpitHUD({ throttle, shipRef }: CockpitHUDProps) {
   const targetId = useCombatStore(state => state.targetId);
   const targetEnemy = useCombatStore(state => state.enemies.find(e => e.id === targetId && e.active));
   const radarCanvasRef = useRef<HTMLCanvasElement>(null);
+  const playerHealth = useGameStore(state => state.playerHealth);
   
   const throttleBarRef = useRef<HTMLDivElement>(null);
   const throttleTextRef = useRef<HTMLParagraphElement>(null);
@@ -143,22 +145,58 @@ export function CockpitHUD({ throttle, shipRef }: CockpitHUDProps) {
         </div>
       </Html>
 
-      {/* Left Console UI (Shields) */}
-      <Html transform position={[-1.5, -0.1, -0.5]} rotation={[-0.2, 0.3, 0]} scale={0.1} center>
+      {/* Left Console UI (VDU / Ship Status) */}
+      <Html transform position={[-1.6, -0.1, -0.6]} rotation={[-0.2, 0.3, 0]} scale={0.1} center>
         <div style={{
-          width: '250px',
-          height: '200px',
-          background: 'rgba(20, 0, 0, 0.9)',
-          border: '3px solid #ff3366',
+          width: '320px',
+          height: '240px',
+          background: 'rgba(0, 15, 30, 0.95)',
+          border: '4px solid #0055ff',
           borderRadius: '10px',
-          padding: '15px',
-          color: '#ff3366',
-          fontFamily: "'Share Tech Mono', monospace"
+          padding: '10px',
+          color: '#00ccff',
+          fontFamily: "'Share Tech Mono', monospace",
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: 'inset 0 0 20px rgba(0, 85, 255, 0.3)',
+          overflow: 'hidden'
         }}>
-          <h3 style={{ margin: 0, fontSize: '2rem' }}>SHIELDS</h3>
-          <h1 style={{ margin: '15px 0', fontSize: '4rem' }}>100%</h1>
-          <p style={{ margin: 0, fontSize: '1.2rem' }}>FRONT: STABLE</p>
-          <p style={{ margin: 0, fontSize: '1.2rem' }}>REAR: STABLE</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #0055ff', paddingBottom: '5px', marginBottom: '10px' }}>
+            <span style={{ fontWeight: 'bold' }}>VDU</span>
+            <span>SYSTEMS / COMMS</span>
+          </div>
+          
+          <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {/* Ship Diagram */}
+            <div style={{ position: 'absolute', width: '60px', height: '100px', background: '#334455', clipPath: 'polygon(50% 0%, 100% 30%, 80% 100%, 20% 100%, 0% 30%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <div style={{ fontSize: '0.8rem', color: '#00ccff', textAlign: 'center' }}>HULL</div>
+            </div>
+            
+            {/* Shields (Outer Ring) & Hull Values (Inner) */}
+            <div style={{ position: 'absolute', top: '10px', left: '130px', textAlign: 'center' }}>
+              <div style={{ color: `hsl(${playerHealth.shields.front}, 100%, 50%)` }}>S: {Math.round(playerHealth.shields.front)}%</div>
+              <div style={{ color: `hsl(${playerHealth.hull.front}, 100%, 50%)`, fontSize: '0.8rem' }}>H: {Math.round(playerHealth.hull.front)}%</div>
+            </div>
+            
+            <div style={{ position: 'absolute', bottom: '10px', left: '130px', textAlign: 'center' }}>
+              <div style={{ color: `hsl(${playerHealth.hull.rear}, 100%, 50%)`, fontSize: '0.8rem' }}>H: {Math.round(playerHealth.hull.rear)}%</div>
+              <div style={{ color: `hsl(${playerHealth.shields.rear}, 100%, 50%)` }}>S: {Math.round(playerHealth.shields.rear)}%</div>
+            </div>
+            
+            <div style={{ position: 'absolute', left: '10px', top: '90px', textAlign: 'right' }}>
+              <div style={{ color: `hsl(${playerHealth.shields.left}, 100%, 50%)` }}>S: {Math.round(playerHealth.shields.left)}%</div>
+              <div style={{ color: `hsl(${playerHealth.hull.left}, 100%, 50%)`, fontSize: '0.8rem' }}>H: {Math.round(playerHealth.hull.left)}%</div>
+            </div>
+            
+            <div style={{ position: 'absolute', right: '10px', top: '90px', textAlign: 'left' }}>
+              <div style={{ color: `hsl(${playerHealth.shields.right}, 100%, 50%)` }}>S: {Math.round(playerHealth.shields.right)}%</div>
+              <div style={{ color: `hsl(${playerHealth.hull.right}, 100%, 50%)`, fontSize: '0.8rem' }}>H: {Math.round(playerHealth.hull.right)}%</div>
+            </div>
+          </div>
+          
+          <div style={{ borderTop: '2px solid #0055ff', paddingTop: '5px', marginTop: '10px', fontSize: '0.8rem', opacity: 0.8 }}>
+            &gt; COMMS CHANNEL OPEN...
+          </div>
         </div>
       </Html>
 

@@ -10,14 +10,67 @@ interface GameState {
     credits: number;
     rank: string;
   };
+  updateCredits: (amount: number) => void;
   missionId: string | null;
   startMission: (id: string) => void;
+  playerHealth: {
+    hull: { front: number; rear: number; left: number; right: number };
+    shields: { front: number; rear: number; left: number; right: number };
+  };
+  takeDamage: (direction: 'front' | 'rear' | 'left' | 'right', amount: number) => void;
+  rechargeShields: (delta: number) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
   currentMode: 'MENU',
-  playerStats: { kills: 0, credits: 0, rank: 'Ensign' },
+  playerStats: { kills: 0, credits: 300, rank: 'Ensign' },
+  updateCredits: (amount: number) => set((state) => ({ playerStats: { ...state.playerStats, credits: state.playerStats.credits + amount } })),
   missionId: null,
+  playerHealth: {
+    hull: { front: 100, rear: 100, left: 100, right: 100 },
+    shields: { front: 100, rear: 100, left: 100, right: 100 }
+  },
   setMode: (mode) => set({ currentMode: mode }),
-  startMission: (id) => set({ missionId: id, currentMode: 'FLIGHT' }),
+  startMission: (id) => set({ missionId: id, currentMode: 'FLIGHT', playerHealth: {
+    hull: { front: 100, rear: 100, left: 100, right: 100 },
+    shields: { front: 100, rear: 100, left: 100, right: 100 }
+  }}),
+  takeDamage: (direction, amount) => set((state) => {
+    const newHealth = { ...state.playerHealth, shields: { ...state.playerHealth.shields }, hull: { ...state.playerHealth.hull } };
+    let remainingDamage = amount;
+    
+    if (newHealth.shields[direction] > 0) {
+      if (newHealth.shields[direction] >= remainingDamage) {
+        newHealth.shields[direction] -= remainingDamage;
+        remainingDamage = 0;
+      } else {
+        remainingDamage -= newHealth.shields[direction];
+        newHealth.shields[direction] = 0;
+      }
+    }
+    
+    if (remainingDamage > 0) {
+      newHealth.hull[direction] = Math.max(0, newHealth.hull[direction] - remainingDamage);
+    }
+    
+    return { playerHealth: newHealth };
+  }),
+  rechargeShields: (delta) => set((state) => {
+    // Recharge 5 units per second
+    const rechargeRate = 5 * delta;
+    const newShields = { ...state.playerHealth.shields };
+    let changed = false;
+    
+    (['front', 'rear', 'left', 'right'] as const).forEach((dir) => {
+      if (newShields[dir] < 100) {
+        newShields[dir] = Math.min(100, newShields[dir] + rechargeRate);
+        changed = true;
+      }
+    });
+    
+    if (changed) {
+      return { playerHealth: { ...state.playerHealth, shields: newShields } };
+    }
+    return state;
+  }),
 }));

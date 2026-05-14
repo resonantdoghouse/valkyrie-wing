@@ -21,8 +21,11 @@ export interface EnemyData {
 
 interface CombatState {
   lasers: LaserData[];
+  enemyLasers: LaserData[];
   fireLaser: (position: THREE.Vector3, direction: THREE.Vector3, shipVelocity: THREE.Vector3) => void;
+  fireEnemyLaser: (position: THREE.Vector3, direction: THREE.Vector3, shipVelocity: THREE.Vector3) => void;
   updateLasers: (delta: number) => void;
+  updateEnemyLasers: (delta: number, playerPosition: THREE.Vector3) => void;
   enemies: EnemyData[];
   spawnEnemy: (id: string, position: THREE.Vector3) => void;
   hitEnemy: (id: string, damage: number) => void;
@@ -42,6 +45,13 @@ export const useCombatStore = create<CombatState>((set) => ({
     active: false,
     life: 0,
   })),
+  enemyLasers: Array.from({ length: MAX_LASERS }).map((_, i) => ({
+    id: i + MAX_LASERS,
+    position: new THREE.Vector3(),
+    velocity: new THREE.Vector3(),
+    active: false,
+    life: 0,
+  })),
   
   fireLaser: (position, direction, shipVelocity) => {
     set((state) => {
@@ -56,6 +66,20 @@ export const useCombatStore = create<CombatState>((set) => ({
         playLaserSound();
       }
       return { lasers };
+    });
+  },
+
+  fireEnemyLaser: (position, direction, shipVelocity) => {
+    set((state) => {
+      const enemyLasers = [...state.enemyLasers];
+      const inactiveLaser = enemyLasers.find(l => !l.active);
+      if (inactiveLaser) {
+        inactiveLaser.active = true;
+        inactiveLaser.life = 0;
+        inactiveLaser.position.copy(position).add(direction.clone().multiplyScalar(2));
+        inactiveLaser.velocity.copy(direction).multiplyScalar(LASER_SPEED * 0.8).add(shipVelocity);
+      }
+      return { enemyLasers };
     });
   },
 
@@ -110,6 +134,53 @@ export const useCombatStore = create<CombatState>((set) => ({
     });
   },
 
+  updateEnemyLasers: (delta, playerPosition) => {
+    set((state) => {
+      let updated = false;
+      let playerHit = false;
+      let hitDirection: 'front' | 'rear' | 'left' | 'right' = 'front';
+
+      const enemyLasers = state.enemyLasers.map((laser) => {
+        if (!laser.active) return laser;
+        updated = true;
+        
+        laser.position.addScaledVector(laser.velocity, delta);
+        laser.life += delta;
+        
+        if (laser.life > 2) {
+          laser.active = false;
+        }
+
+        // Collision with player
+        if (laser.position.distanceToSquared(playerPosition) < 25) {
+          laser.active = false;
+          playerHit = true;
+          // Determine direction
+          const relativePos = laser.position.clone().sub(playerPosition).normalize();
+          // Assuming player faces -Z
+          const zDot = relativePos.z;
+          const xDot = relativePos.x;
+          
+          if (Math.abs(zDot) > Math.abs(xDot)) {
+             hitDirection = zDot < 0 ? 'front' : 'rear';
+          } else {
+             hitDirection = xDot > 0 ? 'right' : 'left';
+          }
+        }
+        
+        return laser;
+      });
+
+      if (playerHit) {
+        import('./useGameStore').then(({ useGameStore }) => {
+          useGameStore.getState().takeDamage(hitDirection, 15);
+        });
+      }
+
+      return updated ? { enemyLasers } : state;
+    });
+  },
+
   enemies: [
     { id: 'enemy_1', position: new THREE.Vector3(0, 0, -100), velocity: new THREE.Vector3(10, 0, 0), health: 100, active: true },
     { id: 'enemy_2', position: new THREE.Vector3(50, 20, -150), velocity: new THREE.Vector3(-10, 5, 0), health: 100, active: true },
@@ -146,6 +217,12 @@ export const useCombatStore = create<CombatState>((set) => ({
          // Steer slowly away or around player to simulate dogfighting
          const steer = toPlayer.normalize().multiplyScalar(20);
          enemy.velocity.lerp(steer, delta * 0.5);
+         
+         // Chance to fire
+         if (distance < 200 && Math.random() < 0.02) {
+            const fireDir = toPlayer.clone().normalize();
+            state.fireEnemyLaser(enemy.position, fireDir, enemy.velocity);
+         }
       }
       
       newPos.addScaledVector(enemy.velocity, delta);

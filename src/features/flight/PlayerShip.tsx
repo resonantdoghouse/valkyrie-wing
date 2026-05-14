@@ -5,6 +5,7 @@ import { usePlayerControls } from '../../hooks/usePlayerControls';
 import { CockpitHUD } from './CockpitHUD';
 import { useCombatStore } from '../../state/useCombatStore';
 import { useMissionStore } from '../../state/useMissionStore';
+import { useGameStore } from '../../state/useGameStore';
 
 const MAX_SPEED = 40;
 const TURN_SPEED = 1.5;
@@ -59,6 +60,9 @@ export function PlayerShip() {
 
     // 3. Update Position based on momentum
     meshRef.current.position.addScaledVector(velocity.current, delta);
+
+    // Recharge shields
+    useGameStore.getState().rechargeShields(delta);
 
     // 4. Handle Firing
     if (controls.fire && _state.clock.elapsedTime - lastFireTime.current > FIRE_RATE) {

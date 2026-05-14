@@ -4,6 +4,7 @@ import { GameCanvas } from './components/GameCanvas';
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay';
 import { LCDPanel } from './components/ui/LCDPanel';
 import { TerminalText } from './components/ui/TerminalText';
+import { BarUI } from './features/bar/BarUI';
 import { initAudio } from './utils/audio';
 
 function App() {
@@ -38,22 +39,7 @@ function App() {
       )}
 
       {currentMode === 'BAR' && (
-        <div className="overlay" style={{ backgroundColor: 'transparent' }}>
-          <LCDPanel style={{ position: 'absolute', bottom: '10%', left: '10%' }}>
-            <TerminalText as="h2" className="terminal-title" text="The Vanguard Bar" />
-            <TerminalText as="p" text="> Welcome back, Ensign." delay={30} />
-            <TerminalText as="p" text="> The Nebula Remnant forces are pushing sector 4." delay={40} />
-            <button className="interactive-btn" onClick={() => setMode('BRIEFING')} style={{ marginTop: '1rem' }}>
-              GO TO BRIEFING ROOM
-            </button>
-            <button className="interactive-btn" onClick={() => setMode('QUARTERS')} style={{ marginTop: '0.5rem' }}>
-              GO TO QUARTERS
-            </button>
-            <button className="interactive-btn" onClick={() => setMode('MENU')} style={{ marginTop: '0.5rem', opacity: 0.7 }}>
-              RETURN TO DECK
-            </button>
-          </LCDPanel>
-        </div>
+        <BarUI />
       )}
 
       {currentMode === 'BRIEFING' && (
