@@ -338,3 +338,182 @@ export function makeNebulaMaterial() {
     side: THREE.BackSide,
   });
 }
+
+// ─── Sun Surface ──────────────────────────────────────────────────────────────
+
+export const sunSurfaceVert = /* glsl */`
+varying vec2 vUv;
+varying vec3 vNormal;
+varying vec3 vViewPosition;
+
+void main() {
+  vUv = uv;
+  vNormal = normalize(normalMatrix * normal);
+  vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+  vViewPosition = -mvPos.xyz;
+  gl_Position = projectionMatrix * mvPos;
+}
+`;
+
+export const sunSurfaceFrag = /* glsl */`
+uniform float uTime;
+
+varying vec2 vUv;
+varying vec3 vNormal;
+varying vec3 vViewPosition;
+
+float hash21(vec2 p) {
+  p = fract(p * vec2(127.1, 311.7));
+  return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+float valueNoise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  float a = hash21(i);
+  float b = hash21(i + vec2(1.0, 0.0));
+  float c = hash21(i + vec2(0.0, 1.0));
+  float d = hash21(i + vec2(1.0, 1.0));
+  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+}
+
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 5; i++) {
+    v += a * valueNoise(p);
+    p = p * 2.1 + vec2(1.7, 9.2);
+    a *= 0.5;
+  }
+  return v;
+}
+
+void main() {
+  vec3 viewDir = normalize(vViewPosition);
+  float facing = clamp(dot(viewDir, vNormal), 0.0, 1.0);
+
+  // Limb darkening: real sun ~cos^0.45 power law
+  float limb = pow(facing, 0.45);
+
+  // Slow animated solar granulation
+  float t = uTime * 0.035;
+  float n1 = fbm(vUv * 5.0 + vec2(t * 0.5, t * 0.3));
+  float n2 = fbm(vUv * 11.0 - vec2(t * 0.4, t * 0.6) + n1 * 0.4);
+  float granule = n1 * 0.6 + n2 * 0.4;
+
+  // Color: white-hot core → golden → deep orange-red at limb
+  vec3 coreColor = vec3(1.0,  0.97, 0.88);
+  vec3 midColor  = vec3(1.0,  0.75, 0.12);
+  vec3 limbColor = vec3(0.85, 0.22, 0.03);
+
+  vec3 col = mix(limbColor, midColor, smoothstep(0.0, 0.55, limb));
+  col      = mix(col, coreColor,      smoothstep(0.45, 0.98, limb));
+
+  // Granulation brightness modulation
+  col *= 0.82 + granule * 0.35;
+
+  // Subtle solar pulse
+  col *= 0.97 + 0.03 * sin(uTime * 1.8 + n1 * 15.0);
+
+  // Solar flare hotspots
+  float flareNoise = fbm(vUv * 2.5 + vec2(uTime * 0.08, uTime * 0.06));
+  float flare = smoothstep(0.65, 0.82, flareNoise) * facing;
+  col += vec3(1.0, 0.88, 0.42) * flare * 0.9;
+
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
+
+export function makeSunSurfaceMaterial() {
+  return new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 } },
+    vertexShader: sunSurfaceVert,
+    fragmentShader: sunSurfaceFrag,
+    side: THREE.FrontSide,
+  });
+}
+
+// ─── Sun Corona ───────────────────────────────────────────────────────────────
+
+export const sunCoronaVert = /* glsl */`
+varying vec3 vNormal;
+varying vec3 vViewPosition;
+
+void main() {
+  vNormal = normalize(normalMatrix * normal);
+  vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+  vViewPosition = -mvPos.xyz;
+  gl_Position = projectionMatrix * mvPos;
+}
+`;
+
+export const sunCoronaFrag = /* glsl */`
+uniform float uTime;
+uniform float uScale;   // 1.0 for inner corona, fades further out
+
+varying vec3 vNormal;
+varying vec3 vViewPosition;
+
+float hash21(vec2 p) {
+  p = fract(p * vec2(127.1, 311.7));
+  return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+float valueNoise(vec2 p) {
+  vec2 i = floor(p); vec2 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash21(i), hash21(i+vec2(1,0)), f.x),
+             mix(hash21(i+vec2(0,1)), hash21(i+vec2(1,1)), f.x), f.y);
+}
+
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 4; i++) {
+    v += a * valueNoise(p);
+    p = p * 2.1 + vec2(1.7, 9.2);
+    a *= 0.5;
+  }
+  return v;
+}
+
+void main() {
+  vec3 viewDir = normalize(vViewPosition);
+  vec3 n = normalize(vNormal);
+  float facing = clamp(dot(viewDir, n), 0.0, 1.0);
+
+  // Edge glow — bright at rim where ray grazes atmosphere
+  float edgeGlow = 1.0 - facing;
+  float corona = pow(edgeGlow, 1.4);
+
+  // Corona tendrils using seam-free normal-space UVs
+  float t = uTime * 0.035;
+  vec2 uv1 = n.xz * 0.5 + 0.5 + t;
+  vec2 uv2 = n.xy * 0.5 + 0.5 - vec2(t * 0.7, t * 0.5);
+  float tendrils = fbm(uv1 * 3.5) * 0.6 + fbm(uv2 * 2.5) * 0.4;
+
+  float intensity = corona * (0.55 + tendrils * 0.7) * edgeGlow * uScale;
+
+  vec3 innerCol = vec3(1.0, 0.92, 0.68);
+  vec3 outerCol = vec3(1.0, 0.45, 0.08);
+  vec3 col = mix(innerCol, outerCol, edgeGlow * 0.8);
+  col += vec3(1.0, 0.78, 0.28) * tendrils * 0.25;
+
+  float alpha = intensity * 0.65;
+  gl_FragColor = vec4(col, clamp(alpha, 0.0, 1.0));
+}
+`;
+
+export function makeSunCoronaMaterial(scale = 1.0) {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uTime:  { value: 0 },
+      uScale: { value: scale },
+    },
+    vertexShader: sunCoronaVert,
+    fragmentShader: sunCoronaFrag,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.BackSide,
+  });
+}

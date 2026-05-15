@@ -7,7 +7,7 @@ import { Enemies } from './Enemies';
 import { Mines } from './Mines';
 import { useMissionStore } from '../../state/useMissionStore';
 import { Html } from '@react-three/drei';
-import { makeNebulaMaterial } from './shaders';
+import { makeNebulaMaterial, makeSunSurfaceMaterial, makeSunCoronaMaterial } from './shaders';
 import './flight.css';
 
 function Waypoints() {
@@ -34,6 +34,49 @@ function Waypoints() {
         }
         return null;
       })}
+    </>
+  );
+}
+
+const SUN_POSITION: [number, number, number] = [800, 200, -300];
+const SUN_RADIUS = 80;
+
+function Sun() {
+  const surfaceMat  = useMemo(() => makeSunSurfaceMaterial(), []);
+  const innerCorona = useMemo(() => makeSunCoronaMaterial(1.0), []);
+  const outerCorona = useMemo(() => makeSunCoronaMaterial(0.35), []);
+
+  useFrame((_, delta) => {
+    surfaceMat.uniforms.uTime.value  += delta;
+    innerCorona.uniforms.uTime.value += delta;
+    outerCorona.uniforms.uTime.value += delta;
+  });
+
+  return (
+    <>
+      <group position={SUN_POSITION}>
+        {/* Sun surface with limb darkening + granulation */}
+        <mesh material={surfaceMat}>
+          <sphereGeometry args={[SUN_RADIUS, 64, 64]} />
+        </mesh>
+
+        {/* Chromosphere / inner corona edge glow */}
+        <mesh material={innerCorona}>
+          <sphereGeometry args={[SUN_RADIUS * 1.55, 32, 32]} />
+        </mesh>
+
+        {/* Outer diffuse corona halo */}
+        <mesh material={outerCorona}>
+          <sphereGeometry args={[SUN_RADIUS * 3.2, 16, 16]} />
+        </mesh>
+      </group>
+
+      {/* Directional light from sun position toward scene origin */}
+      <directionalLight
+        position={SUN_POSITION}
+        color="#ffd580"
+        intensity={2.5}
+      />
     </>
   );
 }
@@ -75,10 +118,10 @@ function Starfield() {
 export function FlightScene() {
   return (
     <group>
-      <ambientLight intensity={0.8} color="#ffffff" />
-      <directionalLight position={[100, 100, 50]} intensity={2.5} color="#ffeedd" />
-      <directionalLight position={[-100, -50, -50]} intensity={1.5} color="#aaddff" />
-      
+      {/* Dim space ambient — keeps ship silhouettes readable in shadow */}
+      <ambientLight intensity={0.12} color="#1a2233" />
+
+      <Sun />
       <Nebula />
       <Starfield />
       <Enemies />
