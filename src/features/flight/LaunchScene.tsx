@@ -1,11 +1,15 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useGameStore } from '../../state/useGameStore';
+import { useGLTF } from '@react-three/drei';
+import playerShipUrl from '../../assets/models/player-ship.glb';
 
 export function LaunchScene() {
   const shipRef = useRef<THREE.Group>(null);
   const { camera } = useThree();
+  const { scene: shipModel } = useGLTF(playerShipUrl);
+  const shipScene = useMemo(() => shipModel.clone(), [shipModel]);
   
   useEffect(() => {
     // Initial camera position
@@ -57,16 +61,8 @@ export function LaunchScene() {
 
       {/* Ship */}
       <group ref={shipRef} position={[0, 0, 0]}>
-        {/* Fuselage */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]}>
-          <coneGeometry args={[1, 4, 4]} />
-          <meshStandardMaterial color="#222" metalness={0.9} roughness={0.1} />
-        </mesh>
-        <mesh position={[0, 0, 1]} rotation={[-Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[1, 1, 2, 4]} />
-          <meshStandardMaterial color="#222" metalness={0.9} roughness={0.1} />
-        </mesh>
-        
+        <primitive object={shipScene} scale={3} rotation-y={Math.PI / 2} />
+
         {/* Engine Glow */}
         <mesh position={[0, 0, 2.2]}>
           <sphereGeometry args={[0.6, 16, 16]} />
@@ -78,3 +74,5 @@ export function LaunchScene() {
     </group>
   );
 }
+
+useGLTF.preload(playerShipUrl);
