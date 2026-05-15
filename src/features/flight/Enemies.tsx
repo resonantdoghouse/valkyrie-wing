@@ -4,6 +4,8 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useCombatStore, EnemyData } from '../../state/useCombatStore';
 import { Html, useGLTF } from '@react-three/drei';
 import enemyShipUrl from '../../assets/models/enemy-ship.glb';
+import { makeEngineGlowMaterial, makeExplosionMaterial } from './shaders';
+import './flight.css';
 
 export function Enemies() {
   const enemies = useCombatStore((state) => state.enemies);
@@ -28,20 +30,27 @@ export function Enemies() {
 }
 
 function Explosion({ position }: { position: THREE.Vector3 }) {
-  const [scale, setScale] = useState(1);
-  const [opacity, setOpacity] = useState(1);
-  
-  useFrame((_state, delta) => {
-    setScale(s => s + delta * 20);
-    setOpacity(o => Math.max(0, o - delta * 2));
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [alive, setAlive] = useState(true);
+  const elapsed = useRef(0);
+  const mat = useMemo(() => makeExplosionMaterial(), []);
+
+  useFrame((_, delta) => {
+    elapsed.current += delta;
+    const dur = 1.8;
+    const prog = Math.min(elapsed.current / dur, 1.0);
+    mat.uniforms.uTime.value     = elapsed.current;
+    mat.uniforms.uProgress.value = prog;
+    mat.uniforms.uOpacity.value  = Math.max(0, 1.0 - prog);
+    if (meshRef.current) meshRef.current.scale.setScalar(1 + prog * 22);
+    if (elapsed.current >= dur) setAlive(false);
   });
 
-  if (opacity <= 0) return null;
+  if (!alive) return null;
 
   return (
-    <mesh position={position} scale={scale}>
-      <sphereGeometry args={[2, 16, 16]} />
-      <meshBasicMaterial color="#ffaa00" transparent opacity={opacity} wireframe />
+    <mesh ref={meshRef} position={position} material={mat}>
+      <sphereGeometry args={[2, 32, 32]} />
     </mesh>
   );
 }
@@ -50,32 +59,29 @@ function EnemyShip({ enemy }: { enemy: EnemyData }) {
   const meshRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(enemyShipUrl);
   const clonedScene = useMemo(() => scene.clone(), [scene]);
-  
-  useFrame(() => {
+
+  const engineMat = useMemo(
+    () => makeEngineGlowMaterial('#ffffff', '#ff0033'),
+    []
+  );
+
+  useFrame((_, delta) => {
     if (meshRef.current && enemy.velocity.lengthSq() > 0.1) {
       const target = enemy.position.clone().add(enemy.velocity);
       meshRef.current.lookAt(target);
     }
+    engineMat.uniforms.uTime.value += delta;
   });
 
   return (
     <group ref={meshRef} position={enemy.position}>
-      <primitive object={clonedScene} scale={5} />
-      {/* Engine glow - might need adjustment based on the new model's scale/origin */}
-      <mesh position={[0, 0, -5]}>
-        <sphereGeometry args={[1]} />
-        <meshBasicMaterial color="#ff3366" transparent opacity={0.8} />
+      {/* rotate model so it faces its travel direction correctly */}
+      <primitive object={clonedScene} scale={5} rotation-y={Math.PI / 2} />
+      <mesh position={[0, 0, -5]} material={engineMat}>
+        <sphereGeometry args={[1.2, 16, 16]} />
       </mesh>
-      {/* Target Marker UI */}
       <Html center position={[0, 8, 0]}>
-        <div style={{
-          color: '#ff3366',
-          fontFamily: "'Share Tech Mono', monospace",
-          fontSize: '1rem',
-          border: '1px solid #ff3366',
-          padding: '2px 5px',
-          background: 'rgba(255, 0, 0, 0.2)'
-        }}>
+        <div className="hud-label hud-label--enemy">
           [{enemy.health}%]
         </div>
       </Html>

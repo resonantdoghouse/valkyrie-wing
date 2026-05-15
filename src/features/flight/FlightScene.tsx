@@ -1,10 +1,14 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
+import { useFrame } from '@react-three/fiber';
 import { PlayerShip } from './PlayerShip';
 import { Lasers } from './Lasers';
 import { Enemies } from './Enemies';
+import { Mines } from './Mines';
 import { useMissionStore } from '../../state/useMissionStore';
 import { Html } from '@react-three/drei';
+import { makeNebulaMaterial } from './shaders';
+import './flight.css';
 
 function Waypoints() {
   const activeMission = useMissionStore(state => state.activeMission);
@@ -21,14 +25,7 @@ function Waypoints() {
                 <meshBasicMaterial color="#ffff00" wireframe />
               </mesh>
               <Html center position={[0, -8, 0]}>
-                <div style={{
-                  color: '#ffff00',
-                  fontFamily: "'Share Tech Mono', monospace",
-                  fontSize: '12px',
-                  background: 'rgba(0,0,0,0.5)',
-                  padding: '2px 5px',
-                  border: '1px solid #ffff00'
-                }}>
+                <div className="hud-label hud-label--waypoint">
                   {obj.target}
                 </div>
               </Html>
@@ -41,11 +38,12 @@ function Waypoints() {
   );
 }
 
-function Ring({ position }: { position: [number, number, number] }) {
+function Nebula() {
+  const mat = useMemo(() => makeNebulaMaterial(), []);
+  useFrame((_, delta) => { mat.uniforms.uTime.value += delta; });
   return (
-    <mesh position={position} rotation={[Math.PI / 2, 0, 0]}>
-      <torusGeometry args={[10, 0.5, 16, 64]} />
-      <meshStandardMaterial color="#ff00ff" emissive="#ff00aa" emissiveIntensity={0.5} />
+    <mesh material={mat}>
+      <sphereGeometry args={[900, 64, 64]} />
     </mesh>
   );
 }
@@ -81,16 +79,13 @@ export function FlightScene() {
       <directionalLight position={[100, 100, 50]} intensity={2.5} color="#ffeedd" />
       <directionalLight position={[-100, -50, -50]} intensity={1.5} color="#aaddff" />
       
+      <Nebula />
       <Starfield />
       <Enemies />
       <Lasers />
       <Waypoints />
       <PlayerShip />
-
-      {/* Three floating rings */}
-      <Ring position={[0, 0, -50]} />
-      <Ring position={[20, 10, -150]} />
-      <Ring position={[-30, -20, -300]} />
+      <Mines />
     </group>
   );
 }

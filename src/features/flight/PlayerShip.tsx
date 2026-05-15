@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { usePlayerControls } from '../../hooks/usePlayerControls';
@@ -6,6 +6,9 @@ import { CockpitHUD } from './CockpitHUD';
 import { useCombatStore } from '../../state/useCombatStore';
 import { useMissionStore } from '../../state/useMissionStore';
 import { useGameStore } from '../../state/useGameStore';
+import { useGLTF } from '@react-three/drei';
+import playerShipUrl from '../../assets/models/player-ship.glb';
+import { makeEngineGlowMaterial } from './shaders';
 
 const MAX_SPEED = 40;
 const TURN_SPEED = 1.5;
@@ -15,12 +18,34 @@ export function PlayerShip() {
   const meshRef = useRef<THREE.Group>(null);
   const controls = usePlayerControls();
   const fireLaser = useCombatStore(state => state.fireLaser);
-  
+
   // Persistent physics state
   const velocity = useRef(new THREE.Vector3());
   const throttle = useRef(0.5); // 0 to 1
   const lastFireTime = useRef(0);
   const { camera } = useThree();
+
+  // Camera mode: cockpit (first-person) or thirdPerson
+  const [is3rdPerson, setIs3rdPerson] = useState(false);
+  const is3rdPersonRef = useRef(false);
+
+  const { scene: shipModel } = useGLTF(playerShipUrl);
+  const clonedShipScene = useMemo(() => shipModel.clone(), [shipModel]);
+  const engineMat = useMemo(() => makeEngineGlowMaterial('#ffffff', '#ff5500'), []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code === 'KeyV') {
+        setIs3rdPerson(prev => {
+          const next = !prev;
+          is3rdPersonRef.current = next;
+          return next;
+        });
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
   
   // Temporary vectors for math
   const direction = new THREE.Vector3();
@@ -64,6 +89,10 @@ export function PlayerShip() {
 
     // Recharge shields
     useGameStore.getState().rechargeShields(delta);
+
+    // Engine glow shader
+    engineMat.uniforms.uTime.value += delta;
+    engineMat.uniforms.uIntensity.value = throttle.current > 0.1 ? 1.0 : 0.15;
 
     // 4. Handle Firing
     if (controls.fire && _state.clock.elapsedTime - lastFireTime.current > FIRE_RATE) {
@@ -114,61 +143,68 @@ export function PlayerShip() {
       });
     }
 
-    // 7. Update Camera to Follow Ship (First Person Cockpit View)
-    // Position camera inside the ship slightly above and slightly back so the dashboard is visible
-    const cameraOffset = new THREE.Vector3(0, 0.4, 0.5);
+    // 7. Update Camera
     const shipPosition = meshRef.current.position.clone();
     const shipRotation = meshRef.current.quaternion.clone();
-    
-    cameraOffset.applyQuaternion(shipRotation);
-    camera.position.copy(shipPosition.clone().add(cameraOffset)); // Static cockpit view
-    
-    // Look ahead of the ship
-    const lookAtTarget = shipPosition.clone().add(direction.clone().multiplyScalar(10));
-    camera.lookAt(lookAtTarget);
-    
-    // Maintain roll
-    const localUp = new THREE.Vector3(0, 1, 0);
-    localUp.applyQuaternion(shipRotation);
+    const localUp = new THREE.Vector3(0, 1, 0).applyQuaternion(shipRotation);
     camera.up.copy(localUp);
+
+    if (is3rdPersonRef.current) {
+      // Third-person: smooth follow behind and above the ship
+      const offset = new THREE.Vector3(0, 5, 18).applyQuaternion(shipRotation);
+      const desiredPos = shipPosition.clone().add(offset);
+      camera.position.lerp(desiredPos, delta * 8);
+      const lookTarget = shipPosition.clone().add(direction.clone().multiplyScalar(8));
+      camera.lookAt(lookTarget);
+    } else {
+      // Cockpit: camera positioned inside ship, looking forward
+      const cameraOffset = new THREE.Vector3(0, 0.4, 0.5).applyQuaternion(shipRotation);
+      camera.position.copy(shipPosition.clone().add(cameraOffset));
+      const lookAtTarget = shipPosition.clone().add(direction.clone().multiplyScalar(10));
+      camera.lookAt(lookAtTarget);
+    }
   });
 
   return (
     <group ref={meshRef}>
-      {/* Basic Ship Placeholder - A wedge shape (Only visible if looking back/outside, but we keep it for geometry) */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} visible={false}>
-        <coneGeometry args={[0.5, 2, 3]} />
-        <meshStandardMaterial color="#00ffcc" metalness={0.8} roughness={0.2} />
-      </mesh>
-      <mesh position={[0, 0, 1]}>
-        <sphereGeometry args={[0.3, 16, 16]} />
-        <meshBasicMaterial color="#ff5500" transparent opacity={throttle.current > 0.1 ? 0.8 : 0.2} />
+      {/* GLB model — only visible in third-person mode */}
+      <primitive object={clonedShipScene} scale={3} rotation-y={Math.PI / 2} visible={is3rdPerson} />
+
+      {/* Engine glow */}
+      <mesh position={[0, 0, 1]} material={engineMat}>
+        <sphereGeometry args={[0.5, 16, 16]} />
       </mesh>
 
       {/* Headlights */}
-      <spotLight 
-        position={[0, 0, 0]} 
-        angle={0.6} 
-        penumbra={0.5} 
-        intensity={200} 
-        distance={200} 
-        color="#ffffff" 
+      <spotLight
+        position={[0, 0, 0]}
+        angle={0.6}
+        penumbra={0.5}
+        intensity={200}
+        distance={200}
+        color="#ffffff"
       >
         <object3D position={[0, 0, -10]} attach="target" />
       </spotLight>
 
-      {/* Targeting Reticle (Holographic Laser Sight) */}
-      <mesh position={[0, 0.4, -30]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.5, 0.02, 16, 32]} />
-        <meshBasicMaterial color="#00ffcc" transparent opacity={0.3} />
-      </mesh>
-      <mesh position={[0, 0.4, -30]}>
-        <sphereGeometry args={[0.02, 8, 8]} />
-        <meshBasicMaterial color="#ff3366" transparent opacity={0.8} />
-      </mesh>
+      {/* Cockpit-only elements */}
+      {!is3rdPerson && (
+        <>
+          {/* Targeting Reticle */}
+          <mesh position={[0, 0.4, -30]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.5, 0.02, 16, 32]} />
+            <meshBasicMaterial color="#00ffcc" transparent opacity={0.3} />
+          </mesh>
+          <mesh position={[0, 0.4, -30]}>
+            <sphereGeometry args={[0.02, 8, 8]} />
+            <meshBasicMaterial color="#ff3366" transparent opacity={0.8} />
+          </mesh>
 
-      {/* Mount the 3D Cockpit HUD inside the ship */}
-      <CockpitHUD throttle={throttle} shipRef={meshRef} />
+          <CockpitHUD throttle={throttle} shipRef={meshRef} />
+        </>
+      )}
     </group>
   );
 }
+
+useGLTF.preload(playerShipUrl);

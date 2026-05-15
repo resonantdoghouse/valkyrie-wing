@@ -1,7 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useCombatStore } from '../../state/useCombatStore';
+import { makeLaserMaterial } from './shaders';
 
 const dummy = new THREE.Object3D();
 
@@ -10,28 +11,29 @@ export function Lasers() {
   const enemyMeshRef = useRef<THREE.InstancedMesh>(null);
   const { lasers, enemyLasers, updateLasers, updateEnemyLasers } = useCombatStore();
 
+  const playerMat = useMemo(() => makeLaserMaterial('#00ffcc'), []);
+  const enemyMat  = useMemo(() => makeLaserMaterial('#ff3366'), []);
+
   useFrame((state, delta) => {
     updateLasers(delta);
     updateEnemyLasers(delta, state.camera.position);
-    
+
+    playerMat.uniforms.uTime.value = state.clock.elapsedTime;
+    enemyMat.uniforms.uTime.value  = state.clock.elapsedTime;
+
     if (meshRef.current) {
       lasers.forEach((laser, i) => {
         if (laser.active) {
           dummy.position.copy(laser.position);
-          
-          // Align cylinder's Y axis (default) with the velocity vector
-          const velocityNorm = laser.velocity.clone().normalize();
-          dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), velocityNorm);
-          
-          dummy.scale.set(1, 5, 1); // 10 units long
-          dummy.updateMatrix();
-          meshRef.current!.setMatrixAt(i, dummy.matrix);
+          const vel = laser.velocity.clone().normalize();
+          dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vel);
+          dummy.scale.set(1, 5, 1);
         } else {
           dummy.position.set(0, 0, 0);
           dummy.scale.set(0, 0, 0);
-          dummy.updateMatrix();
-          meshRef.current!.setMatrixAt(i, dummy.matrix);
         }
+        dummy.updateMatrix();
+        meshRef.current!.setMatrixAt(i, dummy.matrix);
       });
       meshRef.current.instanceMatrix.needsUpdate = true;
     }
@@ -40,19 +42,15 @@ export function Lasers() {
       enemyLasers.forEach((laser, i) => {
         if (laser.active) {
           dummy.position.copy(laser.position);
-          
-          const velocityNorm = laser.velocity.clone().normalize();
-          dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), velocityNorm);
-          
+          const vel = laser.velocity.clone().normalize();
+          dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vel);
           dummy.scale.set(1, 5, 1);
-          dummy.updateMatrix();
-          enemyMeshRef.current!.setMatrixAt(i, dummy.matrix);
         } else {
           dummy.position.set(0, 0, 0);
           dummy.scale.set(0, 0, 0);
-          dummy.updateMatrix();
-          enemyMeshRef.current!.setMatrixAt(i, dummy.matrix);
         }
+        dummy.updateMatrix();
+        enemyMeshRef.current!.setMatrixAt(i, dummy.matrix);
       });
       enemyMeshRef.current.instanceMatrix.needsUpdate = true;
     }
@@ -60,13 +58,13 @@ export function Lasers() {
 
   return (
     <group>
-      <instancedMesh ref={meshRef} args={[undefined, undefined, lasers.length]} frustumCulled={false}>
-        <cylinderGeometry args={[0.1, 0.1, 2, 8]} />
-        <meshBasicMaterial color="#00ffcc" />
+      <instancedMesh ref={meshRef} args={[undefined, undefined, lasers.length]}
+        material={playerMat} frustumCulled={false}>
+        <cylinderGeometry args={[0.18, 0.18, 2, 8, 1, true]} />
       </instancedMesh>
-      <instancedMesh ref={enemyMeshRef} args={[undefined, undefined, enemyLasers.length]} frustumCulled={false}>
-        <cylinderGeometry args={[0.1, 0.1, 2, 8]} />
-        <meshBasicMaterial color="#ff3366" />
+      <instancedMesh ref={enemyMeshRef} args={[undefined, undefined, enemyLasers.length]}
+        material={enemyMat} frustumCulled={false}>
+        <cylinderGeometry args={[0.18, 0.18, 2, 8, 1, true]} />
       </instancedMesh>
     </group>
   );
