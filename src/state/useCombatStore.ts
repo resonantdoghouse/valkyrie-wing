@@ -19,6 +19,12 @@ export interface EnemyData {
   active: boolean;
 }
 
+export interface MineData {
+  id: string;
+  position: THREE.Vector3;
+  active: boolean;
+}
+
 interface CombatState {
   lasers: LaserData[];
   enemyLasers: LaserData[];
@@ -33,6 +39,9 @@ interface CombatState {
   targetId: string | null;
   setTarget: (id: string | null) => void;
   startArcadeWave: (level: number) => void;
+  mines: MineData[];
+  initMines: (mines: MineData[]) => void;
+  hitMine: (id: string) => void;
 }
 
 const MAX_LASERS = 50;
@@ -88,27 +97,41 @@ export const useCombatStore = create<CombatState>((set) => ({
     set((state) => {
       let updated = false;
       const hits: { enemyId: string; damage: number }[] = [];
+      const mineHits: string[] = [];
 
       const lasers = state.lasers.map((laser) => {
         if (!laser.active) return laser;
         updated = true;
-        
+
         laser.position.addScaledVector(laser.velocity, delta);
         laser.life += delta;
-        
+
         if (laser.life > 2) {
           laser.active = false;
         }
 
-        // Collision Check
-        for (const enemy of state.enemies) {
-          if (enemy.active && laser.position.distanceToSquared(enemy.position) < 30) {
-            laser.active = false;
-            hits.push({ enemyId: enemy.id, damage: 25 });
-            break;
+        // Enemy collision
+        if (laser.active) {
+          for (const enemy of state.enemies) {
+            if (enemy.active && laser.position.distanceToSquared(enemy.position) < 30) {
+              laser.active = false;
+              hits.push({ enemyId: enemy.id, damage: 25 });
+              break;
+            }
           }
         }
-        
+
+        // Mine collision
+        if (laser.active) {
+          for (const mine of state.mines) {
+            if (mine.active && laser.position.distanceToSquared(mine.position) < 25) {
+              laser.active = false;
+              mineHits.push(mine.id);
+              break;
+            }
+          }
+        }
+
         return laser;
       });
 
@@ -150,7 +173,17 @@ export const useCombatStore = create<CombatState>((set) => ({
           }
         }
 
-        return { lasers, enemies: newEnemies };
+        const newMines = mineHits.length > 0
+          ? state.mines.map(m => mineHits.includes(m.id) ? { ...m, active: false } : m)
+          : state.mines;
+        return { lasers, enemies: newEnemies, mines: newMines };
+      }
+
+      if (mineHits.length > 0) {
+        return {
+          lasers,
+          mines: state.mines.map(m => mineHits.includes(m.id) ? { ...m, active: false } : m),
+        };
       }
 
       return updated ? { lasers } : state;
@@ -257,6 +290,12 @@ export const useCombatStore = create<CombatState>((set) => ({
 
   targetId: null,
   setTarget: (id) => set({ targetId: id }),
+
+  mines: [] as MineData[],
+  initMines: (mines) => set(() => ({ mines })),
+  hitMine: (id) => set(state => ({
+    mines: state.mines.map(m => m.id === id ? { ...m, active: false } : m),
+  })),
 
   startArcadeWave: (level) => set(() => {
     const numEnemies = 3 + (level - 1) * 2;
