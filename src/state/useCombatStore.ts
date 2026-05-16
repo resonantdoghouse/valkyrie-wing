@@ -65,6 +65,11 @@ interface CombatState {
 const MAX_LASERS = 50;
 const LASER_SPEED = 100;
 
+const ENEMY_COLLISION_RADIUS_SQ = 100; // ~10 unit radius
+const ENEMY_COLLISION_DAMAGE = 10;
+const ENEMY_COLLISION_COOLDOWN = 1.0; // seconds between collision damage ticks
+const _enemyCollisionCooldowns = new Map<string, number>();
+
 export const useCombatStore = create<CombatState>((set) => ({
   lasers: Array.from({ length: MAX_LASERS }).map((_, i) => ({
     id: i,
@@ -309,6 +314,8 @@ export const useCombatStore = create<CombatState>((set) => ({
     const SPEED = 45;
     const up = new THREE.Vector3(0, 1, 0);
 
+    let collisionPlayerDamage = 0;
+
     const newEnemies = state.enemies.map((enemy, idx) => {
       if (!enemy.active) return enemy;
 
@@ -445,8 +452,44 @@ export const useCombatStore = create<CombatState>((set) => ({
         state.fireEnemyLaser(enemy.position, fireDir, vel);
       }
 
-      return { ...enemy, position: newPos, velocity: vel, behaviorState, behaviorTimer, time };
+      // Ship-to-ship collision
+      const prevCooldown = _enemyCollisionCooldowns.get(enemy.id) ?? 0;
+      const cooldown = Math.max(0, prevCooldown - delta);
+      _enemyCollisionCooldowns.set(enemy.id, cooldown);
+
+      let enemyCollisionDamage = 0;
+      if (newPos.distanceToSquared(playerPosition) < ENEMY_COLLISION_RADIUS_SQ) {
+        const push = newPos.clone().sub(playerPosition);
+        if (push.lengthSq() < 0.001) push.set(1, 0, 0);
+        vel.lerp(push.normalize().multiplyScalar(SPEED * 2), 0.6);
+
+        if (cooldown <= 0) {
+          _enemyCollisionCooldowns.set(enemy.id, ENEMY_COLLISION_COOLDOWN);
+          enemyCollisionDamage = ENEMY_COLLISION_DAMAGE;
+          collisionPlayerDamage += ENEMY_COLLISION_DAMAGE;
+        }
+      }
+
+      const finalHealth = Math.max(0, enemy.health - enemyCollisionDamage);
+      if (enemyCollisionDamage > 0 && finalHealth === 0) {
+        const missionStore = useMissionStore.getState();
+        const activeMission = missionStore.activeMission;
+        if (activeMission?.id.startsWith('arcade_sim')) {
+          missionStore.addArcadeScore(100);
+        } else {
+          missionStore.updateObjective('obj_kill_1', 1);
+        }
+        playExplosionSound();
+      }
+
+      return { ...enemy, position: newPos, velocity: vel, behaviorState, behaviorTimer, time, health: finalHealth, active: finalHealth > 0 };
     });
+
+    if (collisionPlayerDamage > 0) {
+      import('./useGameStore').then(({ useGameStore }) => {
+        useGameStore.getState().takeDamage('front', collisionPlayerDamage);
+      });
+    }
 
     return { enemies: newEnemies };
   }),
