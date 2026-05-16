@@ -11,9 +11,15 @@ export function Enemies() {
   const enemies = useCombatStore((state) => state.enemies);
   const updateEnemies = useCombatStore((state) => state.updateEnemies);
   const { camera } = useThree();
+  const prevPos = useRef(new THREE.Vector3());
+  const smoothVel = useRef(new THREE.Vector3());
 
   useFrame((_state, delta) => {
-    updateEnemies(delta, camera.position);
+    const raw = camera.position.clone().sub(prevPos.current).divideScalar(Math.max(delta, 0.001));
+    if (raw.length() > 120) raw.normalize().multiplyScalar(120);
+    smoothVel.current.lerp(raw, 0.25);
+    prevPos.current.copy(camera.position);
+    updateEnemies(delta, camera.position, smoothVel.current);
   });
 
   return (

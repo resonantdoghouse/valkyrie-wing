@@ -42,11 +42,11 @@ function Waypoints() {
 
 function Starfield() {
   const starsRef = useRef<THREE.Points>(null);
-  const count = 2000;
+  const count = 3000;
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count * 3; i++) {
-      arr[i] = (Math.random() - 0.5) * 1000;
+      arr[i] = (Math.random() - 0.5) * 2200;
     }
     return arr;
   }, []);

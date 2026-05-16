@@ -8,9 +8,10 @@ import { TerminalText } from './components/ui/TerminalText';
 import { BarUI } from './features/bar/BarUI';
 import { DebugPanel } from './debug/DebugPanel';
 import { initAudio } from './utils/audio';
+import './features/flight/flight.css';
 
 function App() {
-  const { currentMode, setMode, isPlayerDead } = useGameStore();
+  const { currentMode, setMode, isPlayerDead, boundaryWarning } = useGameStore();
   const { activeMission, startMission, completeMission, arcadeLevel, arcadeScore } = useMissionStore();
   const combatEnemies = useCombatStore(state => state.enemies);
 
@@ -116,6 +117,20 @@ function App() {
 
             <TerminalText as="h2" text="TARGETING: ACQUIRED" className="terminal-text" style={{ color: 'var(--danger-color)', textShadow: '0 0 10px var(--danger-color)' }} />
           </div>
+
+          {/* Boundary Warning Overlay */}
+          {boundaryWarning !== 'none' && (
+            <div className="boundary-warning-overlay">
+              <div className={`boundary-warning-banner${boundaryWarning === 'turning' ? ' boundary-warning-banner--turning' : ''}`}>
+                {boundaryWarning === 'turning' ? '⚠ AUTO-RETURN ENGAGED' : '⚠ MISSION BOUNDARY EXCEEDED'}
+              </div>
+              {boundaryWarning === 'warning' && (
+                <div className="boundary-warning-subtext">
+                  RETURN TO MISSION AREA OR AUTO-RETURN WILL ENGAGE
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Mission Complete Overlay */}
           {isMissionComplete && !isPlayerDead && (

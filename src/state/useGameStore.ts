@@ -13,6 +13,8 @@ type GameMode =
 interface GameState {
   currentMode: GameMode;
   setMode: (mode: GameMode) => void;
+  boundaryWarning: 'none' | 'warning' | 'turning';
+  setBoundaryWarning: (phase: 'none' | 'warning' | 'turning') => void;
   playerStats: {
     kills: number;
     credits: number;
@@ -36,6 +38,8 @@ interface GameState {
 
 export const useGameStore = create<GameState>((set) => ({
   currentMode: "MENU",
+  boundaryWarning: 'none',
+  setBoundaryWarning: (phase) => set({ boundaryWarning: phase }),
   isPlayerDead: false,
   setPlayerDead: (dead) => set({ isPlayerDead: dead }),
   playerStats: { kills: 0, credits: 300, rank: "Ensign" },

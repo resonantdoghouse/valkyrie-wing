@@ -15,6 +15,8 @@ import { makeEngineGlowMaterial } from './shaders';
 const BASE_MAX_SPEED = 40;
 const BASE_TURN_SPEED = 1.5;
 const FIRE_RATE = 0.15;
+const BOUNDARY_WARN = 700;
+const AUTO_TURN_DELAY = 5;
 
 function TargetingReticle() {
   const spokesGeo = useMemo(() => {
@@ -173,18 +175,27 @@ export function PlayerShip() {
   const _localUp = useRef(new THREE.Vector3()).current;
   const _waypointPos = useRef(new THREE.Vector3()).current;
 
+  const warningTimer = useRef(0);
+  const boundaryPhaseRef = useRef<'none' | 'warning' | 'turning'>('none');
+  const _autoTurnMat = useMemo(() => new THREE.Matrix4(), []);
+  const _autoTurnQuat = useMemo(() => new THREE.Quaternion(), []);
+  const _autoTurnUp = useMemo(() => new THREE.Vector3(0, 1, 0), []);
+  const _origin = useMemo(() => new THREE.Vector3(0, 0, 0), []);
+
   const MAX_SPEED = BASE_MAX_SPEED * maxSpeedMult;
   const TURN_SPEED = BASE_TURN_SPEED * turnSpeedMult;
 
   useFrame((_state, delta) => {
     if (!meshRef.current) return;
 
-    if (controls.pitchUp) meshRef.current.rotateX(TURN_SPEED * delta);
-    if (controls.pitchDown) meshRef.current.rotateX(-TURN_SPEED * delta);
-    if (controls.yawLeft) meshRef.current.rotateY(TURN_SPEED * delta);
-    if (controls.yawRight) meshRef.current.rotateY(-TURN_SPEED * delta);
-    if (controls.rollLeft) meshRef.current.rotateZ(TURN_SPEED * 1.5 * delta);
-    if (controls.rollRight) meshRef.current.rotateZ(-TURN_SPEED * 1.5 * delta);
+    if (boundaryPhaseRef.current !== 'turning') {
+      if (controls.pitchUp) meshRef.current.rotateX(TURN_SPEED * delta);
+      if (controls.pitchDown) meshRef.current.rotateX(-TURN_SPEED * delta);
+      if (controls.yawLeft) meshRef.current.rotateY(TURN_SPEED * delta);
+      if (controls.yawRight) meshRef.current.rotateY(-TURN_SPEED * delta);
+      if (controls.rollLeft) meshRef.current.rotateZ(TURN_SPEED * 1.5 * delta);
+      if (controls.rollRight) meshRef.current.rotateZ(-TURN_SPEED * 1.5 * delta);
+    }
 
     if (controls.throttleUp) throttle.current = Math.min(throttle.current + delta * 0.5, 1);
     if (controls.throttleDown) throttle.current = Math.max(throttle.current - delta * 0.5, 0);
@@ -238,6 +249,28 @@ export function PlayerShip() {
           }
         }
       });
+    }
+
+    // Boundary warning and auto-return
+    const distFromOrigin = meshRef.current.position.length();
+    if (distFromOrigin > BOUNDARY_WARN) {
+      warningTimer.current += delta;
+      const newPhase = warningTimer.current >= AUTO_TURN_DELAY ? 'turning' : 'warning';
+      if (boundaryPhaseRef.current !== newPhase) {
+        boundaryPhaseRef.current = newPhase;
+        useGameStore.getState().setBoundaryWarning(newPhase);
+      }
+    } else if (boundaryPhaseRef.current !== 'none') {
+      warningTimer.current = 0;
+      boundaryPhaseRef.current = 'none';
+      useGameStore.getState().setBoundaryWarning('none');
+    }
+
+    if (boundaryPhaseRef.current === 'turning') {
+      _autoTurnMat.lookAt(meshRef.current.position, _origin, _autoTurnUp);
+      _autoTurnQuat.setFromRotationMatrix(_autoTurnMat);
+      meshRef.current.quaternion.slerp(_autoTurnQuat, delta * 1.5);
+      throttle.current = Math.max(throttle.current, 0.35);
     }
 
     const shipPosition = meshRef.current.position;
