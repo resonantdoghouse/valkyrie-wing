@@ -5,6 +5,8 @@ import { useCombatStore } from '../../state/useCombatStore';
 import { makeLaserMaterial } from './shaders';
 
 const dummy = new THREE.Object3D();
+const _up = new THREE.Vector3(0, 1, 0);
+const _vel = new THREE.Vector3();
 
 export function Lasers() {
   const meshRef = useRef<THREE.InstancedMesh>(null);
@@ -25,8 +27,8 @@ export function Lasers() {
       lasers.forEach((laser, i) => {
         if (laser.active) {
           dummy.position.copy(laser.position);
-          const vel = laser.velocity.clone().normalize();
-          dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vel);
+          _vel.copy(laser.velocity).normalize();
+          dummy.quaternion.setFromUnitVectors(_up, _vel);
           dummy.scale.set(1, 5, 1);
         } else {
           dummy.position.set(0, 0, 0);
@@ -42,8 +44,8 @@ export function Lasers() {
       enemyLasers.forEach((laser, i) => {
         if (laser.active) {
           dummy.position.copy(laser.position);
-          const vel = laser.velocity.clone().normalize();
-          dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vel);
+          _vel.copy(laser.velocity).normalize();
+          dummy.quaternion.setFromUnitVectors(_up, _vel);
           dummy.scale.set(1, 5, 1);
         } else {
           dummy.position.set(0, 0, 0);

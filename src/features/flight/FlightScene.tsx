@@ -1,13 +1,15 @@
 import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useControls } from 'leva';
 import { PlayerShip } from './PlayerShip';
 import { Lasers } from './Lasers';
 import { Enemies } from './Enemies';
 import { Mines } from './Mines';
+import { Asteroids } from './Asteroids';
+import { Sun } from './Sun';
 import { useMissionStore } from '../../state/useMissionStore';
+import { useDebugStore } from '../../debug/useDebugStore';
 import { Html } from '@react-three/drei';
-import { makeNebulaMaterial, makeSunSurfaceMaterial, makeSunCoronaMaterial } from './shaders';
 import './flight.css';
 
 function Waypoints() {
@@ -38,67 +40,16 @@ function Waypoints() {
   );
 }
 
-const SUN_POSITION: [number, number, number] = [800, 200, -300];
-const SUN_RADIUS = 80;
-
-function Sun() {
-  const surfaceMat  = useMemo(() => makeSunSurfaceMaterial(), []);
-  const innerCorona = useMemo(() => makeSunCoronaMaterial(1.0), []);
-  const outerCorona = useMemo(() => makeSunCoronaMaterial(0.35), []);
-
-  useFrame((_, delta) => {
-    surfaceMat.uniforms.uTime.value  += delta;
-    innerCorona.uniforms.uTime.value += delta;
-    outerCorona.uniforms.uTime.value += delta;
-  });
-
-  return (
-    <>
-      <group position={SUN_POSITION}>
-        {/* Sun surface with limb darkening + granulation */}
-        <mesh material={surfaceMat}>
-          <sphereGeometry args={[SUN_RADIUS, 64, 64]} />
-        </mesh>
-
-        {/* Chromosphere / inner corona edge glow */}
-        <mesh material={innerCorona}>
-          <sphereGeometry args={[SUN_RADIUS * 1.55, 32, 32]} />
-        </mesh>
-
-        {/* Outer diffuse corona halo */}
-        <mesh material={outerCorona}>
-          <sphereGeometry args={[SUN_RADIUS * 3.2, 16, 16]} />
-        </mesh>
-      </group>
-
-      {/* Directional light from sun position toward scene origin */}
-      <directionalLight
-        position={SUN_POSITION}
-        color="#ffd580"
-        intensity={2.5}
-      />
-    </>
-  );
-}
-
-function Nebula() {
-  const mat = useMemo(() => makeNebulaMaterial(), []);
-  useFrame((_, delta) => { mat.uniforms.uTime.value += delta; });
-  return (
-    <mesh material={mat}>
-      <sphereGeometry args={[900, 64, 64]} />
-    </mesh>
-  );
-}
-
 function Starfield() {
   const starsRef = useRef<THREE.Points>(null);
   const count = 2000;
-  const positions = new Float32Array(count * 3);
-
-  for (let i = 0; i < count * 3; i++) {
-    positions[i] = (Math.random() - 0.5) * 1000;
-  }
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3);
+    for (let i = 0; i < count * 3; i++) {
+      arr[i] = (Math.random() - 0.5) * 1000;
+    }
+    return arr;
+  }, []);
 
   return (
     <points ref={starsRef}>
@@ -116,19 +67,66 @@ function Starfield() {
 }
 
 export function FlightScene() {
+  const showLightHelpers = useDebugStore(state => state.showLightHelpers);
+
+  // ── Ambient Light Controls ──────────────────────────────────────────────────
+  const { ambientIntensity, ambientColor } = useControls(
+    'Flight / Ambient Light',
+    {
+      ambientIntensity: { value: 1.4, min: 0, max: 8, step: 0.05, label: 'Intensity' },
+      ambientColor: { value: '#99aabb', label: 'Color' },
+    },
+    { collapsed: true }
+  );
+
+  // ── Hemisphere Light Controls ───────────────────────────────────────────────
+  const { hemiIntensity, skyColor, groundColor } = useControls(
+    'Flight / Hemisphere Light',
+    {
+      hemiIntensity: { value: 1.2, min: 0, max: 8, step: 0.05, label: 'Intensity' },
+      skyColor: { value: '#334466', label: 'Sky Color' },
+      groundColor: { value: '#442233', label: 'Ground Color' },
+    },
+    { collapsed: true }
+  );
+
   return (
     <group>
-      {/* Dim space ambient — keeps ship silhouettes readable in shadow */}
-      <ambientLight intensity={0.12} color="#1a2233" />
+      <ambientLight intensity={ambientIntensity} color={ambientColor} />
+      <hemisphereLight color={skyColor} groundColor={groundColor} intensity={hemiIntensity} />
 
       <Sun />
-      <Nebula />
+
+      {/* Light debug helpers */}
+      {showLightHelpers && (
+        <>
+          {/* Sky color sphere — top of scene */}
+          <mesh position={[0, 80, 0]}>
+            <sphereGeometry args={[6, 8, 8]} />
+            <meshBasicMaterial color={skyColor} />
+          </mesh>
+          {/* Ground color sphere — bottom of scene */}
+          <mesh position={[0, -80, 0]}>
+            <sphereGeometry args={[6, 8, 8]} />
+            <meshBasicMaterial color={groundColor} />
+          </mesh>
+          {/* Ambient fill sphere at origin */}
+          <mesh position={[0, 0, 0]}>
+            <sphereGeometry args={[4, 8, 8]} />
+            <meshBasicMaterial color={ambientColor} wireframe />
+          </mesh>
+          {/* World axes reference */}
+          <axesHelper args={[60]} />
+        </>
+      )}
+
       <Starfield />
       <Enemies />
       <Lasers />
       <Waypoints />
       <PlayerShip />
       <Mines />
+      <Asteroids />
     </group>
   );
 }

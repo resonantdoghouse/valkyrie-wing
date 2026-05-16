@@ -16,3 +16,15 @@
   border: 1px solid #ff3366;
   background: rgba(255, 0, 0, 0.2);
 }
+
+.debug-camera-info {
+  color: #00ffcc;
+  font-family: monospace;
+  font-size: 10px;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 4px 6px;
+  pointer-events: none;
+  line-height: 1.5;
+  white-space: pre;
+}

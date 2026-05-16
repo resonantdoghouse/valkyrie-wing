@@ -6,6 +6,7 @@ import { ScanlineOverlay } from './components/ui/ScanlineOverlay';
 import { LCDPanel } from './components/ui/LCDPanel';
 import { TerminalText } from './components/ui/TerminalText';
 import { BarUI } from './features/bar/BarUI';
+import { DebugPanel } from './debug/DebugPanel';
 import { initAudio } from './utils/audio';
 
 function App() {
@@ -17,6 +18,9 @@ function App() {
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      {/* Dev debug panel — press ` to toggle */}
+      <DebugPanel />
+
       {/* Cinematic CRT/Scanline Overlay globally */}
       <ScanlineOverlay />
 
@@ -27,7 +31,7 @@ function App() {
       {currentMode === 'MENU' && (
         <div className="overlay">
           <LCDPanel>
-            <TerminalText as="h1" className="terminal-title" text="Wing Commando" />
+            <TerminalText as="h1" className="terminal-title" text="Valkyrie Wing" />
             <TerminalText as="p" text="> SYSTEM INITIALIZED." delay={20} />
             <TerminalText as="p" text="> AWAITING PILOT INPUT..." delay={30} />
             <button className="interactive-btn" onClick={() => {

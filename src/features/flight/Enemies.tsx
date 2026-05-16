@@ -50,7 +50,7 @@ function Explosion({ position }: { position: THREE.Vector3 }) {
 
   return (
     <mesh ref={meshRef} position={position} material={mat}>
-      <sphereGeometry args={[2, 32, 32]} />
+      <sphereGeometry args={[2, 16, 16]} />
     </mesh>
   );
 }

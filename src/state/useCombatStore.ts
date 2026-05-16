@@ -25,6 +25,13 @@ export interface MineData {
   active: boolean;
 }
 
+export interface AsteroidData {
+  id: string;
+  position: THREE.Vector3;
+  scale: number;
+  active: boolean;
+}
+
 interface CombatState {
   lasers: LaserData[];
   enemyLasers: LaserData[];
@@ -42,6 +49,9 @@ interface CombatState {
   mines: MineData[];
   initMines: (mines: MineData[]) => void;
   hitMine: (id: string) => void;
+  asteroids: AsteroidData[];
+  initAsteroids: (asteroids: AsteroidData[]) => void;
+  hitAsteroid: (id: string) => void;
 }
 
 const MAX_LASERS = 50;
@@ -98,6 +108,7 @@ export const useCombatStore = create<CombatState>((set) => ({
       let updated = false;
       const hits: { enemyId: string; damage: number }[] = [];
       const mineHits: string[] = [];
+      const asteroidHits: string[] = [];
 
       const lasers = state.lasers.map((laser) => {
         if (!laser.active) return laser;
@@ -128,6 +139,20 @@ export const useCombatStore = create<CombatState>((set) => ({
               laser.active = false;
               mineHits.push(mine.id);
               break;
+            }
+          }
+        }
+
+        // Asteroid collision — radius scales with asteroid size
+        if (laser.active) {
+          for (const asteroid of state.asteroids) {
+            if (asteroid.active) {
+              const hitRadius = 4 * asteroid.scale;
+              if (laser.position.distanceToSquared(asteroid.position) < hitRadius * hitRadius) {
+                laser.active = false;
+                asteroidHits.push(asteroid.id);
+                break;
+              }
             }
           }
         }
@@ -176,13 +201,21 @@ export const useCombatStore = create<CombatState>((set) => ({
         const newMines = mineHits.length > 0
           ? state.mines.map(m => mineHits.includes(m.id) ? { ...m, active: false } : m)
           : state.mines;
-        return { lasers, enemies: newEnemies, mines: newMines };
+        const newAsteroids = asteroidHits.length > 0
+          ? state.asteroids.map(a => asteroidHits.includes(a.id) ? { ...a, active: false } : a)
+          : state.asteroids;
+        return { lasers, enemies: newEnemies, mines: newMines, asteroids: newAsteroids };
       }
 
-      if (mineHits.length > 0) {
+      if (mineHits.length > 0 || asteroidHits.length > 0) {
         return {
           lasers,
-          mines: state.mines.map(m => mineHits.includes(m.id) ? { ...m, active: false } : m),
+          mines: mineHits.length > 0
+            ? state.mines.map(m => mineHits.includes(m.id) ? { ...m, active: false } : m)
+            : state.mines,
+          asteroids: asteroidHits.length > 0
+            ? state.asteroids.map(a => asteroidHits.includes(a.id) ? { ...a, active: false } : a)
+            : state.asteroids,
         };
       }
 
@@ -295,6 +328,12 @@ export const useCombatStore = create<CombatState>((set) => ({
   initMines: (mines) => set(() => ({ mines })),
   hitMine: (id) => set(state => ({
     mines: state.mines.map(m => m.id === id ? { ...m, active: false } : m),
+  })),
+
+  asteroids: [] as AsteroidData[],
+  initAsteroids: (asteroids) => set(() => ({ asteroids })),
+  hitAsteroid: (id) => set(state => ({
+    asteroids: state.asteroids.map(a => a.id === id ? { ...a, active: false } : a),
   })),
 
   startArcadeWave: (level) => set(() => {
