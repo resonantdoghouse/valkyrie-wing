@@ -227,12 +227,12 @@ export function PlayerShip() {
 
   const direction = useRef(new THREE.Vector3()).current;
   const targetVelocity = useRef(new THREE.Vector3()).current;
-  const _toEnemy = useRef(new THREE.Vector3()).current;
   const _camOffset = useRef(new THREE.Vector3()).current;
   const _lookTarget = useRef(new THREE.Vector3()).current;
   const _localUp = useRef(new THREE.Vector3()).current;
   const _waypointPos = useRef(new THREE.Vector3()).current;
 
+  const prevCycleTarget = useRef(false);
   const warningTimer = useRef(0);
   const boundaryPhaseRef = useRef<'none' | 'warning' | 'turning'>('none');
   const _autoTurnMat = useMemo(() => new THREE.Matrix4(), []);
@@ -276,26 +276,23 @@ export function PlayerShip() {
       lastFireTime.current = _state.clock.elapsedTime;
     }
 
-    const enemies = useCombatStore.getState().enemies;
-    const setTarget = useCombatStore.getState().setTarget;
-    const currentTarget = useCombatStore.getState().targetId;
-    let bestTarget = null;
-    let bestScore = -1;
+    const { enemies, targetId, setTarget } = useCombatStore.getState();
     const shipPos = meshRef.current.position;
 
-    enemies.forEach(enemy => {
-      if (!enemy.active) return;
-      _toEnemy.subVectors(enemy.position, shipPos);
-      const dist = _toEnemy.length();
-      if (dist > 500) return;
-      _toEnemy.normalize();
-      const dot = direction.dot(_toEnemy);
-      if (dot > 0.95) {
-        const score = dot / dist;
-        if (score > bestScore) { bestScore = score; bestTarget = enemy.id; }
+    // Clear target if the locked enemy was destroyed
+    if (targetId && !enemies.find(e => e.id === targetId && e.active)) {
+      setTarget(null);
+    }
+
+    // T key — cycle to next active enemy (edge-detect so one press = one step)
+    if (controls.cycleTarget && !prevCycleTarget.current) {
+      const active = enemies.filter(e => e.active);
+      if (active.length > 0) {
+        const idx = active.findIndex(e => e.id === targetId);
+        setTarget(active[(idx + 1) % active.length].id);
       }
-    });
-    if (currentTarget !== bestTarget) setTarget(bestTarget);
+    }
+    prevCycleTarget.current = controls.cycleTarget;
 
     const activeMission = useMissionStore.getState().activeMission;
     if (activeMission) {

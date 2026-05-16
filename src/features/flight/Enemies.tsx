@@ -7,6 +7,56 @@ import enemyShipUrl from '../../assets/models/enemy-ship.glb';
 import { makeEngineGlowMaterial, makeExplosionMaterial } from './shaders';
 import './flight.css';
 
+// ─── Target Bracket — world-space corner brackets around the locked target ────
+function TargetBracket() {
+  const groupRef = useRef<THREE.Group>(null);
+  const { camera } = useThree();
+
+  const bracketVerts = useMemo(() => {
+    const s = 1;    // half-size of the square
+    const a = 0.32; // arm length (fraction of s)
+    return new Float32Array([
+      // Top-left
+      -s,  s, 0,  -s + a,  s, 0,
+      -s,  s, 0,  -s,  s - a, 0,
+      // Top-right
+       s,  s, 0,   s - a,  s, 0,
+       s,  s, 0,   s,  s - a, 0,
+      // Bottom-left
+      -s, -s, 0,  -s + a, -s, 0,
+      -s, -s, 0,  -s, -s + a, 0,
+      // Bottom-right
+       s, -s, 0,   s - a, -s, 0,
+       s, -s, 0,   s, -s + a, 0,
+    ]);
+  }, []);
+
+  useFrame(() => {
+    if (!groupRef.current) return;
+    const { enemies, targetId } = useCombatStore.getState();
+    const target = enemies.find(e => e.id === targetId && e.active);
+
+    if (!target) { groupRef.current.visible = false; return; }
+    groupRef.current.visible = true;
+
+    groupRef.current.position.copy(target.position);
+    groupRef.current.quaternion.copy(camera.quaternion);
+    const dist = camera.position.distanceTo(target.position);
+    groupRef.current.scale.setScalar(Math.max(5, dist * 0.1));
+  });
+
+  return (
+    <group ref={groupRef} visible={false}>
+      <lineSegments>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" count={16} array={bracketVerts} itemSize={3} />
+        </bufferGeometry>
+        <lineBasicMaterial color="#00ffcc" />
+      </lineSegments>
+    </group>
+  );
+}
+
 export function Enemies() {
   const enemies = useCombatStore((state) => state.enemies);
   const updateEnemies = useCombatStore((state) => state.updateEnemies);
@@ -31,6 +81,7 @@ export function Enemies() {
           <Explosion key={`exp_${enemy.id}`} position={enemy.position} />
         )
       ))}
+      <TargetBracket />
     </group>
   );
 }

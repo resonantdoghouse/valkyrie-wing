@@ -12,6 +12,7 @@ interface Controls {
   throttleDown: boolean;
   fire: boolean;
   boost: boolean;
+  cycleTarget: boolean;
 }
 
 function matchesSlot(code: string, slot: string): boolean {
@@ -29,6 +30,7 @@ function codeToAction(code: string, bindings: ControlBindings): keyof Controls |
   if (matchesSlot(code, bindings.throttleDown)) return 'throttleDown';
   if (matchesSlot(code, bindings.fire))         return 'fire';
   if (matchesSlot(code, bindings.boost))        return 'boost';
+  if (matchesSlot(code, bindings.cycleTarget))  return 'cycleTarget';
   return null;
 }
 
@@ -46,6 +48,7 @@ export function usePlayerControls() {
     throttleDown: false,
     fire: false,
     boost: false,
+    cycleTarget: false,
   });
 
   useEffect(() => {
