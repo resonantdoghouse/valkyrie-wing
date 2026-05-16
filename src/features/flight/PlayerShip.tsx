@@ -37,15 +37,73 @@ function TargetingReticle() {
     <group position={[0, 0, -30]}>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[0.7, 0.013, 6, 64]} />
-        <meshBasicMaterial color="#00ffcc" transparent opacity={0.9} />
+        <meshBasicMaterial color="#ff2200" transparent opacity={0.9} />
       </mesh>
       <lineSegments geometry={spokesGeo}>
-        <lineBasicMaterial color="#00ffcc" transparent opacity={0.65} />
+        <lineBasicMaterial color="#ff2200" transparent opacity={0.65} />
       </lineSegments>
       <mesh>
         <circleGeometry args={[0.045, 8]} />
-        <meshBasicMaterial color="#ff4488" transparent opacity={1.0} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#ff0000" transparent opacity={1.0} side={THREE.DoubleSide} />
       </mesh>
+    </group>
+  );
+}
+
+// ─── Lead Indicator — world-space predictive targeting pip ───────────────────
+const LEAD_LASER_SPEED = 100; // must match LASER_SPEED in useCombatStore
+
+function LeadIndicator() {
+  const groupRef = useRef<THREE.Group>(null);
+  const { camera } = useThree();
+
+  const tickVerts = useMemo(() => new Float32Array([
+    // N tick
+     0,  1.35, 0,   0,  1.65, 0,
+    // S tick
+     0, -1.35, 0,   0, -1.65, 0,
+    // E tick
+     1.35, 0,  0,   1.65, 0,  0,
+    // W tick
+    -1.35, 0,  0,  -1.65, 0,  0,
+  ]), []);
+
+  useFrame(() => {
+    if (!groupRef.current) return;
+    const { enemies, targetId } = useCombatStore.getState();
+    const target = enemies.find(e => e.id === targetId && e.active);
+
+    if (!target) {
+      groupRef.current.visible = false;
+      return;
+    }
+    groupRef.current.visible = true;
+
+    // Iterative lead: two passes converges well within typical engagement ranges
+    const dist1 = camera.position.distanceTo(target.position);
+    const lead = target.position.clone().addScaledVector(target.velocity, dist1 / LEAD_LASER_SPEED);
+    const dist2 = camera.position.distanceTo(lead);
+    lead.copy(target.position).addScaledVector(target.velocity, dist2 / LEAD_LASER_SPEED);
+
+    groupRef.current.position.copy(lead);
+    // Billboard toward camera so the ring always faces the player
+    groupRef.current.quaternion.copy(camera.quaternion);
+    // Scale proportionally so visual size stays consistent at all ranges
+    groupRef.current.scale.setScalar(Math.max(0.3, dist2 * 0.016));
+  });
+
+  return (
+    <group ref={groupRef} visible={false}>
+      <mesh>
+        <torusGeometry args={[1, 0.05, 6, 48]} />
+        <meshBasicMaterial color="#ff8800" />
+      </mesh>
+      <lineSegments>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" count={8} array={tickVerts} itemSize={3} />
+        </bufferGeometry>
+        <lineBasicMaterial color="#ff8800" transparent opacity={0.85} />
+      </lineSegments>
     </group>
   );
 }
@@ -292,6 +350,7 @@ export function PlayerShip() {
   });
 
   return (
+    <>
     <group ref={meshRef}>
       <primitive object={clonedShipScene} scale={3} rotation-y={Math.PI / 2} visible={is3rdPerson} />
 
@@ -318,6 +377,8 @@ export function PlayerShip() {
         </Html>
       )}
     </group>
+    <LeadIndicator />
+    </>
   );
 }
 
