@@ -231,6 +231,7 @@ export function PlayerShip() {
   const _lookTarget = useRef(new THREE.Vector3()).current;
   const _localUp = useRef(new THREE.Vector3()).current;
   const _waypointPos = useRef(new THREE.Vector3()).current;
+  const _leadPos = useRef(new THREE.Vector3()).current;
 
   const prevCycleTarget = useRef(false);
   const warningTimer = useRef(0);
@@ -271,13 +272,23 @@ export function PlayerShip() {
     engineMat.uniforms.uTime.value += delta;
     engineMat.uniforms.uIntensity.value = throttle.current > 0.1 ? 1.0 : 0.15;
 
-    if (controls.fire && _state.clock.elapsedTime - lastFireTime.current > FIRE_RATE) {
-      fireLaser(meshRef.current.position, direction, velocity.current);
-      lastFireTime.current = _state.clock.elapsedTime;
-    }
-
     const { enemies, targetId, setTarget } = useCombatStore.getState();
     const shipPos = meshRef.current.position;
+
+    if (controls.fire && _state.clock.elapsedTime - lastFireTime.current > FIRE_RATE) {
+      // When a target is locked, fire toward the lead pip position
+      let fireDir = direction;
+      const lockedTarget = enemies.find(e => e.id === targetId && e.active);
+      if (lockedTarget) {
+        const d1 = shipPos.distanceTo(lockedTarget.position);
+        _leadPos.copy(lockedTarget.position).addScaledVector(lockedTarget.velocity, d1 / LEAD_LASER_SPEED);
+        const d2 = shipPos.distanceTo(_leadPos);
+        _leadPos.copy(lockedTarget.position).addScaledVector(lockedTarget.velocity, d2 / LEAD_LASER_SPEED);
+        fireDir = _leadPos.sub(shipPos).normalize();
+      }
+      fireLaser(meshRef.current.position, fireDir, velocity.current);
+      lastFireTime.current = _state.clock.elapsedTime;
+    }
 
     // Clear target if the locked enemy was destroyed
     if (targetId && !enemies.find(e => e.id === targetId && e.active)) {
