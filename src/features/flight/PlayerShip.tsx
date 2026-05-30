@@ -247,22 +247,24 @@ export function PlayerShip() {
   useFrame((_state, delta) => {
     if (!meshRef.current) return;
 
+    const c = controls.current;
+
     if (boundaryPhaseRef.current !== 'turning') {
-      if (controls.pitchUp) meshRef.current.rotateX(TURN_SPEED * delta);
-      if (controls.pitchDown) meshRef.current.rotateX(-TURN_SPEED * delta);
-      if (controls.yawLeft) meshRef.current.rotateY(TURN_SPEED * delta);
-      if (controls.yawRight) meshRef.current.rotateY(-TURN_SPEED * delta);
-      if (controls.rollLeft) meshRef.current.rotateZ(TURN_SPEED * 1.5 * delta);
-      if (controls.rollRight) meshRef.current.rotateZ(-TURN_SPEED * 1.5 * delta);
+      if (c.pitchUp)   meshRef.current.rotateX( TURN_SPEED * delta);
+      if (c.pitchDown) meshRef.current.rotateX(-TURN_SPEED * delta);
+      if (c.yawLeft)   meshRef.current.rotateY( TURN_SPEED * delta);
+      if (c.yawRight)  meshRef.current.rotateY(-TURN_SPEED * delta);
+      if (c.rollLeft)  meshRef.current.rotateZ( TURN_SPEED * 1.5 * delta);
+      if (c.rollRight) meshRef.current.rotateZ(-TURN_SPEED * 1.5 * delta);
     }
 
-    if (controls.throttleUp) throttle.current = Math.min(throttle.current + delta * 0.5, 1);
-    if (controls.throttleDown) throttle.current = Math.max(throttle.current - delta * 0.5, 0);
+    if (c.throttleUp)   throttle.current = Math.min(throttle.current + delta * 0.5, 1);
+    if (c.throttleDown) throttle.current = Math.max(throttle.current - delta * 0.5, 0);
 
     meshRef.current.getWorldDirection(direction);
     direction.negate();
 
-    const activeMaxSpeed = controls.boost ? MAX_SPEED * 2.5 : MAX_SPEED;
+    const activeMaxSpeed = c.boost ? MAX_SPEED * 2.5 : MAX_SPEED;
     targetVelocity.copy(direction).multiplyScalar(activeMaxSpeed * throttle.current);
     velocity.current.lerp(targetVelocity, delta * 2);
     meshRef.current.position.addScaledVector(velocity.current, delta);
@@ -275,7 +277,7 @@ export function PlayerShip() {
     const { enemies, targetId, setTarget } = useCombatStore.getState();
     const shipPos = meshRef.current.position;
 
-    if (controls.fire && _state.clock.elapsedTime - lastFireTime.current > FIRE_RATE) {
+    if (c.fire && _state.clock.elapsedTime - lastFireTime.current > FIRE_RATE) {
       // When a target is locked, fire toward the lead pip position
       let fireDir = direction;
       const lockedTarget = enemies.find(e => e.id === targetId && e.active);
@@ -296,14 +298,14 @@ export function PlayerShip() {
     }
 
     // T key — cycle to next active enemy (edge-detect so one press = one step)
-    if (controls.cycleTarget && !prevCycleTarget.current) {
+    if (c.cycleTarget && !prevCycleTarget.current) {
       const active = enemies.filter(e => e.active);
       if (active.length > 0) {
         const idx = active.findIndex(e => e.id === targetId);
         setTarget(active[(idx + 1) % active.length].id);
       }
     }
-    prevCycleTarget.current = controls.cycleTarget;
+    prevCycleTarget.current = c.cycleTarget;
 
     const activeMission = useMissionStore.getState().activeMission;
     if (activeMission) {

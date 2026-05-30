@@ -1,6 +1,7 @@
 import { useGameStore } from './state/useGameStore';
 import { useMissionStore } from './state/useMissionStore';
 import { GameCanvas } from './components/GameCanvas';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay';
 import { LCDPanel } from './components/ui/LCDPanel';
 import { TerminalText } from './components/ui/TerminalText';
@@ -22,7 +23,9 @@ function App() {
       <ScanlineOverlay />
 
       {/* 3D Canvas rendering in the background or as main view depending on mode */}
-      <GameCanvas />
+      <ErrorBoundary>
+        <GameCanvas />
+      </ErrorBoundary>
 
       {/* 2D Overlay */}
       {currentMode === 'MENU' && (

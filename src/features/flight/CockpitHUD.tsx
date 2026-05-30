@@ -39,14 +39,16 @@ export function CockpitHUD({ throttle, shipRef }: CockpitHUDProps) {
   const throttleTextRef = useRef<HTMLParagraphElement>(null);
 
   useFrame(() => {
+    // Throttle bar and text are mutated via DOM refs each frame to avoid React
+    // re-renders on every keypress — imperative updates are correct here.
     if (throttleBarRef.current) {
-      const percentage = throttle.current * 100;
-      throttleBarRef.current.style.width = `${percentage}%`;
+      throttleBarRef.current.style.width = `${throttle.current * 100}%`;
     }
     if (throttleTextRef.current) {
-      if (controls.throttleUp) throttleTextRef.current.innerText = 'ENG: ACCELERATING';
-      else if (controls.throttleDown) throttleTextRef.current.innerText = 'ENG: DECELERATING';
-      else throttleTextRef.current.innerText = `THRUST: ${Math.round(throttle.current * 100)}%`;
+      const c = controls.current;
+      if (c.throttleUp)        throttleTextRef.current.innerText = 'ENG: ACCELERATING';
+      else if (c.throttleDown) throttleTextRef.current.innerText = 'ENG: DECELERATING';
+      else                     throttleTextRef.current.innerText = `THRUST: ${Math.round(throttle.current * 100)}%`;
     }
 
     if (radarCanvasRef.current && shipRef.current) {
