@@ -2,6 +2,14 @@ import { create } from 'zustand';
 import * as THREE from 'three';
 import { useMissionStore } from './useMissionStore';
 import { playLaserSound, playExplosionSound } from '../utils/audio';
+import {
+  selectBehavior,
+  computeSteering,
+  ENEMY_SPEED,
+  type EnemyBehavior,
+  type EnemyData,
+} from '../features/flight/enemyAI';
+export type { EnemyBehavior, EnemyData } from '../features/flight/enemyAI';
 
 export interface LaserData {
   id: number;
@@ -9,22 +17,6 @@ export interface LaserData {
   velocity: THREE.Vector3;
   active: boolean;
   life: number;
-}
-
-export type EnemyBehavior = 'approach' | 'strafe' | 'evade' | 'flank' | 'formation';
-
-export interface EnemyData {
-  id: string;
-  position: THREE.Vector3;
-  velocity: THREE.Vector3;
-  health: number;
-  active: boolean;
-  behaviorState: EnemyBehavior;
-  behaviorTimer: number;
-  phaseOffset: number;
-  time: number;
-  formationIndex: number;
-  flockId: number;
 }
 
 export interface MineData {
@@ -197,20 +189,6 @@ export const useCombatStore = create<CombatState>((set) => ({
           return e;
         });
 
-        // Check if arcade wave is complete
-        const activeMission = useMissionStore.getState().activeMission;
-        if (activeMission?.id.startsWith('arcade_sim')) {
-          const activeEnemies = newEnemies.filter(e => e.active);
-          if (activeEnemies.length === 0 && newEnemies.length > 0) {
-            // Next wave!
-            setTimeout(() => {
-               const ms = useMissionStore.getState();
-               ms.levelUpArcade();
-               useCombatStore.getState().startArcadeWave(ms.arcadeLevel);
-            }, 2000);
-          }
-        }
-
         const newMines = mineHits.length > 0
           ? state.mines.map(m => mineHits.includes(m.id) ? { ...m, active: false } : m)
           : state.mines;
@@ -311,138 +289,36 @@ export const useCombatStore = create<CombatState>((set) => ({
   updateEnemies: (delta, playerPosition, playerVelocity) => set(state => {
     if (!state.enemies.some(e => e.active)) return state;
 
-    const SPEED = 45;
-    const up = new THREE.Vector3(0, 1, 0);
-
     let collisionPlayerDamage = 0;
 
     const newEnemies = state.enemies.map((enemy, idx) => {
       if (!enemy.active) return enemy;
 
-      const pos = enemy.position.clone();
-      const toPlayer = playerPosition.clone().sub(pos);
-      const distance = toPlayer.length();
       const time = enemy.time + delta;
-      const toPlayerNorm = distance > 0.01 ? toPlayer.clone().normalize() : new THREE.Vector3(0, 0, -1);
+      const distance = playerPosition.distanceTo(enemy.position);
 
-      // Advance behavior timer and pick next state
-      let { behaviorState, behaviorTimer } = enemy;
-      behaviorTimer -= delta;
-      if (behaviorTimer <= 0) {
-        const roll = Math.random();
-        if (distance > 260) {
-          behaviorState = 'approach';
-          behaviorTimer = 2.5 + Math.random() * 2;
-        } else if (distance < 38) {
-          behaviorState = 'evade';
-          behaviorTimer = 1 + Math.random() * 1.2;
-        } else if (roll < 0.28) {
-          behaviorState = 'approach';
-          behaviorTimer = 2 + Math.random() * 2.5;
-        } else if (roll < 0.52) {
-          behaviorState = 'strafe';
-          behaviorTimer = 3 + Math.random() * 3;
-        } else if (roll < 0.72) {
-          behaviorState = 'flank';
-          behaviorTimer = 2 + Math.random() * 2.5;
-        } else if (roll < 0.84) {
-          behaviorState = 'evade';
-          behaviorTimer = 1 + Math.random() * 1;
-        } else {
-          behaviorState = 'formation';
-          behaviorTimer = 3 + Math.random() * 3;
-        }
-      }
+      const behavior = selectBehavior(enemy.behaviorState, enemy.behaviorTimer, distance, delta);
+      const steer = computeSteering(
+        { ...enemy, ...behavior, time },
+        idx,
+        state.enemies,
+        playerPosition,
+        playerVelocity,
+      );
 
-      // Intercept: predict where player will be
-      const interceptT = Math.min(distance / Math.max(SPEED, 1), 3);
-      const predicted = playerPosition.clone().addScaledVector(playerVelocity, interceptT * 0.5);
-
-      // Compute desired velocity vector for current behavior
-      const steer = new THREE.Vector3();
-      if (behaviorState === 'approach') {
-        steer.copy(predicted.clone().sub(pos)).normalize().multiplyScalar(SPEED);
-
-      } else if (behaviorState === 'strafe') {
-        const right = new THREE.Vector3().crossVectors(toPlayerNorm, up).normalize();
-        const strafeSign = enemy.formationIndex % 2 === 0 ? 1 : -1;
-        const desiredRange = 90 + Math.sin(time * 0.25 + enemy.phaseOffset) * 25;
-        const rangeErr = distance - desiredRange;
-        const radial = rangeErr > 0 ? toPlayerNorm.clone() : toPlayerNorm.clone().negate();
-        steer.copy(right).multiplyScalar(strafeSign * 0.75).addScaledVector(radial, 0.25).normalize().multiplyScalar(SPEED);
-
-      } else if (behaviorState === 'flank') {
-        const angle = enemy.phaseOffset + time * 0.15;
-        const offset = new THREE.Vector3(
-          Math.cos(angle) * 90,
-          Math.sin(angle * 0.6) * 30,
-          Math.sin(angle) * -90,
-        );
-        steer.copy(playerPosition.clone().add(offset).sub(pos)).normalize().multiplyScalar(SPEED * 1.1);
-
-      } else if (behaviorState === 'evade') {
-        const ba = enemy.phaseOffset + time * 2.5;
-        const breakVec = new THREE.Vector3(Math.cos(ba), Math.sin(ba * 0.8), Math.sin(ba + 1.3)).normalize();
-        steer.copy(toPlayerNorm).negate().multiplyScalar(0.55).addScaledVector(breakVec, 0.45).normalize().multiplyScalar(SPEED * 1.35);
-
-      } else {
-        // formation — wingmen follow leader in V, leader approaches player
-        if (enemy.formationIndex === 0) {
-          steer.copy(predicted.clone().sub(pos)).normalize().multiplyScalar(SPEED);
-        } else {
-          const leaderIdx = state.enemies.findIndex(
-            e => e.active && e.flockId === enemy.flockId && e.formationIndex === 0,
-          );
-          if (leaderIdx >= 0) {
-            const leader = state.enemies[leaderIdx];
-            const lFwd = leader.velocity.lengthSq() > 0.1
-              ? leader.velocity.clone().normalize()
-              : new THREE.Vector3(0, 0, -1);
-            const lRight = new THREE.Vector3().crossVectors(lFwd, up).normalize();
-            const isLeft = enemy.formationIndex % 2 === 1;
-            const tier = Math.floor(enemy.formationIndex / 2);
-            const lateral = (25 + tier * 10) * (isLeft ? -1 : 1);
-            const back = 15 + tier * 10;
-            const formPos = leader.position.clone()
-              .addScaledVector(lRight, lateral)
-              .addScaledVector(lFwd, -back);
-            steer.copy(formPos.sub(pos)).normalize().multiplyScalar(SPEED);
-          } else {
-            steer.copy(toPlayerNorm).multiplyScalar(SPEED);
-          }
-        }
-      }
-
-      // Per-enemy oscillation — unique frequency and phase so ships never fly identically
-      const wFreq = 0.9 + (idx % 5) * 0.22;
-      const wAmp = 3 + (idx % 3) * 1.5;
-      steer.x += Math.sin(time * wFreq + enemy.phaseOffset) * wAmp * 0.15;
-      steer.y += Math.cos(time * wFreq * 0.7 + enemy.phaseOffset + 1.8) * wAmp * 0.15;
-      steer.z += Math.sin(time * wFreq * 0.5 + enemy.phaseOffset + 3.1) * wAmp * 0.08;
-
-      // Separation: push away from all nearby enemies
-      for (const other of state.enemies) {
-        if (other.id === enemy.id || !other.active) continue;
-        const diff = pos.clone().sub(other.position);
-        const dist = diff.length();
-        if (dist < 28 && dist > 0.01) {
-          steer.add(diff.normalize().multiplyScalar(18 * (1 - dist / 28)));
-        }
-      }
-
-      // Lerp velocity toward desired steer
-      const lerpRate = behaviorState === 'evade' ? 4.5 : 1.8;
+      const lerpRate = behavior.behaviorState === 'evade' ? 4.5 : 1.8;
       const vel = enemy.velocity.clone().lerp(steer, delta * lerpRate);
-      const spd = vel.length();
-      if (spd > SPEED * 1.5) vel.normalize().multiplyScalar(SPEED * 1.5);
+      if (vel.length() > ENEMY_SPEED * 1.5) vel.normalize().multiplyScalar(ENEMY_SPEED * 1.5);
 
-      const newPos = pos.addScaledVector(vel, delta);
+      const newPos = enemy.position.clone().addScaledVector(vel, delta);
 
       // Fire — rate varies by behavior
-      const fireChance: Record<EnemyBehavior, number> = {
+      const fireChance: Record<string, number> = {
         strafe: 0.028, approach: 0.018, flank: 0.015, formation: 0.01, evade: 0.006,
       };
-      if (distance < 200 && Math.random() < fireChance[behaviorState]) {
+      if (distance < 200 && Math.random() < fireChance[behavior.behaviorState]) {
+        const interceptT = Math.min(distance / Math.max(ENEMY_SPEED, 1), 3);
+        const predicted = playerPosition.clone().addScaledVector(playerVelocity, interceptT * 0.5);
         const noise = new THREE.Vector3(
           (Math.random() - 0.5) * 0.08,
           (Math.random() - 0.5) * 0.08,
@@ -461,7 +337,7 @@ export const useCombatStore = create<CombatState>((set) => ({
       if (newPos.distanceToSquared(playerPosition) < ENEMY_COLLISION_RADIUS_SQ) {
         const push = newPos.clone().sub(playerPosition);
         if (push.lengthSq() < 0.001) push.set(1, 0, 0);
-        vel.lerp(push.normalize().multiplyScalar(SPEED * 2), 0.6);
+        vel.lerp(push.normalize().multiplyScalar(ENEMY_SPEED * 2), 0.6);
 
         if (cooldown <= 0) {
           _enemyCollisionCooldowns.set(enemy.id, ENEMY_COLLISION_COOLDOWN);
@@ -482,7 +358,7 @@ export const useCombatStore = create<CombatState>((set) => ({
         playExplosionSound();
       }
 
-      return { ...enemy, position: newPos, velocity: vel, behaviorState, behaviorTimer, time, health: finalHealth, active: finalHealth > 0 };
+      return { ...enemy, ...behavior, position: newPos, velocity: vel, time, health: finalHealth, active: finalHealth > 0 };
     });
 
     if (collisionPlayerDamage > 0) {

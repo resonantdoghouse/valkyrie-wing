@@ -1,7 +1,8 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useCombatStore, EnemyData } from '../../state/useCombatStore';
+import { useMissionStore } from '../../state/useMissionStore';
 import { Html, useGLTF } from '@react-three/drei';
 import enemyShipUrl from '../../assets/models/enemy-ship.glb';
 import { makeEngineGlowMaterial, makeExplosionMaterial } from './shaders';
@@ -63,6 +64,19 @@ export function Enemies() {
   const { camera } = useThree();
   const prevPos = useRef(new THREE.Vector3());
   const smoothVel = useRef(new THREE.Vector3());
+
+  const activeMission = useMissionStore((state) => state.activeMission);
+  const isArcade = activeMission?.id.startsWith('arcade_sim') ?? false;
+  const waveComplete = isArcade && enemies.length > 0 && enemies.every((e) => !e.active);
+
+  useEffect(() => {
+    if (!waveComplete) return;
+    const timer = setTimeout(() => {
+      useMissionStore.getState().levelUpArcade();
+      useCombatStore.getState().startArcadeWave(useMissionStore.getState().arcadeLevel);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [waveComplete]);
 
   useFrame((_state, delta) => {
     const raw = camera.position.clone().sub(prevPos.current).divideScalar(Math.max(delta, 0.001));
