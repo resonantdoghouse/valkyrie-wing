@@ -83,3 +83,36 @@ npm install
 npm run dev      # start Vite dev server
 npm run build    # production build
 ```
+
+## Codebase Knowledge Graph
+
+This project includes a pre-built [Understand Anything](https://github.com/understand-anything/understand-anything) knowledge graph at `.understand-anything/knowledge-graph.json`. It maps the architecture into 9 layers, 84 nodes, 159 edges, and a 15-step guided tour.
+
+### View the interactive dashboard
+
+With [Claude Code](https://claude.ai/code) installed, run:
+
+```
+/understand-dashboard
+```
+
+This starts a local Vite server and opens an interactive graph explorer. The dashboard URL includes an access token — copy the full URL from the terminal output (it looks like `http://127.0.0.1:5173/?token=<token>`).
+
+### Update the graph after code changes
+
+```
+/understand
+```
+
+Run this after significant changes to regenerate the graph incrementally. It detects which files changed since the last analysis and only re-analyses those.
+
+### What the graph contains
+
+| Section | Detail |
+|---|---|
+| **Layers** | 9 architectural layers: Entry & Routing, Flight Scene, Non-Flight Scenes, Shared UI, Game State, Input Hooks, 3D Assets, Debug & Utils, Configuration |
+| **Tour** | 15-step guided walkthrough from bootstrap → state stores → flight physics → shaders |
+| **Nodes** | 84 total: 41 file, 39 function, 4 config |
+| **Edges** | 159 total: imports, contains, exports, calls, depends\_on, configures |
+
+The graph is version-controlled so new contributors can explore the architecture without running the analysis themselves.
