@@ -1,0 +1,1788 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "1d08db056a85bc0352c8621cc0d0564324e24189",
+  "generatedAt": "2026-05-30T01:52:07.682Z",
+  "files": {
+    ".gitattributes": {
+      "filePath": ".gitattributes",
+      "contentHash": "69ded8f0d75a2b0d2b2b67a157fe21ac5a602c2d4e2e042e6b59b03edc66a152",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": false
+    },
+    ".understand-anything/.understandignore": {
+      "filePath": ".understand-anything/.understandignore",
+      "contentHash": "6a1103e665ff8cbb3fe9b9191581f4461fd6d0fa0293c2aa78f5af38151cd9be",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": false
+    },
+    "index.html": {
+      "filePath": "index.html",
+      "contentHash": "509329065e6ebba7aa34196537e4a7bb678f7ed9863d3c0aba59e45e96908d6b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    "package.json": {
+      "filePath": "package.json",
+      "contentHash": "a8f68aa21bb758d096b866bc2fe8812e85e430d71cf6978357b89ba44ddd08c6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": true
+    },
+    "src/App.tsx": {
+      "filePath": "src/App.tsx",
+      "contentHash": "5ac31df9045292918dacfb2583854de925c9541cc41650f81a905155e26cd58e",
+      "functions": [
+        {
+          "name": "App",
+          "params": [],
+          "exported": false,
+          "lineCount": 200
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "./state/useMissionStore",
+          "specifiers": [
+            "useMissionStore"
+          ]
+        },
+        {
+          "source": "./state/useCombatStore",
+          "specifiers": [
+            "useCombatStore"
+          ]
+        },
+        {
+          "source": "./components/GameCanvas",
+          "specifiers": [
+            "GameCanvas"
+          ]
+        },
+        {
+          "source": "./components/ui/ScanlineOverlay",
+          "specifiers": [
+            "ScanlineOverlay"
+          ]
+        },
+        {
+          "source": "./components/ui/LCDPanel",
+          "specifiers": [
+            "LCDPanel"
+          ]
+        },
+        {
+          "source": "./components/ui/TerminalText",
+          "specifiers": [
+            "TerminalText"
+          ]
+        },
+        {
+          "source": "./features/bar/BarUI",
+          "specifiers": [
+            "BarUI"
+          ]
+        },
+        {
+          "source": "./debug/DebugPanel",
+          "specifiers": [
+            "DebugPanel"
+          ]
+        },
+        {
+          "source": "./utils/audio",
+          "specifiers": [
+            "initAudio"
+          ]
+        },
+        {
+          "source": "./features/flight/flight.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [],
+      "totalLines": 215,
+      "hasStructuralAnalysis": true
+    },
+    "src/assets/models/enemy-ship.glb": {
+      "filePath": "src/assets/models/enemy-ship.glb",
+      "contentHash": "9e739e378c00d7a51f98b7b52f6d9209e5caf28ba724acc98f8cd42cfe6f813d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 61603,
+      "hasStructuralAnalysis": false
+    },
+    "src/assets/models/low-poly-asteroid.glb": {
+      "filePath": "src/assets/models/low-poly-asteroid.glb",
+      "contentHash": "0badc3fb61541b4b54c5611e71e1fa2e76a0e3052c7cbcede786f45769fc5caf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 44973,
+      "hasStructuralAnalysis": false
+    },
+    "src/assets/models/mine.glb": {
+      "filePath": "src/assets/models/mine.glb",
+      "contentHash": "ad9ab56efd28e709251d08a90503089eb9c57c03cf054c56c17eba49d96f6d12",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 60935,
+      "hasStructuralAnalysis": false
+    },
+    "src/assets/models/player-ship.glb": {
+      "filePath": "src/assets/models/player-ship.glb",
+      "contentHash": "d27886335eac7f8d3aa3fb200bf8556493abf052385f02860051129dbd497b79",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28455,
+      "hasStructuralAnalysis": false
+    },
+    "src/assets/models/sun.glb": {
+      "filePath": "src/assets/models/sun.glb",
+      "contentHash": "30e7b11b4ff06e971f7dfdcd750ada44faa1a42fbd796470c1e1281b8d483d88",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 48665,
+      "hasStructuralAnalysis": false
+    },
+    "src/components/GameCanvas.tsx": {
+      "filePath": "src/components/GameCanvas.tsx",
+      "contentHash": "c9bf6555f9b4bc9cc915a1d323530b5b894320fcfb9335ee9e0b251d984e8c51",
+      "functions": [
+        {
+          "name": "SceneManager",
+          "params": [],
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "DebugOverlays",
+          "params": [],
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "GameCanvas",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "Canvas"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "Stats",
+            "GizmoHelper",
+            "GizmoViewport"
+          ]
+        },
+        {
+          "source": "../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../debug/useDebugStore",
+          "specifiers": [
+            "useDebugStore"
+          ]
+        },
+        {
+          "source": "../features/bar/BarScene",
+          "specifiers": [
+            "BarScene"
+          ]
+        },
+        {
+          "source": "../features/briefing/BriefingScene",
+          "specifiers": [
+            "BriefingScene"
+          ]
+        },
+        {
+          "source": "../features/quarters/QuartersScene",
+          "specifiers": [
+            "QuartersScene"
+          ]
+        },
+        {
+          "source": "../features/flight/FlightScene",
+          "specifiers": [
+            "FlightScene"
+          ]
+        },
+        {
+          "source": "../features/flight/LaunchScene",
+          "specifiers": [
+            "LaunchScene"
+          ]
+        },
+        {
+          "source": "../features/flight/LandingScene",
+          "specifiers": [
+            "LandingScene"
+          ]
+        }
+      ],
+      "exports": [
+        "GameCanvas"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ui/LCDPanel.tsx": {
+      "filePath": "src/components/ui/LCDPanel.tsx",
+      "contentHash": "de9a0ab4bc3ba6dd6d39504d92f93238c180700588b610fd2668faf49d692d90",
+      "functions": [
+        {
+          "name": "LCDPanel",
+          "params": [
+            "{ children, className = '', style }"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "ReactNode",
+            "CSSProperties"
+          ]
+        }
+      ],
+      "exports": [
+        "LCDPanel"
+      ],
+      "totalLines": 16,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ui/ScanlineOverlay.tsx": {
+      "filePath": "src/components/ui/ScanlineOverlay.tsx",
+      "contentHash": "380195984676492ff2fc0e2cfc24c784bc4165ed1b56d118a04072f2a2160e62",
+      "functions": [
+        {
+          "name": "ScanlineOverlay",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "ScanlineOverlay"
+      ],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/ui/TerminalText.tsx": {
+      "filePath": "src/components/ui/TerminalText.tsx",
+      "contentHash": "2b4050a5f721bf7292f795634b3b1298918c0088f06ab02baa55683fd70dcec0",
+      "functions": [
+        {
+          "name": "TerminalText",
+          "params": [
+            "{ text, delay = 30, className = 'terminal-text', as = 'p', style }"
+          ],
+          "exported": true,
+          "lineCount": 26
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState",
+            "CSSProperties"
+          ]
+        }
+      ],
+      "exports": [
+        "TerminalText"
+      ],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "src/debug/DebugPanel.tsx": {
+      "filePath": "src/debug/DebugPanel.tsx",
+      "contentHash": "9242465d810a83a12f0315b36d00aa25f8703b9c7bacaf69b3589900710dd699",
+      "functions": [
+        {
+          "name": "ControlsConfig",
+          "params": [],
+          "exported": false,
+          "lineCount": 63
+        },
+        {
+          "name": "DebugControls",
+          "params": [],
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "DebugPanel",
+          "params": [],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect"
+          ]
+        },
+        {
+          "source": "leva",
+          "specifiers": [
+            "useControls",
+            "folder",
+            "Leva"
+          ]
+        },
+        {
+          "source": "./useDebugStore",
+          "specifiers": [
+            "useDebugStore"
+          ]
+        },
+        {
+          "source": "../hooks/useControlsConfig",
+          "specifiers": [
+            "useControlsConfig",
+            "DEFAULT_BINDINGS"
+          ]
+        }
+      ],
+      "exports": [
+        "DebugPanel"
+      ],
+      "totalLines": 128,
+      "hasStructuralAnalysis": true
+    },
+    "src/debug/useDebugStore.ts": {
+      "filePath": "src/debug/useDebugStore.ts",
+      "contentHash": "5b4813fe324bc2065148f94396f4cd4a291c3f2b9c48a53a9d976d4f1c0a1c8b",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        }
+      ],
+      "exports": [
+        "useDebugStore"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/bar/BarScene.tsx": {
+      "filePath": "src/features/bar/BarScene.tsx",
+      "contentHash": "4a4058dba449c3e1f3cb3271b82b1d94041912ddce772ac7f9c190715cbcfaec",
+      "functions": [
+        {
+          "name": "BarScene",
+          "params": [],
+          "exported": true,
+          "lineCount": 86
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame"
+          ]
+        },
+        {
+          "source": "leva",
+          "specifiers": [
+            "useControls"
+          ]
+        },
+        {
+          "source": "../../debug/useDebugStore",
+          "specifiers": [
+            "useDebugStore"
+          ]
+        }
+      ],
+      "exports": [
+        "BarScene"
+      ],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/bar/BarUI.tsx": {
+      "filePath": "src/features/bar/BarUI.tsx",
+      "contentHash": "6efdf8325d378735f904e388669d228bf56a99d3df3cc27d99effbfbc208b088",
+      "functions": [
+        {
+          "name": "BarUI",
+          "params": [],
+          "exported": true,
+          "lineCount": 322
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState",
+            "useEffect"
+          ]
+        },
+        {
+          "source": "../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../../state/useMissionStore",
+          "specifiers": [
+            "useMissionStore"
+          ]
+        },
+        {
+          "source": "../../state/useCombatStore",
+          "specifiers": [
+            "useCombatStore"
+          ]
+        },
+        {
+          "source": "../../components/ui/LCDPanel",
+          "specifiers": [
+            "LCDPanel"
+          ]
+        },
+        {
+          "source": "../../components/ui/TerminalText",
+          "specifiers": [
+            "TerminalText"
+          ]
+        }
+      ],
+      "exports": [
+        "BarUI"
+      ],
+      "totalLines": 330,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/briefing/BriefingScene.tsx": {
+      "filePath": "src/features/briefing/BriefingScene.tsx",
+      "contentHash": "91c91ea500626ad24b6d3e7f4ecd8b66564fdb8b637195d505cfd569c690c7ca",
+      "functions": [
+        {
+          "name": "BriefingScene",
+          "params": [],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame"
+          ]
+        }
+      ],
+      "exports": [
+        "BriefingScene"
+      ],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/Asteroids.tsx": {
+      "filePath": "src/features/flight/Asteroids.tsx",
+      "contentHash": "7d0b4e994eecb7f0982fbd6bfcaf00354481b63a9bf38a19648292f7ea876b26",
+      "functions": [
+        {
+          "name": "AsteroidExplosion",
+          "params": [
+            "{ position, scale }"
+          ],
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "Asteroids",
+          "params": [],
+          "exported": true,
+          "lineCount": 142
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "useState",
+            "useEffect",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame",
+            "useThree"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "useGLTF"
+          ]
+        },
+        {
+          "source": "../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../../state/useCombatStore",
+          "specifiers": [
+            "useCombatStore",
+            "AsteroidData"
+          ]
+        },
+        {
+          "source": "../../assets/models/low-poly-asteroid.glb",
+          "specifiers": [
+            "asteroidUrl"
+          ]
+        },
+        {
+          "source": "./shaders",
+          "specifiers": [
+            "makeExplosionMaterial"
+          ]
+        }
+      ],
+      "exports": [
+        "Asteroids"
+      ],
+      "totalLines": 182,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/CockpitHUD.tsx": {
+      "filePath": "src/features/flight/CockpitHUD.tsx",
+      "contentHash": "552ce0c30bc76c1d8c2e44525428eae35bfa6a94a4e836783eb05de4ec278323",
+      "functions": [
+        {
+          "name": "getHealthColor",
+          "params": [
+            "val"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "StatBar",
+          "params": [
+            "{ label, value, color }"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "CockpitHUD",
+          "params": [
+            "{ throttle, shipRef }"
+          ],
+          "exported": true,
+          "lineCount": 310
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "MutableRefObject"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "Html"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame"
+          ]
+        },
+        {
+          "source": "../../hooks/usePlayerControls",
+          "specifiers": [
+            "usePlayerControls"
+          ]
+        },
+        {
+          "source": "../../state/useCombatStore",
+          "specifiers": [
+            "useCombatStore"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "../../state/useMissionStore",
+          "specifiers": [
+            "useMissionStore"
+          ]
+        },
+        {
+          "source": "../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        }
+      ],
+      "exports": [
+        "CockpitHUD"
+      ],
+      "totalLines": 340,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/Enemies.tsx": {
+      "filePath": "src/features/flight/Enemies.tsx",
+      "contentHash": "e3ead72323f38fcd8cca762de9de64ba70fafbdb3874c3feb007315265533728",
+      "functions": [
+        {
+          "name": "TargetBracket",
+          "params": [],
+          "exported": false,
+          "lineCount": 48
+        },
+        {
+          "name": "Enemies",
+          "params": [],
+          "exported": true,
+          "lineCount": 28
+        },
+        {
+          "name": "Explosion",
+          "params": [
+            "{ position }"
+          ],
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "EnemyShip",
+          "params": [
+            "{ enemy }"
+          ],
+          "exported": false,
+          "lineCount": 33
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "useState",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame",
+            "useThree"
+          ]
+        },
+        {
+          "source": "../../state/useCombatStore",
+          "specifiers": [
+            "useCombatStore",
+            "EnemyData"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "Html",
+            "useGLTF"
+          ]
+        },
+        {
+          "source": "../../assets/models/enemy-ship.glb",
+          "specifiers": [
+            "enemyShipUrl"
+          ]
+        },
+        {
+          "source": "./shaders",
+          "specifiers": [
+            "makeEngineGlowMaterial",
+            "makeExplosionMaterial"
+          ]
+        },
+        {
+          "source": "./flight.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [
+        "Enemies"
+      ],
+      "totalLines": 150,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/flight.css": {
+      "filePath": "src/features/flight/flight.css",
+      "contentHash": "2886e3dd7445c6207a5fbc96759b009925cb8fb9384cee54782f9114dc8e7bce",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 81,
+      "hasStructuralAnalysis": false
+    },
+    "src/features/flight/FlightScene.tsx": {
+      "filePath": "src/features/flight/FlightScene.tsx",
+      "contentHash": "2ce1311bc61736765143048410a7cb247586a71cd3596b645137d1a1455d5dc3",
+      "functions": [
+        {
+          "name": "Waypoints",
+          "params": [],
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "Starfield",
+          "params": [],
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "FlightScene",
+          "params": [],
+          "exported": true,
+          "lineCount": 64
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "leva",
+          "specifiers": [
+            "useControls"
+          ]
+        },
+        {
+          "source": "./PlayerShip",
+          "specifiers": [
+            "PlayerShip"
+          ]
+        },
+        {
+          "source": "./Lasers",
+          "specifiers": [
+            "Lasers"
+          ]
+        },
+        {
+          "source": "./Enemies",
+          "specifiers": [
+            "Enemies"
+          ]
+        },
+        {
+          "source": "./Mines",
+          "specifiers": [
+            "Mines"
+          ]
+        },
+        {
+          "source": "./Asteroids",
+          "specifiers": [
+            "Asteroids"
+          ]
+        },
+        {
+          "source": "./Sun",
+          "specifiers": [
+            "Sun"
+          ]
+        },
+        {
+          "source": "../../state/useMissionStore",
+          "specifiers": [
+            "useMissionStore"
+          ]
+        },
+        {
+          "source": "../../debug/useDebugStore",
+          "specifiers": [
+            "useDebugStore"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "Html"
+          ]
+        },
+        {
+          "source": "./flight.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [
+        "FlightScene"
+      ],
+      "totalLines": 133,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/LandingScene.tsx": {
+      "filePath": "src/features/flight/LandingScene.tsx",
+      "contentHash": "8c02c50a1341d0497687f59b99d7d9fc33e1ea674b36f56260515d83de504680",
+      "functions": [
+        {
+          "name": "LandingScene",
+          "params": [],
+          "exported": true,
+          "lineCount": 76
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "useEffect",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame",
+            "useThree"
+          ]
+        },
+        {
+          "source": "../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../../state/useMissionStore",
+          "specifiers": [
+            "useMissionStore"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "useGLTF"
+          ]
+        },
+        {
+          "source": "../../assets/models/player-ship.glb",
+          "specifiers": [
+            "playerShipUrl"
+          ]
+        }
+      ],
+      "exports": [
+        "LandingScene"
+      ],
+      "totalLines": 87,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/Lasers.tsx": {
+      "filePath": "src/features/flight/Lasers.tsx",
+      "contentHash": "b21db761eb5559cc9c0ff7cb5566ed006369aa9e14553279dca46ae362bd1a0d",
+      "functions": [
+        {
+          "name": "Lasers",
+          "params": [],
+          "exported": true,
+          "lineCount": 63
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame"
+          ]
+        },
+        {
+          "source": "../../state/useCombatStore",
+          "specifiers": [
+            "useCombatStore"
+          ]
+        },
+        {
+          "source": "./shaders",
+          "specifiers": [
+            "makeLaserMaterial"
+          ]
+        }
+      ],
+      "exports": [
+        "Lasers"
+      ],
+      "totalLines": 74,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/LaunchScene.tsx": {
+      "filePath": "src/features/flight/LaunchScene.tsx",
+      "contentHash": "dfe5e10f2f95a52dd30c97114364755cfe80b1e039cd8558c13575ee222785f3",
+      "functions": [
+        {
+          "name": "LaunchScene",
+          "params": [],
+          "exported": true,
+          "lineCount": 69
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "useEffect",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame",
+            "useThree"
+          ]
+        },
+        {
+          "source": "../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "useGLTF"
+          ]
+        },
+        {
+          "source": "../../assets/models/player-ship.glb",
+          "specifiers": [
+            "playerShipUrl"
+          ]
+        }
+      ],
+      "exports": [
+        "LaunchScene"
+      ],
+      "totalLines": 79,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/Mines.tsx": {
+      "filePath": "src/features/flight/Mines.tsx",
+      "contentHash": "c442663e30f51322c7c246153242a2a440980c9b82ac976e618a0768bed7f09f",
+      "functions": [
+        {
+          "name": "MineExplosion",
+          "params": [
+            "{ position }"
+          ],
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "Mine",
+          "params": [
+            "{ data }"
+          ],
+          "exported": false,
+          "lineCount": 39
+        },
+        {
+          "name": "Mines",
+          "params": [],
+          "exported": true,
+          "lineCount": 48
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "useState",
+            "useEffect",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame",
+            "useThree"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "useGLTF"
+          ]
+        },
+        {
+          "source": "../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../../state/useCombatStore",
+          "specifiers": [
+            "useCombatStore",
+            "MineData"
+          ]
+        },
+        {
+          "source": "../../assets/models/mine.glb",
+          "specifiers": [
+            "mineUrl"
+          ]
+        },
+        {
+          "source": "./shaders",
+          "specifiers": [
+            "makeExplosionMaterial"
+          ]
+        }
+      ],
+      "exports": [
+        "Mines"
+      ],
+      "totalLines": 126,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/PlayerShip.tsx": {
+      "filePath": "src/features/flight/PlayerShip.tsx",
+      "contentHash": "835f5f436ab65bbc1a72c55211c2a37f3d87fcb4efd9912792ce643bdd088132",
+      "functions": [
+        {
+          "name": "TargetingReticle",
+          "params": [],
+          "exported": false,
+          "lineCount": 31
+        },
+        {
+          "name": "LeadIndicator",
+          "params": [],
+          "exported": false,
+          "lineCount": 54
+        },
+        {
+          "name": "DirectionArrows",
+          "params": [
+            "{\n  meshRef,\n  velocityRef,\n}"
+          ],
+          "exported": false,
+          "lineCount": 42
+        },
+        {
+          "name": "CameraInfoLabel",
+          "params": [],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "PlayerShip",
+          "params": [],
+          "exported": true,
+          "lineCount": 216
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "useState",
+            "useEffect",
+            "useMemo",
+            "RefObject",
+            "MutableRefObject"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame",
+            "useThree"
+          ]
+        },
+        {
+          "source": "leva",
+          "specifiers": [
+            "useControls"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "Html",
+            "useGLTF"
+          ]
+        },
+        {
+          "source": "../../hooks/usePlayerControls",
+          "specifiers": [
+            "usePlayerControls"
+          ]
+        },
+        {
+          "source": "./CockpitHUD",
+          "specifiers": [
+            "CockpitHUD"
+          ]
+        },
+        {
+          "source": "../../state/useCombatStore",
+          "specifiers": [
+            "useCombatStore"
+          ]
+        },
+        {
+          "source": "../../state/useMissionStore",
+          "specifiers": [
+            "useMissionStore"
+          ]
+        },
+        {
+          "source": "../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../../debug/useDebugStore",
+          "specifiers": [
+            "useDebugStore"
+          ]
+        },
+        {
+          "source": "../../assets/models/player-ship.glb",
+          "specifiers": [
+            "playerShipUrl"
+          ]
+        },
+        {
+          "source": "./shaders",
+          "specifiers": [
+            "makeEngineGlowMaterial"
+          ]
+        }
+      ],
+      "exports": [
+        "PlayerShip"
+      ],
+      "totalLines": 394,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/shaders.ts": {
+      "filePath": "src/features/flight/shaders.ts",
+      "contentHash": "55996c0c6309246cb3942880d59b2a1a5210bea32a3abda2b64f20f93cde7b8c",
+      "functions": [
+        {
+          "name": "makeEngineGlowMaterial",
+          "params": [
+            "coreHex",
+            "flameHex"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "makeLaserMaterial",
+          "params": [
+            "colorHex"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "makeExplosionMaterial",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        }
+      ],
+      "exports": [
+        "engineGlowVert",
+        "engineGlowFrag",
+        "makeEngineGlowMaterial",
+        "laserVert",
+        "laserFrag",
+        "makeLaserMaterial",
+        "explosionVert",
+        "explosionFrag",
+        "makeExplosionMaterial"
+      ],
+      "totalLines": 264,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/Starfield.tsx": {
+      "filePath": "src/features/flight/Starfield.tsx",
+      "contentHash": "03b53a88b89e9f32e9ef136fb24f963d9ad305070737b3e5e35c48651a082cab",
+      "functions": [
+        {
+          "name": "Starfield",
+          "params": [],
+          "exported": true,
+          "lineCount": 49
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        }
+      ],
+      "exports": [
+        "Starfield"
+      ],
+      "totalLines": 53,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/Sun.tsx": {
+      "filePath": "src/features/flight/Sun.tsx",
+      "contentHash": "decf0bfd2979e22f8af6deb0921bb9dc0742c64d0b7b2c7c26c09535fd8fbc06",
+      "functions": [
+        {
+          "name": "Sun",
+          "params": [],
+          "exported": true,
+          "lineCount": 47
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useRef",
+            "useMemo"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "@react-three/fiber",
+          "specifiers": [
+            "useFrame"
+          ]
+        },
+        {
+          "source": "@react-three/drei",
+          "specifiers": [
+            "useGLTF"
+          ]
+        },
+        {
+          "source": "leva",
+          "specifiers": [
+            "useControls"
+          ]
+        },
+        {
+          "source": "../../assets/models/sun.glb",
+          "specifiers": [
+            "sunUrl"
+          ]
+        }
+      ],
+      "exports": [
+        "Sun"
+      ],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/quarters/QuartersScene.tsx": {
+      "filePath": "src/features/quarters/QuartersScene.tsx",
+      "contentHash": "f73781de89e54946fdb951afba449bb9e31139253a642c30700b9b7b2130dd10",
+      "functions": [
+        {
+          "name": "QuartersScene",
+          "params": [],
+          "exported": true,
+          "lineCount": 36
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "QuartersScene"
+      ],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "src/hooks/useControlsConfig.ts": {
+      "filePath": "src/hooks/useControlsConfig.ts",
+      "contentHash": "e75a75ebcfa28ac0713f59314276825557a7e38126335ae305d2d1f690ebef5c",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        }
+      ],
+      "exports": [
+        "DEFAULT_BINDINGS",
+        "useControlsConfig"
+      ],
+      "totalLines": 41,
+      "hasStructuralAnalysis": true
+    },
+    "src/hooks/usePlayerControls.ts": {
+      "filePath": "src/hooks/usePlayerControls.ts",
+      "contentHash": "8005062cce2fb955b7493175fea5b9dbfa735ef2c1f9ca654b5bbac6b6786967",
+      "functions": [
+        {
+          "name": "matchesSlot",
+          "params": [
+            "code",
+            "slot"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "codeToAction",
+          "params": [
+            "code",
+            "bindings"
+          ],
+          "returnType": "keyof Controls | null",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "usePlayerControls",
+          "params": [],
+          "exported": true,
+          "lineCount": 37
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "./useControlsConfig",
+          "specifiers": [
+            "useControlsConfig",
+            "ControlBindings"
+          ]
+        }
+      ],
+      "exports": [
+        "usePlayerControls"
+      ],
+      "totalLines": 74,
+      "hasStructuralAnalysis": true
+    },
+    "src/index.css": {
+      "filePath": "src/index.css",
+      "contentHash": "25df875bc2b647f9868e2392621d57aef8cd58a56a83594e70a7917ca5accc3d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 193,
+      "hasStructuralAnalysis": false
+    },
+    "src/main.tsx": {
+      "filePath": "src/main.tsx",
+      "contentHash": "85a2cdedf2c9899103739aabe9576c7e52eda0c0fff19cbc4679d424e573cd68",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-dom/client",
+          "specifiers": [
+            "ReactDOM"
+          ]
+        },
+        {
+          "source": "./App.tsx",
+          "specifiers": [
+            "App"
+          ]
+        },
+        {
+          "source": "./index.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "src/state/useCombatStore.ts": {
+      "filePath": "src/state/useCombatStore.ts",
+      "contentHash": "2d1b88ab634399a16386ce0add19ecc982e531f15e4aa7955a2263c78601e393",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        },
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        },
+        {
+          "source": "./useMissionStore",
+          "specifiers": [
+            "useMissionStore"
+          ]
+        },
+        {
+          "source": "../utils/audio",
+          "specifiers": [
+            "playLaserSound",
+            "playExplosionSound"
+          ]
+        }
+      ],
+      "exports": [
+        "useCombatStore"
+      ],
+      "totalLines": 542,
+      "hasStructuralAnalysis": true
+    },
+    "src/state/useGameStore.ts": {
+      "filePath": "src/state/useGameStore.ts",
+      "contentHash": "842bccd3778b1af46b7d26bbb5e9693ccc8528b118f40436b4aca26dbae36237",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        }
+      ],
+      "exports": [
+        "useGameStore"
+      ],
+      "totalLines": 126,
+      "hasStructuralAnalysis": true
+    },
+    "src/state/useMissionStore.ts": {
+      "filePath": "src/state/useMissionStore.ts",
+      "contentHash": "9dfc599d1348f57750e25db75bfb0ccae83f0ed47f9ff4929b86c41ba3aeabd2",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "zustand",
+          "specifiers": [
+            "create"
+          ]
+        }
+      ],
+      "exports": [
+        "useMissionStore"
+      ],
+      "totalLines": 110,
+      "hasStructuralAnalysis": true
+    },
+    "src/utils/audio.ts": {
+      "filePath": "src/utils/audio.ts",
+      "contentHash": "1d4eebf295f436d79968df896854d66ef1ffc348613d44a1ffd517dddc360e7e",
+      "functions": [
+        {
+          "name": "initAudio",
+          "params": [],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "playLaserSound",
+          "params": [],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "playExplosionSound",
+          "params": [],
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "initAudio",
+        "playLaserSound",
+        "playExplosionSound"
+      ],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "src/vite-env.d.ts": {
+      "filePath": "src/vite-env.d.ts",
+      "contentHash": "fa5752c04f5a0707b99b2a61357e600802f717ed4133cae54e0dd955dd8636f9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "tsconfig.json": {
+      "filePath": "tsconfig.json",
+      "contentHash": "980d6cbe977ddfb52d3ab1bdd3fba30f8c1db9371b3b14aa4557d32bb00ce54b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": true
+    },
+    "tsconfig.node.json": {
+      "filePath": "tsconfig.node.json",
+      "contentHash": "bb9fd8592a9e364641441219f10d84daae9ba2ca5cc85db798efad6913bb8257",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "vite.config.ts": {
+      "filePath": "vite.config.ts",
+      "contentHash": "7db9085852e7d983d5b0a98db6e57e7ac628e4a2ee182f021678e0fd7f3021f3",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vite",
+          "specifiers": [
+            "defineConfig"
+          ]
+        },
+        {
+          "source": "@vitejs/plugin-react",
+          "specifiers": [
+            "react"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

@@ -1,0 +1,2690 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "void-commander",
+    "languages": [
+      "typescript",
+      "css",
+      "html",
+      "glb"
+    ],
+    "frameworks": [
+      "React",
+      "Vite",
+      "Zustand",
+      "@react-three/fiber",
+      "@react-three/drei",
+      "Three.js",
+      "Leva"
+    ],
+    "description": "Browser-based 3D space combat game built with React, Three.js, and Zustand state management. Features flight scenes with player ship, enemies, lasers, mines, asteroids, and a cockpit HUD, plus bar, briefing, quarters, and landing scenes.",
+    "analyzedAt": "2026-05-30T01:51:30.685245Z",
+    "gitCommitHash": "1d08db056a85bc0352c8621cc0d0564324e24189"
+  },
+  "nodes": [
+    {
+      "id": "file:src/assets/models/enemy-ship.glb",
+      "type": "file",
+      "name": "enemy-ship.glb",
+      "filePath": "src/assets/models/enemy-ship.glb",
+      "summary": "3D GLB model asset for the enemy spacecraft, loaded at runtime via useGLTF and cloned per enemy instance in Enemies.tsx.",
+      "tags": [
+        "asset",
+        "3d-model",
+        "game-object"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/assets/models/low-poly-asteroid.glb",
+      "type": "file",
+      "name": "low-poly-asteroid.glb",
+      "filePath": "src/assets/models/low-poly-asteroid.glb",
+      "summary": "Low-polygon 3D GLB model asset for asteroids, used as the shared geometry source for instanced mesh rendering in Asteroids.tsx.",
+      "tags": [
+        "asset",
+        "3d-model",
+        "game-object"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/assets/models/mine.glb",
+      "type": "file",
+      "name": "mine.glb",
+      "filePath": "src/assets/models/mine.glb",
+      "summary": "3D GLB model asset for space mines, loaded and cloned per mine instance in Mines.tsx with a slow rotation animation.",
+      "tags": [
+        "asset",
+        "3d-model",
+        "game-object"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/assets/models/sun.glb",
+      "type": "file",
+      "name": "sun.glb",
+      "filePath": "src/assets/models/sun.glb",
+      "summary": "3D GLB model asset for the in-scene sun object, loaded in Sun.tsx and re-materialised with a MeshBasicMaterial to achieve a self-lit appearance.",
+      "tags": [
+        "asset",
+        "3d-model",
+        "environment"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/flight/Asteroids.tsx",
+      "type": "file",
+      "name": "Asteroids.tsx",
+      "filePath": "src/features/flight/Asteroids.tsx",
+      "summary": "React Three Fiber component that spawns an instanced mesh field of low-poly asteroids, handles per-frame rotation animation, detects player and enemy collisions, and renders procedural explosion effects on destruction.",
+      "tags": [
+        "component",
+        "game-object",
+        "collision-detection",
+        "instanced-rendering"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/flight/Asteroids.tsx:AsteroidExplosion",
+      "type": "function",
+      "name": "AsteroidExplosion",
+      "filePath": "src/features/flight/Asteroids.tsx",
+      "lineRange": [
+        12,
+        36
+      ],
+      "summary": "Local React component that animates a procedural shader-based explosion sphere over ~1.4 seconds then unmounts itself.",
+      "tags": [
+        "component",
+        "animation",
+        "vfx"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/flight/Asteroids.tsx:Asteroids",
+      "type": "function",
+      "name": "Asteroids",
+      "filePath": "src/features/flight/Asteroids.tsx",
+      "lineRange": [
+        38,
+        179
+      ],
+      "summary": "Exported component managing the asteroid field: initialises store data, updates the instanced mesh transform per frame, checks player and enemy collision, and spawns AsteroidExplosion components for destroyed asteroids.",
+      "tags": [
+        "component",
+        "game-object",
+        "collision-detection",
+        "entry-point"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/features/flight/Enemies.tsx",
+      "type": "file",
+      "name": "Enemies.tsx",
+      "filePath": "src/features/flight/Enemies.tsx",
+      "summary": "React Three Fiber component managing enemy ship rendering, AI update loop, target-lock bracket HUD overlay, and per-enemy explosion VFX using custom engine glow and explosion shaders.",
+      "tags": [
+        "component",
+        "game-object",
+        "ai",
+        "vfx"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/flight/Enemies.tsx:TargetBracket",
+      "type": "function",
+      "name": "TargetBracket",
+      "filePath": "src/features/flight/Enemies.tsx",
+      "lineRange": [
+        11,
+        58
+      ],
+      "summary": "Local component that renders camera-facing corner bracket line segments around the currently locked target enemy, scaling with distance for consistent screen size.",
+      "tags": [
+        "component",
+        "hud",
+        "targeting"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Enemies.tsx:Enemies",
+      "type": "function",
+      "name": "Enemies",
+      "filePath": "src/features/flight/Enemies.tsx",
+      "lineRange": [
+        60,
+        87
+      ],
+      "summary": "Exported component that drives the enemy AI update each frame using camera position and smoothed velocity, then renders active EnemyShip or Explosion per enemy plus the TargetBracket overlay.",
+      "tags": [
+        "component",
+        "game-object",
+        "ai",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Enemies.tsx:EnemyShip",
+      "type": "function",
+      "name": "EnemyShip",
+      "filePath": "src/features/flight/Enemies.tsx",
+      "lineRange": [
+        115,
+        147
+      ],
+      "summary": "Local component that renders a single enemy ship using the cloned GLB scene, orients it toward its velocity vector each frame, animates an engine glow sphere, and shows an HTML health label.",
+      "tags": [
+        "component",
+        "game-object",
+        "3d-rendering"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/FlightScene.tsx",
+      "type": "file",
+      "name": "FlightScene.tsx",
+      "filePath": "src/features/flight/FlightScene.tsx",
+      "summary": "Top-level React Three Fiber scene composition component for the flight mode, assembling lighting, starfield, player ship, enemies, lasers, mines, asteroids, sun, and mission waypoints into a single renderable group.",
+      "tags": [
+        "component",
+        "entry-point",
+        "scene-composition",
+        "game-scene"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/FlightScene.tsx:FlightScene",
+      "type": "function",
+      "name": "FlightScene",
+      "filePath": "src/features/flight/FlightScene.tsx",
+      "lineRange": [
+        69,
+        132
+      ],
+      "summary": "Exported root scene component that wires together all flight-mode sub-components under configurable ambient and hemisphere lighting with optional debug light helpers controlled via the debug store.",
+      "tags": [
+        "component",
+        "entry-point",
+        "scene-composition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/Lasers.tsx",
+      "type": "file",
+      "name": "Lasers.tsx",
+      "filePath": "src/features/flight/Lasers.tsx",
+      "summary": "React Three Fiber component rendering player and enemy laser bolts as instanced cylinder meshes with custom animated shader materials, updated each frame from the combat store.",
+      "tags": [
+        "component",
+        "game-object",
+        "instanced-rendering",
+        "vfx"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Lasers.tsx:Lasers",
+      "type": "function",
+      "name": "Lasers",
+      "filePath": "src/features/flight/Lasers.tsx",
+      "lineRange": [
+        11,
+        73
+      ],
+      "summary": "Exported component managing two instanced meshes (player cyan and enemy red) for laser bolts, advancing physics via the combat store each frame and orientating each bolt along its velocity vector.",
+      "tags": [
+        "component",
+        "game-object",
+        "instanced-rendering"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/Mines.tsx",
+      "type": "file",
+      "name": "Mines.tsx",
+      "filePath": "src/features/flight/Mines.tsx",
+      "summary": "React Three Fiber component that spawns a randomised field of space mines loaded from a GLB model, handles player and enemy collision detonation, and displays explosion VFX for destroyed mines.",
+      "tags": [
+        "component",
+        "game-object",
+        "collision-detection",
+        "vfx"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/flight/Mines.tsx:Mine",
+      "type": "function",
+      "name": "Mine",
+      "filePath": "src/features/flight/Mines.tsx",
+      "lineRange": [
+        36,
+        74
+      ],
+      "summary": "Local component rendering a single rotating mine model, detecting proximity-based detonation against the player camera and active enemies each frame.",
+      "tags": [
+        "component",
+        "game-object",
+        "collision-detection"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Mines.tsx:Mines",
+      "type": "function",
+      "name": "Mines",
+      "filePath": "src/features/flight/Mines.tsx",
+      "lineRange": [
+        76,
+        123
+      ],
+      "summary": "Exported component that initialises the mine field in the combat store, tracks detonated mines, and renders active Mine components alongside MineExplosion effects.",
+      "tags": [
+        "component",
+        "game-object",
+        "entry-point"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/Sun.tsx",
+      "type": "file",
+      "name": "Sun.tsx",
+      "filePath": "src/features/flight/Sun.tsx",
+      "summary": "React Three Fiber component rendering the in-scene sun from a GLB model with a converted MeshBasicMaterial for self-illumination, a slow rotation animation, and an attached directional light with Leva-controlled position and intensity.",
+      "tags": [
+        "component",
+        "environment",
+        "lighting",
+        "3d-rendering"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Sun.tsx:Sun",
+      "type": "function",
+      "name": "Sun",
+      "filePath": "src/features/flight/Sun.tsx",
+      "lineRange": [
+        8,
+        54
+      ],
+      "summary": "Exported component that loads and re-materialises the sun GLB, applies Leva-driven position and scale controls, slowly rotates the mesh each frame, and emits a configurable directional light.",
+      "tags": [
+        "component",
+        "environment",
+        "lighting"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/shaders.ts",
+      "type": "file",
+      "name": "shaders.ts",
+      "filePath": "src/features/flight/shaders.ts",
+      "summary": "GLSL shader source strings and THREE.ShaderMaterial factory functions for three visual effects: engine plasma glow, laser bolt bolts, and procedural explosion fire used throughout the flight scene.",
+      "tags": [
+        "utility",
+        "shader",
+        "vfx",
+        "3d-rendering"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/flight/shaders.ts:makeEngineGlowMaterial",
+      "type": "function",
+      "name": "makeEngineGlowMaterial",
+      "filePath": "src/features/flight/shaders.ts",
+      "lineRange": [
+        75,
+        90
+      ],
+      "summary": "Factory that creates a transparent additive ShaderMaterial for animated engine plasma, parameterised by core and flame hex colours.",
+      "tags": [
+        "utility",
+        "shader",
+        "factory"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/flight/shaders.ts:makeLaserMaterial",
+      "type": "function",
+      "name": "makeLaserMaterial",
+      "filePath": "src/features/flight/shaders.ts",
+      "lineRange": [
+        148,
+        160
+      ],
+      "summary": "Factory that creates a transparent additive ShaderMaterial for instanced laser bolt rendering, parameterised by a single hex colour.",
+      "tags": [
+        "utility",
+        "shader",
+        "factory"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/flight/shaders.ts:makeExplosionMaterial",
+      "type": "function",
+      "name": "makeExplosionMaterial",
+      "filePath": "src/features/flight/shaders.ts",
+      "lineRange": [
+        249,
+        262
+      ],
+      "summary": "Factory that creates a double-sided transparent ShaderMaterial for procedural explosion fire with displacement, heat-colour ramp, and progress-driven fade.",
+      "tags": [
+        "utility",
+        "shader",
+        "factory",
+        "vfx"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/App.tsx",
+      "type": "file",
+      "name": "App.tsx",
+      "filePath": "src/App.tsx",
+      "summary": "Root application component that orchestrates game mode routing, mission lifecycle management, HUD rendering, and leaderboard persistence. Acts as the central coordinator between all game state stores and scene components.",
+      "tags": [
+        "entry-point",
+        "component",
+        "game-logic",
+        "state-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/App.tsx:App",
+      "type": "function",
+      "name": "App",
+      "filePath": "src/App.tsx",
+      "lineRange": [
+        13,
+        212
+      ],
+      "summary": "Main React component that handles game mode switching, mission start/complete callbacks, HUD overlay rendering, and writes leaderboard scores to localStorage.",
+      "tags": [
+        "component",
+        "game-logic",
+        "entry-point"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/components/ui/LCDPanel.tsx",
+      "type": "file",
+      "name": "LCDPanel.tsx",
+      "filePath": "src/components/ui/LCDPanel.tsx",
+      "summary": "Presentational UI component that wraps content in a styled LCD-style panel container used across game interface screens.",
+      "tags": [
+        "component",
+        "ui",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/ui/LCDPanel.tsx:LCDPanel",
+      "type": "function",
+      "name": "LCDPanel",
+      "filePath": "src/components/ui/LCDPanel.tsx",
+      "lineRange": [
+        9,
+        15
+      ],
+      "summary": "Exported React component rendering a styled LCD panel wrapper with optional className and style props.",
+      "tags": [
+        "component",
+        "ui",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/ui/ScanlineOverlay.tsx",
+      "type": "file",
+      "name": "ScanlineOverlay.tsx",
+      "filePath": "src/components/ui/ScanlineOverlay.tsx",
+      "summary": "Presentational UI component rendering a CSS scanline overlay effect to give the game interface a retro CRT aesthetic.",
+      "tags": [
+        "component",
+        "ui",
+        "visual-effect"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/ui/ScanlineOverlay.tsx:ScanlineOverlay",
+      "type": "function",
+      "name": "ScanlineOverlay",
+      "filePath": "src/components/ui/ScanlineOverlay.tsx",
+      "lineRange": [
+        3,
+        10
+      ],
+      "summary": "Exported React component that renders a full-screen scanline div overlay for CRT visual effect.",
+      "tags": [
+        "component",
+        "ui",
+        "visual-effect"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/ui/TerminalText.tsx",
+      "type": "file",
+      "name": "TerminalText.tsx",
+      "filePath": "src/components/ui/TerminalText.tsx",
+      "summary": "Animated text component that progressively reveals characters at a configurable delay to simulate a terminal typewriter effect.",
+      "tags": [
+        "component",
+        "ui",
+        "animation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/ui/TerminalText.tsx:TerminalText",
+      "type": "function",
+      "name": "TerminalText",
+      "filePath": "src/components/ui/TerminalText.tsx",
+      "lineRange": [
+        11,
+        36
+      ],
+      "summary": "Exported React component that uses useState and setInterval to progressively reveal text characters, simulating a terminal typewriter animation.",
+      "tags": [
+        "component",
+        "ui",
+        "animation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/debug/DebugPanel.tsx",
+      "type": "file",
+      "name": "DebugPanel.tsx",
+      "filePath": "src/debug/DebugPanel.tsx",
+      "summary": "Developer debug panel providing an in-game Leva controls GUI for remapping key bindings and toggling debug visualization overlays such as direction helpers, camera info, stats, and light helpers.",
+      "tags": [
+        "component",
+        "debug",
+        "developer-tool"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/debug/DebugPanel.tsx:ControlsConfig",
+      "type": "function",
+      "name": "ControlsConfig",
+      "filePath": "src/debug/DebugPanel.tsx",
+      "lineRange": [
+        6,
+        68
+      ],
+      "summary": "Internal React component that renders Leva GUI controls for each configurable key binding, calling setBinding on user interaction.",
+      "tags": [
+        "component",
+        "debug",
+        "configuration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/debug/DebugPanel.tsx:DebugControls",
+      "type": "function",
+      "name": "DebugControls",
+      "filePath": "src/debug/DebugPanel.tsx",
+      "lineRange": [
+        70,
+        102
+      ],
+      "summary": "Internal React component using Leva controls to expose boolean toggles for debug visualizations stored in useDebugStore.",
+      "tags": [
+        "component",
+        "debug",
+        "developer-tool"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/debug/DebugPanel.tsx:DebugPanel",
+      "type": "function",
+      "name": "DebugPanel",
+      "filePath": "src/debug/DebugPanel.tsx",
+      "lineRange": [
+        104,
+        127
+      ],
+      "summary": "Exported panel component that mounts the Leva debug GUI on a keyboard shortcut (backtick key) and renders ControlsConfig and DebugControls sub-components.",
+      "tags": [
+        "component",
+        "debug",
+        "event-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/bar/BarUI.tsx",
+      "type": "file",
+      "name": "BarUI.tsx",
+      "filePath": "src/features/bar/BarUI.tsx",
+      "summary": "Complex bar scene UI component managing multi-view navigation (bar, missions, board, cantina), NPC dialogue trees, mission briefing, leaderboard display, and credit transactions.",
+      "tags": [
+        "component",
+        "ui",
+        "game-logic",
+        "dialogue"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/bar/BarUI.tsx:BarUI",
+      "type": "function",
+      "name": "BarUI",
+      "filePath": "src/features/bar/BarUI.tsx",
+      "lineRange": [
+        8,
+        329
+      ],
+      "summary": "Exported React component implementing the full in-game bar interface with tabbed views, NPC conversation trees, mission selection, and arcade mode launch, backed by game/mission/combat stores.",
+      "tags": [
+        "component",
+        "ui",
+        "game-logic",
+        "dialogue"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/hooks/useControlsConfig.ts",
+      "type": "file",
+      "name": "useControlsConfig.ts",
+      "filePath": "src/hooks/useControlsConfig.ts",
+      "summary": "Custom React hook and default bindings configuration for player input key mappings, providing a Zustand-backed store for reading and updating control bindings.",
+      "tags": [
+        "hook",
+        "configuration",
+        "input-handling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/main.tsx",
+      "type": "file",
+      "name": "main.tsx",
+      "filePath": "src/main.tsx",
+      "summary": "Application entry point that mounts the React root into the DOM and imports global CSS styles.",
+      "tags": [
+        "entry-point",
+        "bootstrap"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/utils/audio.ts",
+      "type": "file",
+      "name": "audio.ts",
+      "filePath": "src/utils/audio.ts",
+      "summary": "Web Audio API utility module providing procedurally generated sound effects for laser fire and explosions using oscillators and gain envelopes.",
+      "tags": [
+        "utility",
+        "audio",
+        "procedural"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/utils/audio.ts:initAudio",
+      "type": "function",
+      "name": "initAudio",
+      "filePath": "src/utils/audio.ts",
+      "lineRange": [
+        3,
+        10
+      ],
+      "summary": "Exported function that initializes the shared AudioContext and resumes it to satisfy browser autoplay policies.",
+      "tags": [
+        "utility",
+        "audio",
+        "initialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/utils/audio.ts:playLaserSound",
+      "type": "function",
+      "name": "playLaserSound",
+      "filePath": "src/utils/audio.ts",
+      "lineRange": [
+        12,
+        32
+      ],
+      "summary": "Exported function that synthesizes a descending-frequency laser sound using an oscillator with exponential frequency and gain ramps via the Web Audio API.",
+      "tags": [
+        "utility",
+        "audio",
+        "procedural"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/utils/audio.ts:playExplosionSound",
+      "type": "function",
+      "name": "playExplosionSound",
+      "filePath": "src/utils/audio.ts",
+      "lineRange": [
+        34,
+        54
+      ],
+      "summary": "Exported function that synthesizes an explosion sound using a low-frequency oscillator with gain decay envelope via the Web Audio API.",
+      "tags": [
+        "utility",
+        "audio",
+        "procedural"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/assets/models/player-ship.glb",
+      "type": "file",
+      "name": "player-ship.glb",
+      "filePath": "src/assets/models/player-ship.glb",
+      "summary": "Binary GLTF 3D model asset for the player ship, loaded via useGLTF in launch and landing transition scenes.",
+      "tags": [
+        "asset",
+        "3d-model",
+        "game-asset"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/GameCanvas.tsx",
+      "type": "file",
+      "name": "GameCanvas.tsx",
+      "filePath": "src/components/GameCanvas.tsx",
+      "summary": "Root React Three Fiber Canvas component that hosts a SceneManager routing to game mode scenes and a DebugOverlays layer for stats and gizmos.",
+      "tags": [
+        "entry-point",
+        "component",
+        "scene-routing"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/GameCanvas.tsx:SceneManager",
+      "type": "function",
+      "name": "SceneManager",
+      "filePath": "src/components/GameCanvas.tsx",
+      "lineRange": [
+        12,
+        31
+      ],
+      "summary": "Internal React component that reads currentMode from useGameStore and renders the matching scene component via a switch statement.",
+      "tags": [
+        "component",
+        "scene-routing",
+        "game-mode"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/GameCanvas.tsx:DebugOverlays",
+      "type": "function",
+      "name": "DebugOverlays",
+      "filePath": "src/components/GameCanvas.tsx",
+      "lineRange": [
+        33,
+        47
+      ],
+      "summary": "Internal React component that conditionally renders drei Stats and GizmoViewport overlays based on useDebugStore flags.",
+      "tags": [
+        "component",
+        "debug",
+        "overlay"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/GameCanvas.tsx:GameCanvas",
+      "type": "function",
+      "name": "GameCanvas",
+      "filePath": "src/components/GameCanvas.tsx",
+      "lineRange": [
+        49,
+        57
+      ],
+      "summary": "Exported root component that creates the R3F Canvas with device pixel ratio and camera defaults, mounting SceneManager and DebugOverlays.",
+      "tags": [
+        "component",
+        "entry-point",
+        "canvas"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/debug/useDebugStore.ts",
+      "type": "file",
+      "name": "useDebugStore.ts",
+      "filePath": "src/debug/useDebugStore.ts",
+      "summary": "Zustand store managing boolean debug overlay flags (stats, directions, camera info, light helpers) with individual setter actions.",
+      "tags": [
+        "state-management",
+        "debug",
+        "singleton"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/bar/BarScene.tsx",
+      "type": "file",
+      "name": "BarScene.tsx",
+      "filePath": "src/features/bar/BarScene.tsx",
+      "summary": "React Three Fiber scene composing a space-bar environment with animated table, Leva-controlled lighting, and optional debug light helpers.",
+      "tags": [
+        "component",
+        "scene",
+        "game-mode"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/bar/BarScene.tsx:BarScene",
+      "type": "function",
+      "name": "BarScene",
+      "filePath": "src/features/bar/BarScene.tsx",
+      "lineRange": [
+        7,
+        92
+      ],
+      "summary": "Exported R3F scene component rendering the bar environment with Leva-driven ambient and point light controls, animated floating table, and conditional debug geometry.",
+      "tags": [
+        "component",
+        "scene",
+        "animation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/briefing/BriefingScene.tsx",
+      "type": "file",
+      "name": "BriefingScene.tsx",
+      "filePath": "src/features/briefing/BriefingScene.tsx",
+      "summary": "React Three Fiber scene for the mission briefing room with a rotating holographic globe and moody blue-tone lighting.",
+      "tags": [
+        "component",
+        "scene",
+        "game-mode"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/briefing/BriefingScene.tsx:BriefingScene",
+      "type": "function",
+      "name": "BriefingScene",
+      "filePath": "src/features/briefing/BriefingScene.tsx",
+      "lineRange": [
+        5,
+        38
+      ],
+      "summary": "Exported R3F scene component rendering a briefing table with a spinning wireframe hologram map and cyan point light.",
+      "tags": [
+        "component",
+        "scene",
+        "animation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/flight/LandingScene.tsx",
+      "type": "file",
+      "name": "LandingScene.tsx",
+      "filePath": "src/features/flight/LandingScene.tsx",
+      "summary": "Transition scene animating the player ship decelerating through a lit landing tube, then triggering mission completion and BAR mode on arrival.",
+      "tags": [
+        "component",
+        "scene",
+        "transition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/LandingScene.tsx:LandingScene",
+      "type": "function",
+      "name": "LandingScene",
+      "filePath": "src/features/flight/LandingScene.tsx",
+      "lineRange": [
+        9,
+        84
+      ],
+      "summary": "Exported R3F scene that animates the ship along a landing tube, follows with camera shake, calls completeMission and transitions to BAR when z reaches zero.",
+      "tags": [
+        "component",
+        "scene",
+        "game-state",
+        "transition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/LaunchScene.tsx",
+      "type": "file",
+      "name": "LaunchScene.tsx",
+      "filePath": "src/features/flight/LaunchScene.tsx",
+      "summary": "Transition scene accelerating the player ship through a glowing launch tube, triggering FLIGHT mode once the ship clears the tube.",
+      "tags": [
+        "component",
+        "scene",
+        "transition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/LaunchScene.tsx:LaunchScene",
+      "type": "function",
+      "name": "LaunchScene",
+      "filePath": "src/features/flight/LaunchScene.tsx",
+      "lineRange": [
+        8,
+        76
+      ],
+      "summary": "Exported R3F scene that accelerates the cloned player ship model down a torus-ringed tube with camera shake, then sets game mode to FLIGHT.",
+      "tags": [
+        "component",
+        "scene",
+        "game-state",
+        "transition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/quarters/QuartersScene.tsx",
+      "type": "file",
+      "name": "QuartersScene.tsx",
+      "filePath": "src/features/quarters/QuartersScene.tsx",
+      "summary": "Static React Three Fiber scene representing the player's personal quarters with a bed, wall, and picture frame composed of basic geometry.",
+      "tags": [
+        "component",
+        "scene",
+        "game-mode"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/quarters/QuartersScene.tsx:QuartersScene",
+      "type": "function",
+      "name": "QuartersScene",
+      "filePath": "src/features/quarters/QuartersScene.tsx",
+      "lineRange": [
+        3,
+        38
+      ],
+      "summary": "Exported R3F scene component rendering a minimal sleeping quarters room using box, plane, and ambient/directional lights.",
+      "tags": [
+        "component",
+        "scene"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/state/useGameStore.ts",
+      "type": "file",
+      "name": "useGameStore.ts",
+      "filePath": "src/state/useGameStore.ts",
+      "summary": "Central Zustand game state store managing game mode, player health with shield/hull damage model, kill/credit stats, mission lifecycle, and boundary warning state.",
+      "tags": [
+        "state-management",
+        "singleton",
+        "game-state"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/features/flight/CockpitHUD.tsx",
+      "type": "file",
+      "name": "CockpitHUD.tsx",
+      "filePath": "src/features/flight/CockpitHUD.tsx",
+      "summary": "Renders the in-flight cockpit HUD overlay: draws radar blips on a canvas element, throttle bar via DOM ref, targeting reticle/corner-bracket indicator for the locked target, hull and shield stat meters, and mission objective markers.",
+      "tags": [
+        "component",
+        "ui",
+        "hud",
+        "radar",
+        "targeting"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/flight/CockpitHUD.tsx:CockpitHUD",
+      "type": "function",
+      "name": "CockpitHUD",
+      "filePath": "src/features/flight/CockpitHUD.tsx",
+      "lineRange": [
+        30,
+        339
+      ],
+      "summary": "Main exported HUD component that reads combat, mission, and game state each frame via useFrame to imperatively draw radar, enemy blips, mission waypoints, and the throttle bar onto canvas/DOM elements, and renders the targeting bracket and stat bars declaratively in JSX.",
+      "tags": [
+        "component",
+        "hud",
+        "canvas",
+        "targeting",
+        "export"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/flight/CockpitHUD.tsx:StatBar",
+      "type": "function",
+      "name": "StatBar",
+      "filePath": "src/features/flight/CockpitHUD.tsx",
+      "lineRange": [
+        21,
+        28
+      ],
+      "summary": "Small helper component that renders a labeled percentage bar clamped to [0,1] with a configurable accent color, used for hull and shield meters.",
+      "tags": [
+        "component",
+        "ui",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/flight/PlayerShip.tsx",
+      "type": "file",
+      "name": "PlayerShip.tsx",
+      "filePath": "src/features/flight/PlayerShip.tsx",
+      "summary": "Core player ship component handling Six-DoF flight physics, smooth camera tracking (first-person and third-person toggle), boundary enforcement with auto-turn, T-key target cycling, predictive lead-pip laser firing, and engine glow shader application; mounts CockpitHUD and several sub-components.",
+      "tags": [
+        "component",
+        "physics",
+        "gameplay",
+        "targeting",
+        "flight"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Pre-allocates THREE.Vector3/Quaternion/Matrix4 as persistent useRef values to avoid per-frame GC pressure, a standard three.js/R3F performance pattern."
+    },
+    {
+      "id": "function:src/features/flight/PlayerShip.tsx:PlayerShip",
+      "type": "function",
+      "name": "PlayerShip",
+      "filePath": "src/features/flight/PlayerShip.tsx",
+      "lineRange": [
+        176,
+        391
+      ],
+      "summary": "Main exported player ship R3F component; runs the full per-frame flight loop (rotation, velocity, position, boundary, target cycling, laser firing, mission waypoint detection, camera positioning) and renders ship mesh with engine glow, HUD overlay, and debug sub-components.",
+      "tags": [
+        "component",
+        "flight",
+        "physics",
+        "entry-point",
+        "export"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/flight/PlayerShip.tsx:LeadIndicator",
+      "type": "function",
+      "name": "LeadIndicator",
+      "filePath": "src/features/flight/PlayerShip.tsx",
+      "lineRange": [
+        56,
+        109
+      ],
+      "summary": "R3F sub-component that each frame projects a predictive lead pip in world space ahead of the locked target's velocity, scaling and positioning a 3D marker so the player knows where to aim for moving targets.",
+      "tags": [
+        "component",
+        "targeting",
+        "3d",
+        "hud"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/PlayerShip.tsx:DirectionArrows",
+      "type": "function",
+      "name": "DirectionArrows",
+      "filePath": "src/features/flight/PlayerShip.tsx",
+      "lineRange": [
+        112,
+        153
+      ],
+      "summary": "Debug sub-component rendering ArrowHelper instances that visualise the ship's local velocity direction and magnitude each frame using pre-allocated scratch vectors.",
+      "tags": [
+        "component",
+        "debug",
+        "3d",
+        "velocity"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/hooks/usePlayerControls.ts",
+      "type": "file",
+      "name": "usePlayerControls.ts",
+      "filePath": "src/hooks/usePlayerControls.ts",
+      "summary": "Custom hook that translates raw keyboard events into a typed Controls boolean-flag object using configurable key bindings fetched from useControlsConfig, re-exported as a live React state.",
+      "tags": [
+        "hook",
+        "input",
+        "controls",
+        "keyboard"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/hooks/usePlayerControls.ts:usePlayerControls",
+      "type": "function",
+      "name": "usePlayerControls",
+      "filePath": "src/hooks/usePlayerControls.ts",
+      "lineRange": [
+        37,
+        73
+      ],
+      "summary": "Main exported hook; registers window keydown/keyup listeners, maps key codes to named control actions via codeToAction, and returns the current Controls state to the caller.",
+      "tags": [
+        "hook",
+        "input",
+        "controls",
+        "export"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/state/useCombatStore.ts",
+      "type": "file",
+      "name": "useCombatStore.ts",
+      "filePath": "src/state/useCombatStore.ts",
+      "summary": "Zustand singleton managing all in-flight combat state: pooled player and enemy lasers, 5-state enemy AI behavior machine (approach/strafe/flank/evade/formation) with intercept prediction and flocking separation, arcade wave progression, and collision damage; dynamically imports useGameStore to break a circular dependency.",
+      "tags": [
+        "state",
+        "singleton",
+        "combat",
+        "ai",
+        "zustand"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Uses a dynamic import(() => ...) inside an action to reference useGameStore at call time rather than module-load time, the idiomatic Zustand pattern for breaking circular store dependencies."
+    },
+    {
+      "id": "file:src/state/useMissionStore.ts",
+      "type": "file",
+      "name": "useMissionStore.ts",
+      "filePath": "src/state/useMissionStore.ts",
+      "summary": "Zustand singleton managing mission lifecycle (start, update objectives, complete, fail) and arcade score/level tracking, seeded with three hard-coded missions on initialisation.",
+      "tags": [
+        "state",
+        "singleton",
+        "mission",
+        "zustand",
+        "progression"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:index.html",
+      "type": "file",
+      "name": "index.html",
+      "filePath": "index.html",
+      "summary": "Vite HTML entry point that mounts the React application, sets the page title and favicon, and loads the TypeScript module entry point src/main.tsx.",
+      "tags": [
+        "markup",
+        "entry-point",
+        "html"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "package.json",
+      "summary": "NPM package manifest defining the void-commander project dependencies (React 18, Three.js, @react-three/fiber, @react-three/drei, Zustand, Leva) and scripts for dev, build, and preview via Vite.",
+      "tags": [
+        "configuration",
+        "package",
+        "dependencies"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "tsconfig.json",
+      "summary": "Root TypeScript configuration for the browser bundle, setting strict mode, JSX preserve for Vite processing, and targeting ESNext with bundler module resolution.",
+      "tags": [
+        "configuration",
+        "typescript",
+        "build"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:tsconfig.node.json",
+      "type": "config",
+      "name": "tsconfig.node.json",
+      "filePath": "tsconfig.node.json",
+      "summary": "TypeScript configuration for Node.js tooling (Vite config file), using CommonJS module resolution and targeting ESNext.",
+      "tags": [
+        "configuration",
+        "typescript",
+        "node"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.gitattributes",
+      "type": "file",
+      "name": ".gitattributes",
+      "filePath": ".gitattributes",
+      "summary": "Configures Git LFS tracking for `.glb` binary 3D model files, ensuring they are stored via Large File Storage rather than directly in the repository.",
+      "tags": [
+        "configuration",
+        "git",
+        "infrastructure"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.understand-anything/.understandignore",
+      "type": "file",
+      "name": ".understandignore",
+      "filePath": ".understand-anything/.understandignore",
+      "summary": "Template ignore file for the understand-anything analysis tool, listing commented-out glob patterns that can be uncommented to exclude files or directories from codebase scanning.",
+      "tags": [
+        "configuration",
+        "tooling",
+        "documentation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/flight/flight.css",
+      "type": "file",
+      "name": "flight.css",
+      "filePath": "src/features/flight/flight.css",
+      "summary": "Styles for in-flight HUD elements and UI overlays, including enemy and waypoint label variants, boundary-warning banners with pulse and flash keyframe animations, and a debug camera info panel.",
+      "tags": [
+        "markup",
+        "component",
+        "hud",
+        "animation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/Starfield.tsx",
+      "type": "file",
+      "name": "Starfield.tsx",
+      "filePath": "src/features/flight/Starfield.tsx",
+      "summary": "React Three Fiber component that procedurally generates 5000 stars distributed across a large sphere using spherical coordinates, with per-star color variation (white, blue, and orange) and randomized brightness, memoized for performance.",
+      "tags": [
+        "component",
+        "three-js",
+        "procedural",
+        "visual-effect"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses `useMemo` with an empty dependency array to generate the star geometry once on mount, avoiding per-frame recomputation of 5000 THREE.Color allocations."
+    },
+    {
+      "id": "function:src/features/flight/Starfield.tsx:Starfield",
+      "type": "function",
+      "name": "Starfield",
+      "filePath": "src/features/flight/Starfield.tsx",
+      "lineRange": [
+        4,
+        52
+      ],
+      "summary": "Exported React Three Fiber component that builds a points-based star field geometry, distributing stars uniformly on a sphere via spherical-to-Cartesian conversion and rendering them as colored point sprites.",
+      "tags": [
+        "component",
+        "three-js",
+        "visual-effect",
+        "procedural"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/index.css",
+      "type": "file",
+      "name": "index.css",
+      "filePath": "src/index.css",
+      "summary": "Global stylesheet establishing the game's dark sci-fi visual theme: CSS custom properties for neon colors and backgrounds, body/root full-viewport layout, CRT scanline and vignette overlay effects, `.lcd-panel` card component, terminal typography, and an `.interactive-btn` with animated hover sweep.",
+      "tags": [
+        "markup",
+        "design-system",
+        "animation",
+        "theme"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/vite-env.d.ts",
+      "type": "file",
+      "name": "vite-env.d.ts",
+      "filePath": "src/vite-env.d.ts",
+      "summary": "TypeScript ambient declaration file that references Vite client types and declares a module augmentation for `*.glb` files, allowing 3D model assets to be imported as URL strings without type errors.",
+      "tags": [
+        "type-definition",
+        "configuration",
+        "vite"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:vite.config.ts",
+      "type": "config",
+      "name": "vite.config.ts",
+      "filePath": "vite.config.ts",
+      "summary": "Vite build configuration that registers the React plugin for JSX/TSX transformation and adds `**/*.glb` to `assetsInclude` so Three.js GLB model files are handled as static assets with URL imports.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "vite"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "file:src/assets/models/low-poly-asteroid.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "file:src/features/flight/shaders.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "function:src/features/flight/Asteroids.tsx:AsteroidExplosion",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "function:src/features/flight/Asteroids.tsx:Asteroids",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "function:src/features/flight/Asteroids.tsx:Asteroids",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/features/flight/Asteroids.tsx:Asteroids",
+      "target": "function:src/features/flight/shaders.ts:makeExplosionMaterial",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "file:src/assets/models/enemy-ship.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "file:src/features/flight/flight.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "file:src/features/flight/shaders.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "function:src/features/flight/Enemies.tsx:TargetBracket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "function:src/features/flight/Enemies.tsx:Enemies",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "function:src/features/flight/Enemies.tsx:EnemyShip",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "function:src/features/flight/Enemies.tsx:Enemies",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/features/flight/Enemies.tsx:EnemyShip",
+      "target": "function:src/features/flight/shaders.ts:makeEngineGlowMaterial",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/features/flight/Enemies.tsx:Enemies",
+      "target": "function:src/features/flight/shaders.ts:makeExplosionMaterial",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/debug/useDebugStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Asteroids.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Enemies.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/flight.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Lasers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Mines.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/PlayerShip.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Sun.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "function:src/features/flight/FlightScene.tsx:FlightScene",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "function:src/features/flight/FlightScene.tsx:FlightScene",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/Lasers.tsx",
+      "target": "file:src/features/flight/shaders.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Lasers.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Lasers.tsx",
+      "target": "function:src/features/flight/Lasers.tsx:Lasers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Lasers.tsx",
+      "target": "function:src/features/flight/Lasers.tsx:Lasers",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/features/flight/Lasers.tsx:Lasers",
+      "target": "function:src/features/flight/shaders.ts:makeLaserMaterial",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "file:src/assets/models/mine.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "file:src/features/flight/shaders.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "function:src/features/flight/Mines.tsx:Mine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "function:src/features/flight/Mines.tsx:Mines",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "function:src/features/flight/Mines.tsx:Mines",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/features/flight/Mines.tsx:Mine",
+      "target": "function:src/features/flight/shaders.ts:makeExplosionMaterial",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/Sun.tsx",
+      "target": "file:src/assets/models/sun.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Sun.tsx",
+      "target": "function:src/features/flight/Sun.tsx:Sun",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Sun.tsx",
+      "target": "function:src/features/flight/Sun.tsx:Sun",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeEngineGlowMaterial",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeLaserMaterial",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeExplosionMaterial",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeEngineGlowMaterial",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeLaserMaterial",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeExplosionMaterial",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "function:src/App.tsx:App",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/ui/LCDPanel.tsx",
+      "target": "function:src/components/ui/LCDPanel.tsx:LCDPanel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/ui/LCDPanel.tsx",
+      "target": "function:src/components/ui/LCDPanel.tsx:LCDPanel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/ui/ScanlineOverlay.tsx",
+      "target": "function:src/components/ui/ScanlineOverlay.tsx:ScanlineOverlay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/ui/ScanlineOverlay.tsx",
+      "target": "function:src/components/ui/ScanlineOverlay.tsx:ScanlineOverlay",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/ui/TerminalText.tsx",
+      "target": "function:src/components/ui/TerminalText.tsx:TerminalText",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/ui/TerminalText.tsx",
+      "target": "function:src/components/ui/TerminalText.tsx:TerminalText",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/debug/DebugPanel.tsx",
+      "target": "function:src/debug/DebugPanel.tsx:ControlsConfig",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/debug/DebugPanel.tsx",
+      "target": "function:src/debug/DebugPanel.tsx:DebugControls",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/debug/DebugPanel.tsx",
+      "target": "function:src/debug/DebugPanel.tsx:DebugPanel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/debug/DebugPanel.tsx",
+      "target": "function:src/debug/DebugPanel.tsx:DebugPanel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "function:src/features/bar/BarUI.tsx:BarUI",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "function:src/features/bar/BarUI.tsx:BarUI",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:initAudio",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:initAudio",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:playLaserSound",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:playLaserSound",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:playExplosionSound",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:playExplosionSound",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/GameCanvas.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/ui/LCDPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/ui/ScanlineOverlay.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/ui/TerminalText.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/debug/DebugPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/features/bar/BarUI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/features/flight/flight.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/utils/audio.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/debug/DebugPanel.tsx",
+      "target": "file:src/debug/useDebugStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/debug/DebugPanel.tsx",
+      "target": "file:src/hooks/useControlsConfig.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/components/ui/LCDPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/components/ui/TerminalText.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/main.tsx",
+      "target": "file:src/App.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/main.tsx",
+      "target": "file:src/index.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/App.tsx:App",
+      "target": "function:src/utils/audio.ts:initAudio",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/debug/DebugPanel.tsx:ControlsConfig",
+      "target": "file:src/hooks/useControlsConfig.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:src/debug/DebugPanel.tsx:DebugControls",
+      "target": "file:src/debug/useDebugStore.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "function:src/components/GameCanvas.tsx:SceneManager",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "function:src/components/GameCanvas.tsx:DebugOverlays",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "function:src/components/GameCanvas.tsx:GameCanvas",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "function:src/components/GameCanvas.tsx:GameCanvas",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "file:src/debug/useDebugStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "file:src/features/bar/BarScene.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "file:src/features/briefing/BriefingScene.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "file:src/features/quarters/QuartersScene.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "file:src/features/flight/LaunchScene.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "file:src/features/flight/LandingScene.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/GameCanvas.tsx",
+      "target": "file:src/features/flight/FlightScene.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarScene.tsx",
+      "target": "function:src/features/bar/BarScene.tsx:BarScene",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/bar/BarScene.tsx",
+      "target": "function:src/features/bar/BarScene.tsx:BarScene",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/bar/BarScene.tsx",
+      "target": "file:src/debug/useDebugStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/briefing/BriefingScene.tsx",
+      "target": "function:src/features/briefing/BriefingScene.tsx:BriefingScene",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/briefing/BriefingScene.tsx",
+      "target": "function:src/features/briefing/BriefingScene.tsx:BriefingScene",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/LandingScene.tsx",
+      "target": "function:src/features/flight/LandingScene.tsx:LandingScene",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/LandingScene.tsx",
+      "target": "function:src/features/flight/LandingScene.tsx:LandingScene",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/LandingScene.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/LandingScene.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/LandingScene.tsx",
+      "target": "file:src/assets/models/player-ship.glb",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/features/flight/LaunchScene.tsx",
+      "target": "function:src/features/flight/LaunchScene.tsx:LaunchScene",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/LaunchScene.tsx",
+      "target": "function:src/features/flight/LaunchScene.tsx:LaunchScene",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/LaunchScene.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/LaunchScene.tsx",
+      "target": "file:src/assets/models/player-ship.glb",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/features/quarters/QuartersScene.tsx",
+      "target": "function:src/features/quarters/QuartersScene.tsx:QuartersScene",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/quarters/QuartersScene.tsx",
+      "target": "function:src/features/quarters/QuartersScene.tsx:QuartersScene",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/CockpitHUD.tsx",
+      "target": "function:src/features/flight/CockpitHUD.tsx:CockpitHUD",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/CockpitHUD.tsx",
+      "target": "function:src/features/flight/CockpitHUD.tsx:StatBar",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/CockpitHUD.tsx",
+      "target": "function:src/features/flight/CockpitHUD.tsx:CockpitHUD",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/CockpitHUD.tsx",
+      "target": "file:src/hooks/usePlayerControls.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/CockpitHUD.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/CockpitHUD.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/CockpitHUD.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/features/flight/CockpitHUD.tsx:CockpitHUD",
+      "target": "function:src/hooks/usePlayerControls.ts:usePlayerControls",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "function:src/features/flight/PlayerShip.tsx:PlayerShip",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "function:src/features/flight/PlayerShip.tsx:LeadIndicator",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "function:src/features/flight/PlayerShip.tsx:DirectionArrows",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "function:src/features/flight/PlayerShip.tsx:PlayerShip",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "file:src/assets/models/player-ship.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "file:src/debug/useDebugStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "file:src/features/flight/CockpitHUD.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "file:src/features/flight/shaders.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "file:src/hooks/usePlayerControls.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/PlayerShip.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/features/flight/PlayerShip.tsx:PlayerShip",
+      "target": "function:src/hooks/usePlayerControls.ts:usePlayerControls",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/features/flight/PlayerShip.tsx:PlayerShip",
+      "target": "function:src/features/flight/CockpitHUD.tsx:CockpitHUD",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/hooks/usePlayerControls.ts",
+      "target": "function:src/hooks/usePlayerControls.ts:usePlayerControls",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/hooks/usePlayerControls.ts",
+      "target": "function:src/hooks/usePlayerControls.ts:usePlayerControls",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/hooks/usePlayerControls.ts",
+      "target": "file:src/hooks/useControlsConfig.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:src/hooks/usePlayerControls.ts:usePlayerControls",
+      "target": "file:src/hooks/useControlsConfig.ts",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "file:src/utils/audio.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:index.html",
+      "target": "file:src/main.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "config:tsconfig.json",
+      "target": "config:tsconfig.node.json",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:package.json",
+      "target": "config:vite.config.ts",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/features/flight/Starfield.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Starfield.tsx",
+      "target": "function:src/features/flight/Starfield.tsx:Starfield",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Starfield.tsx",
+      "target": "function:src/features/flight/Starfield.tsx:Starfield",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "config:vite.config.ts",
+      "target": "file:src/vite-env.d.ts",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/features/flight/LandingScene.tsx",
+      "target": "file:src/assets/models/player-ship.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/features/flight/LaunchScene.tsx",
+      "target": "file:src/assets/models/player-ship.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:entry",
+      "name": "Application Entry & Scene Routing",
+      "description": "Bootstrap, HTML shell, root component, and the R3F Canvas host that mount the React app and route between all game modes based on global game state.",
+      "nodeIds": [
+        "file:index.html",
+        "file:src/main.tsx",
+        "file:src/App.tsx",
+        "file:src/components/GameCanvas.tsx"
+      ]
+    },
+    {
+      "id": "layer:flight",
+      "name": "Flight Scene",
+      "description": "All R3F components, physics, shaders, and CSS that compose the active space-combat flight mode, including the player ship, enemies, lasers, mines, asteroids, starfield, sun, and cockpit HUD.",
+      "nodeIds": [
+        "file:src/features/flight/FlightScene.tsx",
+        "file:src/features/flight/PlayerShip.tsx",
+        "file:src/features/flight/CockpitHUD.tsx",
+        "file:src/features/flight/Enemies.tsx",
+        "file:src/features/flight/Lasers.tsx",
+        "file:src/features/flight/Mines.tsx",
+        "file:src/features/flight/Asteroids.tsx",
+        "file:src/features/flight/Starfield.tsx",
+        "file:src/features/flight/Sun.tsx",
+        "file:src/features/flight/LandingScene.tsx",
+        "file:src/features/flight/LaunchScene.tsx",
+        "file:src/features/flight/shaders.ts",
+        "file:src/features/flight/flight.css"
+      ]
+    },
+    {
+      "id": "layer:non-flight-scenes",
+      "name": "Non-Flight Scenes",
+      "description": "The bar, briefing, and quarters game-mode scenes along with the bar's interactive UI for NPC dialogue, mission selection, and the leaderboard.",
+      "nodeIds": [
+        "file:src/features/bar/BarScene.tsx",
+        "file:src/features/bar/BarUI.tsx",
+        "file:src/features/briefing/BriefingScene.tsx",
+        "file:src/features/quarters/QuartersScene.tsx"
+      ]
+    },
+    {
+      "id": "layer:ui-components",
+      "name": "Shared UI Components",
+      "description": "Reusable retro sci-fi UI primitives (LCD panel, CRT scanline overlay, terminal typewriter text) and the global dark-theme stylesheet consumed across scenes.",
+      "nodeIds": [
+        "file:src/components/ui/LCDPanel.tsx",
+        "file:src/components/ui/ScanlineOverlay.tsx",
+        "file:src/components/ui/TerminalText.tsx",
+        "file:src/index.css"
+      ]
+    },
+    {
+      "id": "layer:state",
+      "name": "Game State",
+      "description": "Zustand stores that centrally manage game mode, player health and shields, combat simulation (laser pools, enemy AI, flocking), and mission lifecycle and scoring.",
+      "nodeIds": [
+        "file:src/state/useGameStore.ts",
+        "file:src/state/useCombatStore.ts",
+        "file:src/state/useMissionStore.ts"
+      ]
+    },
+    {
+      "id": "layer:hooks",
+      "name": "Input Hooks",
+      "description": "React hooks that translate raw keyboard events into typed control flags and provide a configurable key-binding store for player input.",
+      "nodeIds": [
+        "file:src/hooks/usePlayerControls.ts",
+        "file:src/hooks/useControlsConfig.ts"
+      ]
+    },
+    {
+      "id": "layer:assets",
+      "name": "3D Model Assets",
+      "description": "Binary GLTF model files for all in-game 3D objects: player ship, enemy ship, asteroids, space mine, and the sun.",
+      "nodeIds": [
+        "file:src/assets/models/player-ship.glb",
+        "file:src/assets/models/enemy-ship.glb",
+        "file:src/assets/models/low-poly-asteroid.glb",
+        "file:src/assets/models/mine.glb",
+        "file:src/assets/models/sun.glb"
+      ]
+    },
+    {
+      "id": "layer:debug-tooling",
+      "name": "Debug Tooling & Utilities",
+      "description": "Leva-based debug panel for runtime key remapping and visualization toggles, its Zustand store for debug boolean flags, and the procedural Web Audio sound synthesis utility.",
+      "nodeIds": [
+        "file:src/debug/DebugPanel.tsx",
+        "file:src/debug/useDebugStore.ts",
+        "file:src/utils/audio.ts"
+      ]
+    },
+    {
+      "id": "layer:config",
+      "name": "Configuration",
+      "description": "Project configuration files for npm dependencies, TypeScript compiler settings, and the Vite build system, plus repository and tooling metadata.",
+      "nodeIds": [
+        "config:package.json",
+        "config:tsconfig.json",
+        "config:tsconfig.node.json",
+        "config:vite.config.ts",
+        "file:src/vite-env.d.ts",
+        "file:.gitattributes",
+        "file:.understand-anything/.understandignore"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "App Entry & Scene Routing",
+      "description": "App.tsx is the root of the entire game, implementing a state-machine router that switches between seven distinct game modes: MENU, BAR, BRIEFING, FLIGHT, LAUNCH, LANDING, and QUARTERS. It owns the top-level mission lifecycle and leaderboard persistence, and it directly mounts every non-flight scene as a sibling to the 3D canvas. Understanding this file first gives you a complete map of how the game's scenes connect before diving into any individual area.",
+      "nodeIds": [
+        "file:src/main.tsx",
+        "file:src/App.tsx"
+      ],
+      "languageLesson": "React 18 introduces createRoot, which replaces ReactDOM.render. The root component pattern used here \u2014 a single App.tsx acting as a mode router \u2014 is a common architecture for games and multi-screen apps where only one 'scene' should be active at a time."
+    },
+    {
+      "order": 2,
+      "title": "Central Game State",
+      "description": "Three Zustand stores form the backbone of all runtime state. useGameStore is the most widely depended-upon file in the entire codebase (fan-in of 10), holding the current game mode, player health and shields, credits, and boundary warnings. useMissionStore tracks mission lifecycle and objective completion. Understanding these stores before any component explains how data flows through the app without prop drilling.",
+      "nodeIds": [
+        "file:src/state/useGameStore.ts",
+        "file:src/state/useMissionStore.ts"
+      ],
+      "languageLesson": "Zustand stores expose state and actions as a single hook. Unlike Redux, there is no provider or boilerplate \u2014 any component can call useGameStore() and subscribe to only the slice it needs. This makes Zustand well-suited to game loops where dozens of unrelated components need fast access to shared state."
+    },
+    {
+      "order": 3,
+      "title": "3D Canvas & Scene Dispatcher",
+      "description": "GameCanvas.tsx wraps the @react-three/fiber Canvas element and acts as the scene dispatcher for all 3D content. It reads the current game mode from useGameStore and renders the correct R3F scene \u2014 FlightScene, LaunchScene, or LandingScene \u2014 while also mounting the DebugPanel overlay. This is the boundary between React's DOM world and Three.js's WebGL world, and everything rendered in 3D lives as a child of this component.",
+      "nodeIds": [
+        "file:src/components/GameCanvas.tsx"
+      ],
+      "languageLesson": "@react-three/fiber (R3F) lets you write Three.js scenes as JSX. The Canvas component creates a WebGL renderer and a scene graph \u2014 any JSX children become Three.js objects. R3F's useFrame hook runs callbacks every animation frame inside the WebGL loop, which is how game logic and physics updates are driven."
+    },
+    {
+      "order": 4,
+      "title": "Build Configuration & Asset Pipeline",
+      "description": "package.json declares the full dependency stack: React 18, Three.js, @react-three/fiber, @react-three/drei, Zustand, Leva, and Vite. The vite.config.ts extends the build to treat GLB binary files as importable assets, which is what allows components to write import shipModel from './player-ship.glb' and receive a resolvable URL at runtime. Without this configuration, none of the 3D models would load.",
+      "nodeIds": [
+        "config:package.json",
+        "config:vite.config.ts"
+      ],
+      "languageLesson": "Vite's assetsInclude option extends the default list of static asset file types. When a GLB is imported as a module, Vite copies it to the output directory and resolves the import to a hashed URL \u2014 the same pattern used for images and fonts. This keeps asset loading type-safe and cache-busting automatic."
+    },
+    {
+      "order": 5,
+      "title": "Non-Flight Scenes: Bar, Briefing, Quarters",
+      "description": "The game's narrative loop lives between missions in three non-flight scenes. BarScene renders a 3D bar environment while BarUI layers NPC dialogue trees, mission selection, an arcade cabinet, a leaderboard, and credit transactions on top. BriefingScene adds a rotating holographic globe for mission context. QuartersScene provides a resting space between sorties. Together these scenes establish that this is a story-driven Wing Commander-style game, not a pure arcade shooter.",
+      "nodeIds": [
+        "file:src/features/bar/BarScene.tsx",
+        "file:src/features/bar/BarUI.tsx",
+        "file:src/features/briefing/BriefingScene.tsx",
+        "file:src/features/quarters/QuartersScene.tsx"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Retro UI Components",
+      "description": "Three shared presentational components define the game's visual identity outside of 3D space. LCDPanel provides a segmented LCD-style container used in menus and the bar. ScanlineOverlay adds a full-screen CRT scanline effect that sits above all other content. TerminalText delivers animated typewriter rendering for NPC dialogue and briefing text. These components are used by BarUI, App.tsx, and several screens, giving the entire 2D UI a consistent retro-futurist aesthetic.",
+      "nodeIds": [
+        "file:src/components/ui/LCDPanel.tsx",
+        "file:src/components/ui/ScanlineOverlay.tsx",
+        "file:src/components/ui/TerminalText.tsx",
+        "file:src/index.css"
+      ],
+      "languageLesson": "CSS custom properties (variables) and @keyframes animations are the engine behind effects like scanlines and terminal flicker. The global index.css defines the neon color palette and CRT typography as design tokens, so every component inherits the sci-fi aesthetic by default without needing inline styles."
+    },
+    {
+      "order": 7,
+      "title": "Launch & Landing Transitions",
+      "description": "LaunchScene and LandingScene are short cinematic transitions that bookend each mission. LaunchScene animates the ship accelerating down a launch tube and then dispatches a mode change to FLIGHT, handing control to the main combat scene. LandingScene reverses this \u2014 the ship decelerates into a landing bay and triggers mission completion before returning to BAR mode. These two files show how game mode transitions are choreographed through useGameStore and useMissionStore actions.",
+      "nodeIds": [
+        "file:src/features/flight/LaunchScene.tsx",
+        "file:src/features/flight/LandingScene.tsx"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Flight Scene Composition",
+      "description": "FlightScene.tsx is the top-level compositor for all combat gameplay. It assembles every flight element \u2014 PlayerShip, Enemies, Lasers, Mines, Asteroids, Starfield, Sun, and CockpitHUD \u2014 into a single R3F scene graph, and it reads from both useCombatStore and useMissionStore to inject live state into those components. With a fan-out of 10, it is one of the two broadest files in the codebase, and reading it after understanding the stores gives you an immediate picture of what the flight scene contains.",
+      "nodeIds": [
+        "file:src/features/flight/FlightScene.tsx"
+      ]
+    },
+    {
+      "order": 9,
+      "title": "Combat State Engine",
+      "description": "useCombatStore is the second most-imported file in the codebase (fan-in of 7) and contains all mutable combat data: a pooled laser array, enemy positions and AI states, collision damage records, and arcade wave counters. It implements a 5-state enemy AI finite state machine (approach, strafe, flank, evade, formation) and flocking behavior entirely within Zustand actions. Every flight component that needs to fire, move, or collide reads from or writes to this store.",
+      "nodeIds": [
+        "file:src/state/useCombatStore.ts"
+      ],
+      "languageLesson": "Object pooling avoids garbage collection spikes in game loops. Instead of creating and destroying laser objects every frame, useCombatStore pre-allocates a fixed array of laser slots. Active lasers are flagged as 'alive'; inactive slots are reused. This keeps the GC pauses that would otherwise cause frame-rate hitches from occurring during rapid fire."
+    },
+    {
+      "order": 10,
+      "title": "Player Ship & Flight Physics",
+      "description": "PlayerShip.tsx is the most complex single component in the project. It implements 6-degrees-of-freedom flight physics using pre-allocated Three.js Vector3 and Quaternion refs so the frame loop never allocates heap objects \u2014 keeping garbage collection pauses out of the hot path. It handles camera tracking, play-area boundary enforcement, T-key target cycling against the enemy list in useCombatStore, and predictive lead-pip laser firing that fires toward where a target will be rather than where it is now.",
+      "nodeIds": [
+        "file:src/features/flight/PlayerShip.tsx",
+        "file:src/assets/models/player-ship.glb"
+      ],
+      "languageLesson": "In R3F, useFrame runs every animation frame. Allocating new Vector3 or Matrix4 objects inside useFrame triggers the JavaScript garbage collector frequently, causing visible frame-rate stutters. The pattern of creating refs (useRef(new Vector3())) outside the frame loop and calling .set() or .copy() inside it is a critical optimization for any Three.js game loop."
+    },
+    {
+      "order": 11,
+      "title": "Input Handling",
+      "description": "usePlayerControls translates raw keyboard events into a set of boolean control flags (thrust, roll, pitch, fire, etc.) that PlayerShip reads each frame. It delegates key binding lookups to useControlsConfig, a Zustand-backed store that persists custom key mappings. This two-layer design means controls are both rebindable at runtime and accessible from the DebugPanel without coupling input reading to the ship physics.",
+      "nodeIds": [
+        "file:src/hooks/usePlayerControls.ts",
+        "file:src/hooks/useControlsConfig.ts"
+      ]
+    },
+    {
+      "order": 12,
+      "title": "Enemy AI & Visual Effects",
+      "description": "Enemies.tsx reads the enemy array from useCombatStore and renders each ship using the enemy-ship.glb model, adding a target-lock bracket overlay in screen space when the player has a lock. The shaders.ts file (fan-in of 5) provides GLSL shader factory functions shared by Enemies, Lasers, Asteroids, and Mines \u2014 engine plasma glow, laser bolt color ramps, and procedural explosion fire are all defined here as reusable shader material factories.",
+      "nodeIds": [
+        "file:src/features/flight/Enemies.tsx",
+        "file:src/features/flight/shaders.ts",
+        "file:src/assets/models/enemy-ship.glb"
+      ],
+      "languageLesson": "Three.js ShaderMaterial accepts GLSL vertex and fragment shaders as strings. R3F wraps this with shaderMaterial from @react-three/drei, which generates a JSX-compatible component. Shader factories \u2014 functions that return a configured ShaderMaterial \u2014 are a clean pattern for reusing visual effects across multiple mesh types without duplicating GLSL source."
+    },
+    {
+      "order": 13,
+      "title": "Lasers, Mines & Asteroids",
+      "description": "Lasers, Mines, and Asteroids all use Three.js instanced rendering \u2014 a single draw call renders all instances of each object type simultaneously \u2014 which is essential for maintaining frame rate when dozens of lasers and asteroids are active at once. Asteroids and Mines both perform collision detection and trigger explosion VFX on hit, delegating damage application back to useCombatStore. The Starfield adds 5000 procedural stars in a single memoized geometry.",
+      "nodeIds": [
+        "file:src/features/flight/Lasers.tsx",
+        "file:src/features/flight/Mines.tsx",
+        "file:src/features/flight/Asteroids.tsx",
+        "file:src/features/flight/Starfield.tsx"
+      ],
+      "languageLesson": "Three.js InstancedMesh renders N copies of a geometry+material pair in one GPU draw call. Each instance's transform is encoded in a per-instance matrix stored in the InstancedMesh's instanceMatrix buffer. Updating instance positions means writing into this typed array and calling instanceMatrix.needsUpdate = true \u2014 far cheaper than positioning N individual Mesh objects."
+    },
+    {
+      "order": 14,
+      "title": "Cockpit HUD & Flight CSS",
+      "description": "CockpitHUD.tsx renders the in-flight heads-up display using a hybrid approach: the radar is drawn imperatively onto a 2D HTML Canvas element each frame using DOM refs (avoiding React re-renders entirely), while hull meters, the throttle bar, and mission objective markers are DOM elements styled by flight.css. This pattern of mixing imperative canvas drawing with declarative DOM elements is a practical solution when high-frequency updates would make React diffing too expensive.",
+      "nodeIds": [
+        "file:src/features/flight/CockpitHUD.tsx",
+        "file:src/features/flight/flight.css"
+      ],
+      "languageLesson": "React's useRef can hold a reference to a DOM element (e.g., a <canvas>) without triggering re-renders. In a game HUD, calling getContext('2d') on that ref and drawing each frame directly is orders of magnitude faster than representing radar blips as React state and letting React manage DOM updates every frame."
+    },
+    {
+      "order": 15,
+      "title": "Audio & Debug Tooling",
+      "description": "audio.ts synthesizes laser and explosion sounds procedurally using the Web Audio API \u2014 no audio files are needed, which keeps the bundle small and allows sounds to vary dynamically. DebugPanel.tsx exposes a Leva GUI panel for key remapping and visualization toggles at runtime, reading from useDebugStore (a lightweight Zustand store of boolean flags) and useControlsConfig. This tooling layer sits entirely outside the game's production render path and can be toggled on without reloading.",
+      "nodeIds": [
+        "file:src/utils/audio.ts",
+        "file:src/debug/DebugPanel.tsx",
+        "file:src/debug/useDebugStore.ts"
+      ],
+      "languageLesson": "The Web Audio API's OscillatorNode and BiquadFilterNode can produce rich sound effects entirely in code. Connecting nodes in a graph (oscillator \u2192 filter \u2192 gain \u2192 destination) mirrors the signal chain of hardware synthesizers. Procedural audio is useful in games because it allows sound properties like pitch and duration to be parameterized by gameplay variables."
+    }
+  ]
+}
