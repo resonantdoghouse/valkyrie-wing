@@ -1,3 +1,5 @@
 node_modules/
 dist/
 .DS_Store
+.understand-anything/intermediate/
+.understand-anything/tmp/
