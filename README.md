@@ -1,0 +1,85 @@
+# Valkyrie Wing
+
+A browser-based 3D space combat game built with React, Three.js, and Zustand.
+
+## Gameplay
+
+You play as a pilot aboard the carrier **CMS Vanguard**, flying missions against the **Nebula Remnant** faction. Between missions you return to the ship's bar to take on new contracts, talk to wing commandos, and play the arcade simulator.
+
+**Flight controls (rebindable in-game via the debug panel):**
+
+| Action | Default |
+|---|---|
+| Pitch up / down | `W` / `S` |
+| Roll left / right | `A` / `D` |
+| Throttle up / down | `R` / `F` |
+| Fire laser | `Space` |
+| Cycle target | `T` |
+| Toggle camera | `C` |
+| Debug panel | `` ` `` |
+
+## Tech Stack
+
+| Layer | Library |
+|---|---|
+| UI framework | React 18 |
+| 3D rendering | Three.js via `@react-three/fiber` |
+| 3D helpers | `@react-three/drei` |
+| State management | Zustand |
+| Debug controls | Leva |
+| Build tool | Vite |
+
+## Project Structure
+
+```
+src/
+├── App.tsx                    # Game mode router (MENU → BAR → FLIGHT → …)
+├── components/
+│   ├── GameCanvas.tsx         # R3F Canvas + scene dispatcher
+│   └── ui/                   # Shared UI primitives (LCDPanel, ScanlineOverlay, TerminalText)
+├── features/
+│   ├── bar/                   # Bar scene + UI views (Bartender, Commandos, Arcade)
+│   ├── briefing/              # Mission briefing scene
+│   ├── flight/                # Flight scene, player ship, HUD, enemies, VFX, shaders
+│   └── quarters/              # Crew quarters scene
+├── hooks/
+│   ├── usePlayerControls.ts   # Keyboard → Controls boolean flags
+│   └── useControlsConfig.ts   # Rebindable key mapping store
+├── state/
+│   ├── useGameStore.ts        # Game mode, player health/shields, credits
+│   ├── useCombatStore.ts      # Laser pools, enemy AI, collision, arcade waves
+│   └── useMissionStore.ts     # Mission lifecycle, objectives, arcade score
+└── utils/
+    └── audio.ts               # Procedural Web Audio sound effects
+```
+
+## Game Modes
+
+The game routes through a set of discrete modes managed by `useGameStore`:
+
+```
+MENU → BAR ←→ BRIEFING
+              BAR → LAUNCH → FLIGHT → LANDING → BAR
+              BAR → ARCADE (FLIGHT mode, arcade ruleset)
+              BAR → QUARTERS
+```
+
+## Enemy AI
+
+Enemy ships use a 5-state finite-state machine defined in `src/features/flight/enemyAI.ts`:
+
+- **approach** — intercept the player using predictive targeting
+- **strafe** — orbit at ~90 units while closing or opening range
+- **flank** — circle wide around the player using a Lissajous offset
+- **evade** — break away with a randomised evasion vector
+- **formation** — wingmen hold a V behind their flight leader
+
+Flocks share a `flockId`; separation forces prevent ships from stacking.
+
+## Development
+
+```bash
+npm install
+npm run dev      # start Vite dev server
+npm run build    # production build
+```

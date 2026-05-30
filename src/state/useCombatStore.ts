@@ -386,6 +386,7 @@ export const useCombatStore = create<CombatState>((set) => ({
   })),
 
   startArcadeWave: (level) => set(() => {
+    _enemyCollisionCooldowns.clear();
     const numEnemies = 3 + (level - 1) * 2;
     const newEnemies: EnemyData[] = Array.from({ length: numEnemies }).map((_, i) => {
       const flockId = Math.floor(i / 3);
