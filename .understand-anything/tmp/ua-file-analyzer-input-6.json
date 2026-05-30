@@ -1,0 +1,17 @@
+{
+  "projectRoot": "/Users/jamesbennett/code/void-commander",
+  "batchFiles": [
+    {"path": "README.md", "language": "markdown", "sizeLines": 118, "fileCategory": "docs"},
+    {"path": "index.html", "language": "html", "sizeLines": 13, "fileCategory": "markup"},
+    {"path": "package.json", "language": "json", "sizeLines": 29, "fileCategory": "config"},
+    {"path": "tsconfig.json", "language": "json", "sizeLines": 25, "fileCategory": "config"},
+    {"path": "tsconfig.node.json", "language": "json", "sizeLines": 11, "fileCategory": "config"}
+  ],
+  "batchImportData": {
+    "README.md": [],
+    "index.html": ["src/main.tsx"],
+    "package.json": [],
+    "tsconfig.json": ["tsconfig.node.json"],
+    "tsconfig.node.json": []
+  }
+}

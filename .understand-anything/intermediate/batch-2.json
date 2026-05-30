@@ -1,0 +1,661 @@
+{
+  "nodes": [
+    {
+      "id": "file:src/App.tsx",
+      "type": "file",
+      "name": "App.tsx",
+      "filePath": "src/App.tsx",
+      "summary": "Root React application component that orchestrates game mode switching between bar and flight scenes, wires up audio initialization, and renders the shared UI shell (GameCanvas, HUD, LCD overlays, ErrorBoundary).",
+      "tags": ["entry-point", "component", "middleware"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/App.tsx:App",
+      "type": "function",
+      "name": "App",
+      "filePath": "src/App.tsx",
+      "lineRange": [13, 97],
+      "summary": "Top-level React component that reads game and mission state, initializes audio on first launch, and conditionally renders BarUI or FlightHUD based on the current game mode.",
+      "tags": ["component", "entry-point", "event-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/ErrorBoundary.tsx",
+      "type": "file",
+      "name": "ErrorBoundary.tsx",
+      "filePath": "src/components/ErrorBoundary.tsx",
+      "summary": "React class component that catches unhandled errors from R3F/Three.js subtrees and displays a styled 'SYSTEM FAILURE' fallback screen, preventing full-page crashes during 3D rendering.",
+      "tags": ["component", "middleware", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/components/ErrorBoundary.tsx:ErrorBoundary",
+      "type": "class",
+      "name": "ErrorBoundary",
+      "filePath": "src/components/ErrorBoundary.tsx",
+      "lineRange": [11, 49],
+      "summary": "React error boundary class that captures render errors via getDerivedStateFromError and renders a styled fallback UI matching the game's terminal aesthetic.",
+      "tags": ["component", "middleware", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/ui/LCDPanel.tsx",
+      "type": "file",
+      "name": "LCDPanel.tsx",
+      "filePath": "src/components/ui/LCDPanel.tsx",
+      "summary": "Reusable LCD-style panel wrapper component that applies a consistent retro-terminal visual container to any children passed into it.",
+      "tags": ["component", "utility", "ui-primitive"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/ui/LCDPanel.tsx:LCDPanel",
+      "type": "function",
+      "name": "LCDPanel",
+      "filePath": "src/components/ui/LCDPanel.tsx",
+      "lineRange": [9, 15],
+      "summary": "Functional React component rendering a styled LCD panel div that accepts children, optional className, and inline style overrides.",
+      "tags": ["component", "ui-primitive"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/ui/ScanlineOverlay.tsx",
+      "type": "file",
+      "name": "ScanlineOverlay.tsx",
+      "filePath": "src/components/ui/ScanlineOverlay.tsx",
+      "summary": "Minimal CRT scanline effect overlay component that renders a full-screen decorative div to simulate a retro CRT monitor aesthetic.",
+      "tags": ["component", "ui-primitive", "utility"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/ui/ScanlineOverlay.tsx:ScanlineOverlay",
+      "type": "function",
+      "name": "ScanlineOverlay",
+      "filePath": "src/components/ui/ScanlineOverlay.tsx",
+      "lineRange": [3, 10],
+      "summary": "Renders a transparent full-screen overlay div styled with CSS scanline stripes for CRT visual effect.",
+      "tags": ["component", "ui-primitive"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/ui/TerminalText.tsx",
+      "type": "file",
+      "name": "TerminalText.tsx",
+      "filePath": "src/components/ui/TerminalText.tsx",
+      "summary": "Animated terminal-style text component that types out a string character-by-character at a configurable delay, simulating retro terminal output.",
+      "tags": ["component", "ui-primitive", "animation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/ui/TerminalText.tsx:TerminalText",
+      "type": "function",
+      "name": "TerminalText",
+      "filePath": "src/components/ui/TerminalText.tsx",
+      "lineRange": [11, 36],
+      "summary": "Uses useState and useEffect with setInterval to progressively reveal a text string one character at a time, rendering into a configurable HTML element.",
+      "tags": ["component", "animation", "hook"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/bar/BarUI.tsx",
+      "type": "file",
+      "name": "BarUI.tsx",
+      "filePath": "src/features/bar/BarUI.tsx",
+      "summary": "Thin routing shell for the bar scene that maintains a currentView state and delegates rendering to one of four self-contained sub-view components (MainView, ArcadeView, BartenderView, CommandosView).",
+      "tags": ["component", "middleware", "feature"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/bar/BarUI.tsx:BarUI",
+      "type": "function",
+      "name": "BarUI",
+      "filePath": "src/features/bar/BarUI.tsx",
+      "lineRange": [10, 23],
+      "summary": "React component that switches between bar sub-views via a currentView state string, passing onBack and onNavigate callbacks to child views.",
+      "tags": ["component", "middleware"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/bar/views/ArcadeView.tsx",
+      "type": "file",
+      "name": "ArcadeView.tsx",
+      "filePath": "src/features/bar/views/ArcadeView.tsx",
+      "summary": "Bar arcade cabinet sub-view that displays a leaderboard loaded from localStorage, allows the player to spend credits to launch an arcade wave mission, and handles error states.",
+      "tags": ["component", "feature", "game-logic"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/bar/views/ArcadeView.tsx:ArcadeView",
+      "type": "function",
+      "name": "ArcadeView",
+      "filePath": "src/features/bar/views/ArcadeView.tsx",
+      "lineRange": [11, 84],
+      "summary": "Reads game/mission/combat stores, loads a localStorage leaderboard, and provides a play button that deducts credits, starts an arcade wave, and transitions game mode to flight.",
+      "tags": ["component", "game-logic", "event-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/bar/views/BartenderView.tsx",
+      "type": "file",
+      "name": "BartenderView.tsx",
+      "filePath": "src/features/bar/views/BartenderView.tsx",
+      "summary": "Bar NPC interaction sub-view for the bartender character, presenting drink purchase options that cost credits and drive scrolling dialogue exchanges.",
+      "tags": ["component", "feature", "game-logic"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/bar/views/BartenderView.tsx:BartenderView",
+      "type": "function",
+      "name": "BartenderView",
+      "filePath": "src/features/bar/views/BartenderView.tsx",
+      "lineRange": [9, 67],
+      "summary": "Renders a dialogue panel with drink order buttons; handleOrder deducts credits and pushes flavour dialogue lines into a local state array.",
+      "tags": ["component", "game-logic", "event-handler"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/bar/views/CommandosView.tsx",
+      "type": "file",
+      "name": "CommandosView.tsx",
+      "filePath": "src/features/bar/views/CommandosView.tsx",
+      "summary": "Multi-character commando NPC sub-view that implements a branching conversation tree with three selectable characters, credit-gated dialogue, and dynamic option building.",
+      "tags": ["component", "feature", "game-logic"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/bar/views/CommandosView.tsx:CommandosView",
+      "type": "function",
+      "name": "CommandosView",
+      "filePath": "src/features/bar/views/CommandosView.tsx",
+      "lineRange": [17, 146],
+      "summary": "Orchestrates branching NPC dialogue via activeCharacter, dialogue, and conversationOptions state; buildOptions and handleChoice implement the conversation flow with credit costs.",
+      "tags": ["component", "game-logic", "event-handler"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/features/bar/views/MainView.tsx",
+      "type": "file",
+      "name": "MainView.tsx",
+      "filePath": "src/features/bar/views/MainView.tsx",
+      "summary": "Bar landing view that presents the player's credit balance and navigation buttons to reach the arcade, bartender, or commandos sub-views, plus direct mode-change shortcuts.",
+      "tags": ["component", "feature", "navigation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/bar/views/MainView.tsx:MainView",
+      "type": "function",
+      "name": "MainView",
+      "filePath": "src/features/bar/views/MainView.tsx",
+      "lineRange": [10, 40],
+      "summary": "Displays player credits and renders navigation buttons; calls onNavigate prop to route to sub-views and setMode to switch game mode.",
+      "tags": ["component", "navigation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/flight/FlightHUD.tsx",
+      "type": "file",
+      "name": "FlightHUD.tsx",
+      "filePath": "src/features/flight/FlightHUD.tsx",
+      "summary": "Flight mode heads-up display component that owns all in-flight overlays: mission objectives, enemy count, boundary warnings, arcade score tracking, and mission-complete/game-over screens.",
+      "tags": ["component", "feature", "game-logic"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/features/flight/FlightHUD.tsx:FlightHUD",
+      "type": "function",
+      "name": "FlightHUD",
+      "filePath": "src/features/flight/FlightHUD.tsx",
+      "lineRange": [7, 160],
+      "summary": "Reads gameStore, missionStore, and combatStore to compute HUD state; saveLeaderboardAndExit persists arcade scores to localStorage and transitions back to bar mode on completion or death.",
+      "tags": ["component", "game-logic", "event-handler"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/main.tsx",
+      "type": "file",
+      "name": "main.tsx",
+      "filePath": "src/main.tsx",
+      "summary": "Vite/React application bootstrap that mounts the root App component into the DOM using ReactDOM.createRoot.",
+      "tags": ["entry-point", "bootstrap"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/state/useGameStore.ts",
+      "type": "file",
+      "name": "useGameStore.ts",
+      "filePath": "src/state/useGameStore.ts",
+      "summary": "Zustand store defining global game state including player credits, current game mode, and actions for mode transitions and credit management consumed across all UI features.",
+      "tags": ["service", "singleton", "state-management"],
+      "complexity": "moderate",
+      "languageNotes": "Zustand store created with the create() pattern; exports a single useGameStore hook that subscribers call to select slices of state."
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:src/App.tsx",
+      "target": "function:src/App.tsx:App",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "function:src/App.tsx:App",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/ErrorBoundary.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/GameCanvas.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/ui/LCDPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/ui/ScanlineOverlay.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/ui/TerminalText.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/features/bar/BarUI.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/features/flight/FlightHUD.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/utils/audio.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/debug/DebugPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/ErrorBoundary.tsx",
+      "target": "class:src/components/ErrorBoundary.tsx:ErrorBoundary",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/ErrorBoundary.tsx",
+      "target": "class:src/components/ErrorBoundary.tsx:ErrorBoundary",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/ui/LCDPanel.tsx",
+      "target": "function:src/components/ui/LCDPanel.tsx:LCDPanel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/ui/LCDPanel.tsx",
+      "target": "function:src/components/ui/LCDPanel.tsx:LCDPanel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/ui/ScanlineOverlay.tsx",
+      "target": "function:src/components/ui/ScanlineOverlay.tsx:ScanlineOverlay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/ui/ScanlineOverlay.tsx",
+      "target": "function:src/components/ui/ScanlineOverlay.tsx:ScanlineOverlay",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/ui/TerminalText.tsx",
+      "target": "function:src/components/ui/TerminalText.tsx:TerminalText",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/components/ui/TerminalText.tsx",
+      "target": "function:src/components/ui/TerminalText.tsx:TerminalText",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "function:src/features/bar/BarUI.tsx:BarUI",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "function:src/features/bar/BarUI.tsx:BarUI",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/features/bar/views/ArcadeView.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/features/bar/views/BartenderView.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/features/bar/views/CommandosView.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/features/bar/views/MainView.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/BarUI.tsx",
+      "target": "file:src/components/ui/LCDPanel.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/ArcadeView.tsx",
+      "target": "function:src/features/bar/views/ArcadeView.tsx:ArcadeView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/bar/views/ArcadeView.tsx",
+      "target": "function:src/features/bar/views/ArcadeView.tsx:ArcadeView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/bar/views/ArcadeView.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/ArcadeView.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/ArcadeView.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/ArcadeView.tsx",
+      "target": "file:src/components/ui/TerminalText.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/BartenderView.tsx",
+      "target": "function:src/features/bar/views/BartenderView.tsx:BartenderView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/bar/views/BartenderView.tsx",
+      "target": "function:src/features/bar/views/BartenderView.tsx:BartenderView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/bar/views/BartenderView.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/BartenderView.tsx",
+      "target": "file:src/components/ui/TerminalText.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/CommandosView.tsx",
+      "target": "function:src/features/bar/views/CommandosView.tsx:CommandosView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/bar/views/CommandosView.tsx",
+      "target": "function:src/features/bar/views/CommandosView.tsx:CommandosView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/bar/views/CommandosView.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/CommandosView.tsx",
+      "target": "file:src/components/ui/TerminalText.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/MainView.tsx",
+      "target": "function:src/features/bar/views/MainView.tsx:MainView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/bar/views/MainView.tsx",
+      "target": "function:src/features/bar/views/MainView.tsx:MainView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/bar/views/MainView.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/MainView.tsx",
+      "target": "file:src/components/ui/TerminalText.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightHUD.tsx",
+      "target": "function:src/features/flight/FlightHUD.tsx:FlightHUD",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/FlightHUD.tsx",
+      "target": "function:src/features/flight/FlightHUD.tsx:FlightHUD",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/FlightHUD.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightHUD.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightHUD.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightHUD.tsx",
+      "target": "file:src/components/ui/TerminalText.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightHUD.tsx",
+      "target": "file:src/features/flight/flight.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/main.tsx",
+      "target": "file:src/App.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/main.tsx",
+      "target": "file:src/index.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/bar/views/ArcadeView.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/features/bar/views/BartenderView.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/features/bar/views/CommandosView.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/features/bar/views/MainView.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/features/flight/FlightHUD.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    }
+  ]
+}

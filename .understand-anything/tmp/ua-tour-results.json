@@ -1,0 +1,739 @@
+{
+  "scriptCompleted": true,
+  "entryPointCandidates": [
+    {
+      "id": "file:src/App.tsx",
+      "score": 5,
+      "name": "App.tsx",
+      "summary": "Root game mode router (MENU/BAR/BRIEFING/FLIGHT/etc); no longer imports useCombatStore"
+    },
+    {
+      "id": "document:README.md",
+      "score": 5,
+      "name": "README.md",
+      "summary": "Project documentation: controls, tech stack, structure, game modes, enemy AI, knowledge graph"
+    },
+    {
+      "id": "file:src/main.tsx",
+      "score": 4,
+      "name": "main.tsx",
+      "summary": "React 18 app bootstrap"
+    },
+    {
+      "id": "config:package.json",
+      "score": 2,
+      "name": "package.json",
+      "summary": "NPM manifest"
+    },
+    {
+      "id": "config:vite.config.ts",
+      "score": 2,
+      "name": "vite.config.ts",
+      "summary": "Vite build config"
+    }
+  ],
+  "fanInRanking": [
+    {
+      "id": "file:src/state/useGameStore.ts",
+      "fanIn": 10,
+      "name": "useGameStore.ts"
+    },
+    {
+      "id": "file:src/state/useCombatStore.ts",
+      "fanIn": 7,
+      "name": "useCombatStore.ts"
+    },
+    {
+      "id": "file:src/components/ui/LCDPanel.tsx",
+      "fanIn": 5,
+      "name": "LCDPanel.tsx"
+    },
+    {
+      "id": "file:src/state/useMissionStore.ts",
+      "fanIn": 3,
+      "name": "useMissionStore.ts"
+    },
+    {
+      "id": "file:src/features/flight/shaders.ts",
+      "fanIn": 3,
+      "name": "shaders.ts"
+    },
+    {
+      "id": "file:src/hooks/useControlsConfig.ts",
+      "fanIn": 2,
+      "name": "useControlsConfig.ts"
+    },
+    {
+      "id": "file:src/components/ui/TerminalText.tsx",
+      "fanIn": 2,
+      "name": "TerminalText.tsx"
+    },
+    {
+      "id": "file:src/utils/audio.ts",
+      "fanIn": 2,
+      "name": "audio.ts"
+    },
+    {
+      "id": "file:src/debug/useDebugStore.ts",
+      "fanIn": 2,
+      "name": "useDebugStore.ts"
+    },
+    {
+      "id": "file:src/features/flight/flight.css",
+      "fanIn": 2,
+      "name": "flight.css"
+    },
+    {
+      "id": "file:src/main.tsx",
+      "fanIn": 1,
+      "name": "main.tsx"
+    },
+    {
+      "id": "file:src/App.tsx",
+      "fanIn": 1,
+      "name": "App.tsx"
+    },
+    {
+      "id": "file:src/components/ErrorBoundary.tsx",
+      "fanIn": 1,
+      "name": "ErrorBoundary.tsx"
+    },
+    {
+      "id": "file:src/components/GameCanvas.tsx",
+      "fanIn": 1,
+      "name": "GameCanvas.tsx"
+    },
+    {
+      "id": "file:src/features/flight/enemyAI.ts",
+      "fanIn": 1,
+      "name": "enemyAI.ts"
+    },
+    {
+      "id": "file:src/features/flight/FlightScene.tsx",
+      "fanIn": 1,
+      "name": "FlightScene.tsx"
+    },
+    {
+      "id": "file:src/features/flight/PlayerShip.tsx",
+      "fanIn": 1,
+      "name": "PlayerShip.tsx"
+    },
+    {
+      "id": "file:src/features/flight/CockpitHUD.tsx",
+      "fanIn": 1,
+      "name": "CockpitHUD.tsx"
+    },
+    {
+      "id": "file:src/features/flight/FlightHUD.tsx",
+      "fanIn": 1,
+      "name": "FlightHUD.tsx"
+    },
+    {
+      "id": "file:src/features/flight/Enemies.tsx",
+      "fanIn": 1,
+      "name": "Enemies.tsx"
+    }
+  ],
+  "fanOutRanking": [
+    {
+      "id": "file:src/features/flight/FlightScene.tsx",
+      "fanOut": 11,
+      "name": "FlightScene.tsx"
+    },
+    {
+      "id": "file:src/components/GameCanvas.tsx",
+      "fanOut": 7,
+      "name": "GameCanvas.tsx"
+    },
+    {
+      "id": "file:src/App.tsx",
+      "fanOut": 6,
+      "name": "App.tsx"
+    },
+    {
+      "id": "file:src/features/flight/PlayerShip.tsx",
+      "fanOut": 5,
+      "name": "PlayerShip.tsx"
+    },
+    {
+      "id": "file:src/features/bar/BarUI.tsx",
+      "fanOut": 5,
+      "name": "BarUI.tsx"
+    },
+    {
+      "id": "file:src/features/flight/Enemies.tsx",
+      "fanOut": 4,
+      "name": "Enemies.tsx"
+    },
+    {
+      "id": "file:src/state/useCombatStore.ts",
+      "fanOut": 3,
+      "name": "useCombatStore.ts"
+    },
+    {
+      "id": "file:src/features/flight/CockpitHUD.tsx",
+      "fanOut": 3,
+      "name": "CockpitHUD.tsx"
+    },
+    {
+      "id": "file:src/features/flight/FlightHUD.tsx",
+      "fanOut": 3,
+      "name": "FlightHUD.tsx"
+    },
+    {
+      "id": "file:src/features/flight/Asteroids.tsx",
+      "fanOut": 3,
+      "name": "Asteroids.tsx"
+    },
+    {
+      "id": "file:src/features/bar/views/ArcadeView.tsx",
+      "fanOut": 3,
+      "name": "ArcadeView.tsx"
+    },
+    {
+      "id": "file:src/main.tsx",
+      "fanOut": 2,
+      "name": "main.tsx"
+    },
+    {
+      "id": "file:src/features/flight/Lasers.tsx",
+      "fanOut": 2,
+      "name": "Lasers.tsx"
+    },
+    {
+      "id": "file:src/features/flight/Mines.tsx",
+      "fanOut": 2,
+      "name": "Mines.tsx"
+    },
+    {
+      "id": "file:src/features/bar/views/MainView.tsx",
+      "fanOut": 2,
+      "name": "MainView.tsx"
+    },
+    {
+      "id": "file:src/features/bar/views/BartenderView.tsx",
+      "fanOut": 2,
+      "name": "BartenderView.tsx"
+    },
+    {
+      "id": "file:src/features/bar/views/CommandosView.tsx",
+      "fanOut": 2,
+      "name": "CommandosView.tsx"
+    },
+    {
+      "id": "file:src/debug/DebugPanel.tsx",
+      "fanOut": 2,
+      "name": "DebugPanel.tsx"
+    },
+    {
+      "id": "file:src/state/useMissionStore.ts",
+      "fanOut": 1,
+      "name": "useMissionStore.ts"
+    },
+    {
+      "id": "file:src/hooks/usePlayerControls.ts",
+      "fanOut": 1,
+      "name": "usePlayerControls.ts"
+    }
+  ],
+  "bfsTraversal": {
+    "startNode": "file:src/App.tsx",
+    "order": [
+      "file:src/App.tsx",
+      "file:src/state/useGameStore.ts",
+      "file:src/components/GameCanvas.tsx",
+      "file:src/components/ErrorBoundary.tsx",
+      "file:src/features/bar/BarUI.tsx",
+      "file:src/features/flight/FlightHUD.tsx",
+      "file:src/features/flight/flight.css",
+      "file:src/features/flight/FlightScene.tsx",
+      "file:src/features/bar/BarScene.tsx",
+      "file:src/features/briefing/BriefingScene.tsx",
+      "file:src/features/quarters/QuartersScene.tsx",
+      "file:src/features/flight/LandingScene.tsx",
+      "file:src/features/flight/LaunchScene.tsx",
+      "file:src/features/bar/views/MainView.tsx",
+      "file:src/features/bar/views/BartenderView.tsx",
+      "file:src/features/bar/views/CommandosView.tsx",
+      "file:src/features/bar/views/ArcadeView.tsx",
+      "file:src/state/useMissionStore.ts",
+      "file:src/features/flight/PlayerShip.tsx",
+      "file:src/features/flight/Enemies.tsx",
+      "file:src/features/flight/Lasers.tsx",
+      "file:src/features/flight/Mines.tsx",
+      "file:src/features/flight/Asteroids.tsx",
+      "file:src/features/flight/Sun.tsx",
+      "file:src/features/flight/CockpitHUD.tsx",
+      "file:src/state/useCombatStore.ts",
+      "file:src/debug/DebugPanel.tsx",
+      "file:src/debug/useDebugStore.ts",
+      "file:src/components/ui/LCDPanel.tsx",
+      "file:src/components/ui/TerminalText.tsx",
+      "file:src/components/ui/ScanlineOverlay.tsx",
+      "file:src/hooks/usePlayerControls.ts",
+      "file:src/utils/audio.ts",
+      "file:src/assets/models/player-ship.glb",
+      "file:src/features/flight/shaders.ts",
+      "file:src/assets/models/enemy-ship.glb",
+      "file:src/assets/models/mine.glb",
+      "file:src/assets/models/low-poly-asteroid.glb",
+      "file:src/assets/models/sun.glb",
+      "file:src/features/flight/enemyAI.ts",
+      "file:src/hooks/useControlsConfig.ts"
+    ],
+    "depthMap": {
+      "file:src/App.tsx": 0,
+      "file:src/state/useGameStore.ts": 1,
+      "file:src/components/GameCanvas.tsx": 1,
+      "file:src/components/ErrorBoundary.tsx": 1,
+      "file:src/features/bar/BarUI.tsx": 1,
+      "file:src/features/flight/FlightHUD.tsx": 1,
+      "file:src/features/flight/flight.css": 1,
+      "file:src/features/flight/FlightScene.tsx": 2,
+      "file:src/features/bar/BarScene.tsx": 2,
+      "file:src/features/briefing/BriefingScene.tsx": 2,
+      "file:src/features/quarters/QuartersScene.tsx": 2,
+      "file:src/features/flight/LandingScene.tsx": 2,
+      "file:src/features/flight/LaunchScene.tsx": 2,
+      "file:src/features/bar/views/MainView.tsx": 2,
+      "file:src/features/bar/views/BartenderView.tsx": 2,
+      "file:src/features/bar/views/CommandosView.tsx": 2,
+      "file:src/features/bar/views/ArcadeView.tsx": 2,
+      "file:src/state/useMissionStore.ts": 2,
+      "file:src/features/flight/PlayerShip.tsx": 3,
+      "file:src/features/flight/Enemies.tsx": 3,
+      "file:src/features/flight/Lasers.tsx": 3,
+      "file:src/features/flight/Mines.tsx": 3,
+      "file:src/features/flight/Asteroids.tsx": 3,
+      "file:src/features/flight/Sun.tsx": 3,
+      "file:src/features/flight/CockpitHUD.tsx": 3,
+      "file:src/state/useCombatStore.ts": 3,
+      "file:src/debug/DebugPanel.tsx": 3,
+      "file:src/debug/useDebugStore.ts": 3,
+      "file:src/components/ui/LCDPanel.tsx": 3,
+      "file:src/components/ui/TerminalText.tsx": 3,
+      "file:src/components/ui/ScanlineOverlay.tsx": 3,
+      "file:src/hooks/usePlayerControls.ts": 4,
+      "file:src/utils/audio.ts": 4,
+      "file:src/assets/models/player-ship.glb": 4,
+      "file:src/features/flight/shaders.ts": 4,
+      "file:src/assets/models/enemy-ship.glb": 4,
+      "file:src/assets/models/mine.glb": 4,
+      "file:src/assets/models/low-poly-asteroid.glb": 4,
+      "file:src/assets/models/sun.glb": 4,
+      "file:src/features/flight/enemyAI.ts": 4,
+      "file:src/hooks/useControlsConfig.ts": 4
+    },
+    "byDepth": {
+      "0": [
+        "file:src/App.tsx"
+      ],
+      "1": [
+        "file:src/state/useGameStore.ts",
+        "file:src/components/GameCanvas.tsx",
+        "file:src/components/ErrorBoundary.tsx",
+        "file:src/features/bar/BarUI.tsx",
+        "file:src/features/flight/FlightHUD.tsx",
+        "file:src/features/flight/flight.css"
+      ],
+      "2": [
+        "file:src/features/flight/FlightScene.tsx",
+        "file:src/features/bar/BarScene.tsx",
+        "file:src/features/briefing/BriefingScene.tsx",
+        "file:src/features/quarters/QuartersScene.tsx",
+        "file:src/features/flight/LandingScene.tsx",
+        "file:src/features/flight/LaunchScene.tsx",
+        "file:src/features/bar/views/MainView.tsx",
+        "file:src/features/bar/views/BartenderView.tsx",
+        "file:src/features/bar/views/CommandosView.tsx",
+        "file:src/features/bar/views/ArcadeView.tsx",
+        "file:src/state/useMissionStore.ts"
+      ],
+      "3": [
+        "file:src/features/flight/PlayerShip.tsx",
+        "file:src/features/flight/Enemies.tsx",
+        "file:src/features/flight/Lasers.tsx",
+        "file:src/features/flight/Mines.tsx",
+        "file:src/features/flight/Asteroids.tsx",
+        "file:src/features/flight/Sun.tsx",
+        "file:src/features/flight/CockpitHUD.tsx",
+        "file:src/state/useCombatStore.ts",
+        "file:src/debug/DebugPanel.tsx",
+        "file:src/debug/useDebugStore.ts",
+        "file:src/components/ui/LCDPanel.tsx",
+        "file:src/components/ui/TerminalText.tsx",
+        "file:src/components/ui/ScanlineOverlay.tsx"
+      ],
+      "4": [
+        "file:src/hooks/usePlayerControls.ts",
+        "file:src/utils/audio.ts",
+        "file:src/assets/models/player-ship.glb",
+        "file:src/features/flight/shaders.ts",
+        "file:src/assets/models/enemy-ship.glb",
+        "file:src/assets/models/mine.glb",
+        "file:src/assets/models/low-poly-asteroid.glb",
+        "file:src/assets/models/sun.glb",
+        "file:src/features/flight/enemyAI.ts",
+        "file:src/hooks/useControlsConfig.ts"
+      ]
+    }
+  },
+  "nonCodeFiles": {
+    "documentation": [
+      {
+        "id": "document:README.md",
+        "name": "README.md",
+        "type": "document",
+        "summary": "Project documentation: controls, tech stack, structure, game modes, enemy AI, knowledge graph"
+      }
+    ],
+    "infrastructure": [],
+    "data": [],
+    "config": [
+      {
+        "id": "config:package.json",
+        "name": "package.json",
+        "type": "config",
+        "summary": "NPM manifest"
+      },
+      {
+        "id": "config:vite.config.ts",
+        "name": "vite.config.ts",
+        "type": "config",
+        "summary": "Vite build config"
+      },
+      {
+        "id": "config:tsconfig.json",
+        "name": "tsconfig.json",
+        "type": "config",
+        "summary": "TypeScript config"
+      },
+      {
+        "id": "config:tsconfig.node.json",
+        "name": "tsconfig.node.json",
+        "type": "config",
+        "summary": "TypeScript config for Vite tooling"
+      }
+    ]
+  },
+  "clusters": [],
+  "layers": {
+    "count": 9,
+    "list": [
+      {
+        "id": "layer:entry",
+        "name": "Application Entry & Scene Routing",
+        "description": "Bootstrap, error boundary, and scene router"
+      },
+      {
+        "id": "layer:flight",
+        "name": "Flight Scene",
+        "description": "All flight gameplay: player, enemies, AI, HUD, shaders, assets"
+      },
+      {
+        "id": "layer:non-flight-scenes",
+        "name": "Non-Flight Scenes",
+        "description": "Bar (with views), briefing, quarters, transitions"
+      },
+      {
+        "id": "layer:ui-components",
+        "name": "Shared UI Components",
+        "description": "LCD panel, scanline overlay, terminal text"
+      },
+      {
+        "id": "layer:state",
+        "name": "Game State",
+        "description": "Zustand stores: game, combat, mission"
+      },
+      {
+        "id": "layer:hooks",
+        "name": "Input Hooks",
+        "description": "Ref-based player controls, key binding config"
+      },
+      {
+        "id": "layer:assets",
+        "name": "3D Model Assets",
+        "description": "GLB binary models"
+      },
+      {
+        "id": "layer:debug-tooling",
+        "name": "Debug Tooling & Utilities",
+        "description": "Debug panel, store, and audio utilities"
+      },
+      {
+        "id": "layer:config",
+        "name": "Configuration",
+        "description": "Build config, TypeScript, HTML, CSS, docs"
+      }
+    ]
+  },
+  "nodeSummaryIndex": {
+    "file:src/main.tsx": {
+      "name": "main.tsx",
+      "type": "file",
+      "summary": "React 18 app bootstrap"
+    },
+    "file:src/App.tsx": {
+      "name": "App.tsx",
+      "type": "file",
+      "summary": "Root game mode router (MENU/BAR/BRIEFING/FLIGHT/etc); no longer imports useCombatStore"
+    },
+    "file:src/components/ErrorBoundary.tsx": {
+      "name": "ErrorBoundary.tsx",
+      "type": "file",
+      "summary": "React error boundary wrapping GameCanvas, styled SYSTEM FAILURE recovery screen"
+    },
+    "file:src/components/GameCanvas.tsx": {
+      "name": "GameCanvas.tsx",
+      "type": "file",
+      "summary": "R3F Canvas with SceneManager routing to game scenes"
+    },
+    "file:src/state/useGameStore.ts": {
+      "name": "useGameStore.ts",
+      "type": "file",
+      "summary": "Central Zustand: game mode, player health/shields, boundary warning"
+    },
+    "file:src/state/useCombatStore.ts": {
+      "name": "useCombatStore.ts",
+      "type": "file",
+      "summary": "Combat Zustand: laser pools, enemy AI (delegates to enemyAI.ts), collision, arcade waves"
+    },
+    "file:src/state/useMissionStore.ts": {
+      "name": "useMissionStore.ts",
+      "type": "file",
+      "summary": "Mission Zustand: lifecycle, objectives, arcade score/level"
+    },
+    "file:src/features/flight/enemyAI.ts": {
+      "name": "enemyAI.ts",
+      "type": "file",
+      "summary": "Pure enemy AI module: selectBehavior (5-state FSM) + computeSteering (approach/strafe/flank/evade/formation with flocking)"
+    },
+    "file:src/features/flight/FlightScene.tsx": {
+      "name": "FlightScene.tsx",
+      "type": "file",
+      "summary": "Top-level R3F scene: lighting, player, enemies, lasers, mines, asteroids, sun"
+    },
+    "file:src/features/flight/PlayerShip.tsx": {
+      "name": "PlayerShip.tsx",
+      "type": "file",
+      "summary": "Core player: 6-DoF physics, camera, targeting, laser firing toward lead pip; reads controls.current in useFrame"
+    },
+    "file:src/features/flight/CockpitHUD.tsx": {
+      "name": "CockpitHUD.tsx",
+      "type": "file",
+      "summary": "In-flight HUD: imperative canvas radar, throttle DOM ref, targeting panel, hull/shield bars"
+    },
+    "file:src/features/flight/FlightHUD.tsx": {
+      "name": "FlightHUD.tsx",
+      "type": "file",
+      "summary": "Flight mode 2D overlay: mission objectives, boundary warnings, game-over/mission-complete screens"
+    },
+    "file:src/features/flight/Enemies.tsx": {
+      "name": "Enemies.tsx",
+      "type": "file",
+      "summary": "Enemy rendering, target bracket, explosion VFX, arcade wave progression via useEffect+clearTimeout"
+    },
+    "file:src/features/flight/shaders.ts": {
+      "name": "shaders.ts",
+      "type": "file",
+      "summary": "GLSL shader factories: engine plasma, laser bolts, procedural explosion fire"
+    },
+    "file:src/features/flight/Asteroids.tsx": {
+      "name": "Asteroids.tsx",
+      "type": "file",
+      "summary": "Instanced asteroid field with collision and explosion VFX"
+    },
+    "file:src/features/flight/Lasers.tsx": {
+      "name": "Lasers.tsx",
+      "type": "file",
+      "summary": "Instanced laser bolts with shader materials"
+    },
+    "file:src/features/flight/Mines.tsx": {
+      "name": "Mines.tsx",
+      "type": "file",
+      "summary": "Space mines with proximity detonation"
+    },
+    "file:src/features/flight/LandingScene.tsx": {
+      "name": "LandingScene.tsx",
+      "type": "file",
+      "summary": "Landing tube transition → BAR"
+    },
+    "file:src/features/flight/LaunchScene.tsx": {
+      "name": "LaunchScene.tsx",
+      "type": "file",
+      "summary": "Launch tube transition → FLIGHT"
+    },
+    "file:src/features/bar/BarUI.tsx": {
+      "name": "BarUI.tsx",
+      "type": "file",
+      "summary": "Bar UI router: 23 lines, dispatches to view sub-components"
+    },
+    "file:src/features/bar/views/MainView.tsx": {
+      "name": "MainView.tsx",
+      "type": "file",
+      "summary": "Main bar navigation menu"
+    },
+    "file:src/features/bar/views/BartenderView.tsx": {
+      "name": "BartenderView.tsx",
+      "type": "file",
+      "summary": "Bartender Unit 7 dialogue view"
+    },
+    "file:src/features/bar/views/CommandosView.tsx": {
+      "name": "CommandosView.tsx",
+      "type": "file",
+      "summary": "Pilot conversation view with branching dialogue tree"
+    },
+    "file:src/features/bar/views/ArcadeView.tsx": {
+      "name": "ArcadeView.tsx",
+      "type": "file",
+      "summary": "Arcade cabinet view with leaderboard and credit insertion"
+    },
+    "file:src/features/bar/BarScene.tsx": {
+      "name": "BarScene.tsx",
+      "type": "file",
+      "summary": "3D bar environment scene"
+    },
+    "file:src/features/briefing/BriefingScene.tsx": {
+      "name": "BriefingScene.tsx",
+      "type": "file",
+      "summary": "Mission briefing room scene"
+    },
+    "file:src/features/quarters/QuartersScene.tsx": {
+      "name": "QuartersScene.tsx",
+      "type": "file",
+      "summary": "Crew quarters static scene"
+    },
+    "file:src/hooks/usePlayerControls.ts": {
+      "name": "usePlayerControls.ts",
+      "type": "file",
+      "summary": "Ref-based input hook: keydown/keyup → MutableRefObject<Controls>, zero re-renders on keypress"
+    },
+    "file:src/hooks/useControlsConfig.ts": {
+      "name": "useControlsConfig.ts",
+      "type": "file",
+      "summary": "Key binding configuration Zustand store"
+    },
+    "file:src/components/ui/LCDPanel.tsx": {
+      "name": "LCDPanel.tsx",
+      "type": "file",
+      "summary": "LCD panel container UI primitive"
+    },
+    "file:src/components/ui/ScanlineOverlay.tsx": {
+      "name": "ScanlineOverlay.tsx",
+      "type": "file",
+      "summary": "CRT scanline overlay"
+    },
+    "file:src/components/ui/TerminalText.tsx": {
+      "name": "TerminalText.tsx",
+      "type": "file",
+      "summary": "Animated typewriter terminal text"
+    },
+    "file:src/utils/audio.ts": {
+      "name": "audio.ts",
+      "type": "file",
+      "summary": "Web Audio API: procedural laser and explosion sounds"
+    },
+    "file:src/debug/DebugPanel.tsx": {
+      "name": "DebugPanel.tsx",
+      "type": "file",
+      "summary": "Leva debug GUI: key rebinding, visualization toggles"
+    },
+    "file:src/debug/useDebugStore.ts": {
+      "name": "useDebugStore.ts",
+      "type": "file",
+      "summary": "Debug overlay boolean flags store"
+    },
+    "document:README.md": {
+      "name": "README.md",
+      "type": "document",
+      "summary": "Project documentation: controls, tech stack, structure, game modes, enemy AI, knowledge graph"
+    },
+    "config:package.json": {
+      "name": "package.json",
+      "type": "config",
+      "summary": "NPM manifest"
+    },
+    "config:vite.config.ts": {
+      "name": "vite.config.ts",
+      "type": "config",
+      "summary": "Vite build config"
+    },
+    "config:tsconfig.json": {
+      "name": "tsconfig.json",
+      "type": "config",
+      "summary": "TypeScript config"
+    },
+    "config:tsconfig.node.json": {
+      "name": "tsconfig.node.json",
+      "type": "config",
+      "summary": "TypeScript config for Vite tooling"
+    },
+    "file:index.html": {
+      "name": "index.html",
+      "type": "file",
+      "summary": "Vite HTML entry point"
+    },
+    "file:src/features/flight/Sun.tsx": {
+      "name": "Sun.tsx",
+      "type": "file",
+      "summary": "Sun model with directional light"
+    },
+    "file:src/features/flight/Starfield.tsx": {
+      "name": "Starfield.tsx",
+      "type": "file",
+      "summary": "Procedural star field (unused — FlightScene has inline version)"
+    },
+    "file:src/features/flight/flight.css": {
+      "name": "flight.css",
+      "type": "file",
+      "summary": "HUD CSS, boundary warning animations"
+    },
+    "file:src/index.css": {
+      "name": "index.css",
+      "type": "file",
+      "summary": "Global dark sci-fi stylesheet"
+    },
+    "file:src/vite-env.d.ts": {
+      "name": "vite-env.d.ts",
+      "type": "file",
+      "summary": "Vite client types + GLB module declaration"
+    },
+    "file:.gitattributes": {
+      "name": ".gitattributes",
+      "type": "file",
+      "summary": "Git LFS for GLB files"
+    },
+    "file:.understand-anything/.understandignore": {
+      "name": ".understandignore",
+      "type": "file",
+      "summary": "Ignore patterns for understand-anything"
+    },
+    "file:src/assets/models/player-ship.glb": {
+      "name": "player-ship.glb",
+      "type": "file",
+      "summary": "Player ship 3D model"
+    },
+    "file:src/assets/models/enemy-ship.glb": {
+      "name": "enemy-ship.glb",
+      "type": "file",
+      "summary": "Enemy ship 3D model"
+    },
+    "file:src/assets/models/low-poly-asteroid.glb": {
+      "name": "low-poly-asteroid.glb",
+      "type": "file",
+      "summary": "Asteroid 3D model"
+    },
+    "file:src/assets/models/mine.glb": {
+      "name": "mine.glb",
+      "type": "file",
+      "summary": "Space mine 3D model"
+    },
+    "file:src/assets/models/sun.glb": {
+      "name": "sun.glb",
+      "type": "file",
+      "summary": "Sun 3D model"
+    }
+  },
+  "totalNodes": 53,
+  "totalEdges": 71
+}

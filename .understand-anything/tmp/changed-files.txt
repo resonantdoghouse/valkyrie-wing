@@ -1,0 +1,15 @@
+README.md
+src/App.tsx
+src/components/ErrorBoundary.tsx
+src/features/bar/BarUI.tsx
+src/features/bar/views/ArcadeView.tsx
+src/features/bar/views/BartenderView.tsx
+src/features/bar/views/CommandosView.tsx
+src/features/bar/views/MainView.tsx
+src/features/flight/CockpitHUD.tsx
+src/features/flight/Enemies.tsx
+src/features/flight/FlightHUD.tsx
+src/features/flight/PlayerShip.tsx
+src/features/flight/enemyAI.ts
+src/hooks/usePlayerControls.ts
+src/state/useCombatStore.ts

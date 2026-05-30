@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "1d08db056a85bc0352c8621cc0d0564324e24189",
-  "generatedAt": "2026-05-30T01:52:07.682Z",
+  "gitCommitHash": "045734bfb942b124ddb4f0dadc9a961f03390a4f",
+  "generatedAt": "2026-05-30T17:03:09.868Z",
   "files": {
     ".gitattributes": {
       "filePath": ".gitattributes",
@@ -21,6 +21,46 @@
       "imports": [],
       "exports": [],
       "totalLines": 18,
+      "hasStructuralAnalysis": false
+    },
+    ".understand-anything/fingerprints.json": {
+      "filePath": ".understand-anything/fingerprints.json",
+      "contentHash": "6ab812e069028117c82ac6f6145fb56b6b86cd702736f3ad6bbfb3bc5ed4c174",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1788,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/knowledge-graph.json": {
+      "filePath": ".understand-anything/knowledge-graph.json",
+      "contentHash": "120a2034203863f098c8f0cb66992fba2ba173b4247a85e03393dd32d0a255ad",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3399,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/meta.json": {
+      "filePath": ".understand-anything/meta.json",
+      "contentHash": "80c1c8802c3724d6eae4814019bb6bb958977f3454900a84a5e62e14c06222b7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/tmp/changed-files.txt": {
+      "filePath": ".understand-anything/tmp/changed-files.txt",
+      "contentHash": "d902b6b19e2844d10604c6bf7d4eed89c80e27f68449a6bc63d6ae9d27e893db",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
       "hasStructuralAnalysis": false
     },
     "index.html": {
@@ -43,15 +83,25 @@
       "totalLines": 30,
       "hasStructuralAnalysis": true
     },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "b920fd067b5efa2f77875b4fe49c17deac02e9a4a5082d1a914d6f157f32fa1d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 119,
+      "hasStructuralAnalysis": true
+    },
     "src/App.tsx": {
       "filePath": "src/App.tsx",
-      "contentHash": "5ac31df9045292918dacfb2583854de925c9541cc41650f81a905155e26cd58e",
+      "contentHash": "85deafa6e5f9c1c041592dc6103ab2bfab9e166b1f4ecab145511ff0d11f066d",
       "functions": [
         {
           "name": "App",
           "params": [],
           "exported": false,
-          "lineCount": 200
+          "lineCount": 85
         }
       ],
       "classes": [],
@@ -69,15 +119,15 @@
           ]
         },
         {
-          "source": "./state/useCombatStore",
-          "specifiers": [
-            "useCombatStore"
-          ]
-        },
-        {
           "source": "./components/GameCanvas",
           "specifiers": [
             "GameCanvas"
+          ]
+        },
+        {
+          "source": "./components/ErrorBoundary",
+          "specifiers": [
+            "ErrorBoundary"
           ]
         },
         {
@@ -111,18 +161,20 @@
           ]
         },
         {
+          "source": "./features/flight/FlightHUD",
+          "specifiers": [
+            "FlightHUD"
+          ]
+        },
+        {
           "source": "./utils/audio",
           "specifiers": [
             "initAudio"
           ]
-        },
-        {
-          "source": "./features/flight/flight.css",
-          "specifiers": []
         }
       ],
       "exports": [],
-      "totalLines": 215,
+      "totalLines": 100,
       "hasStructuralAnalysis": true
     },
     "src/assets/models/enemy-ship.glb": {
@@ -174,6 +226,39 @@
       "exports": [],
       "totalLines": 48665,
       "hasStructuralAnalysis": false
+    },
+    "src/components/ErrorBoundary.tsx": {
+      "filePath": "src/components/ErrorBoundary.tsx",
+      "contentHash": "5a8b5a155c1074d1f9689e1b5ddddfe1483ba46153fc938953573804975ad6d3",
+      "functions": [],
+      "classes": [
+        {
+          "name": "ErrorBoundary",
+          "methods": [
+            "getDerivedStateFromError",
+            "render"
+          ],
+          "properties": [
+            "state"
+          ],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "Component",
+            "ReactNode"
+          ]
+        }
+      ],
+      "exports": [
+        "ErrorBoundary"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
     },
     "src/components/GameCanvas.tsx": {
       "filePath": "src/components/GameCanvas.tsx",
@@ -477,13 +562,71 @@
     },
     "src/features/bar/BarUI.tsx": {
       "filePath": "src/features/bar/BarUI.tsx",
-      "contentHash": "6efdf8325d378735f904e388669d228bf56a99d3df3cc27d99effbfbc208b088",
+      "contentHash": "d626bc288319f2f9e150af092278c6eb747ecc3f20e4d924193e8a216ec635a9",
       "functions": [
         {
           "name": "BarUI",
           "params": [],
           "exported": true,
-          "lineCount": 322
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "../../components/ui/LCDPanel",
+          "specifiers": [
+            "LCDPanel"
+          ]
+        },
+        {
+          "source": "./views/MainView",
+          "specifiers": [
+            "MainView"
+          ]
+        },
+        {
+          "source": "./views/BartenderView",
+          "specifiers": [
+            "BartenderView"
+          ]
+        },
+        {
+          "source": "./views/CommandosView",
+          "specifiers": [
+            "CommandosView"
+          ]
+        },
+        {
+          "source": "./views/ArcadeView",
+          "specifiers": [
+            "ArcadeView"
+          ]
+        }
+      ],
+      "exports": [
+        "BarUI"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/bar/views/ArcadeView.tsx": {
+      "filePath": "src/features/bar/views/ArcadeView.tsx",
+      "contentHash": "3aaa8177cb7a9d90500f562683807be4af0199a4d310b6e63cc25850d666d05c",
+      "functions": [
+        {
+          "name": "ArcadeView",
+          "params": [
+            "{ onBack }"
+          ],
+          "exported": true,
+          "lineCount": 74
         }
       ],
       "classes": [],
@@ -496,40 +639,148 @@
           ]
         },
         {
-          "source": "../../state/useGameStore",
+          "source": "../../../state/useGameStore",
           "specifiers": [
             "useGameStore"
           ]
         },
         {
-          "source": "../../state/useMissionStore",
+          "source": "../../../state/useMissionStore",
           "specifiers": [
             "useMissionStore"
           ]
         },
         {
-          "source": "../../state/useCombatStore",
+          "source": "../../../state/useCombatStore",
           "specifiers": [
             "useCombatStore"
           ]
         },
         {
-          "source": "../../components/ui/LCDPanel",
-          "specifiers": [
-            "LCDPanel"
-          ]
-        },
-        {
-          "source": "../../components/ui/TerminalText",
+          "source": "../../../components/ui/TerminalText",
           "specifiers": [
             "TerminalText"
           ]
         }
       ],
       "exports": [
-        "BarUI"
+        "ArcadeView"
       ],
-      "totalLines": 330,
+      "totalLines": 85,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/bar/views/BartenderView.tsx": {
+      "filePath": "src/features/bar/views/BartenderView.tsx",
+      "contentHash": "75f33cc2b835cf23cc1354d3b8920265b7f7ed68c4723b8847b6698cc86d51de",
+      "functions": [
+        {
+          "name": "BartenderView",
+          "params": [
+            "{ onBack }"
+          ],
+          "exported": true,
+          "lineCount": 59
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "../../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../../../components/ui/TerminalText",
+          "specifiers": [
+            "TerminalText"
+          ]
+        }
+      ],
+      "exports": [
+        "BartenderView"
+      ],
+      "totalLines": 68,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/bar/views/CommandosView.tsx": {
+      "filePath": "src/features/bar/views/CommandosView.tsx",
+      "contentHash": "c6f5e083f6d310873b3f7cf7d14b49a1f567cc3c0886d2f271fe0ed04ca61a52",
+      "functions": [
+        {
+          "name": "CommandosView",
+          "params": [
+            "{ onBack }"
+          ],
+          "exported": true,
+          "lineCount": 130
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "../../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../../../components/ui/TerminalText",
+          "specifiers": [
+            "TerminalText"
+          ]
+        }
+      ],
+      "exports": [
+        "CommandosView"
+      ],
+      "totalLines": 147,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/bar/views/MainView.tsx": {
+      "filePath": "src/features/bar/views/MainView.tsx",
+      "contentHash": "67849857362965408b441568dedbd92201666d3e5aaf0409303fcdd46afcd4a9",
+      "functions": [
+        {
+          "name": "MainView",
+          "params": [
+            "{ onNavigate }"
+          ],
+          "exported": true,
+          "lineCount": 31
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../../../components/ui/TerminalText",
+          "specifiers": [
+            "TerminalText"
+          ]
+        }
+      ],
+      "exports": [
+        "MainView"
+      ],
+      "totalLines": 41,
       "hasStructuralAnalysis": true
     },
     "src/features/briefing/BriefingScene.tsx": {
@@ -653,7 +904,7 @@
     },
     "src/features/flight/CockpitHUD.tsx": {
       "filePath": "src/features/flight/CockpitHUD.tsx",
-      "contentHash": "552ce0c30bc76c1d8c2e44525428eae35bfa6a94a4e836783eb05de4ec278323",
+      "contentHash": "fd7bf4ca4b6e738eccb1dd9641ae6d0b624a5db349cb80c1641db5e2b0c08e24",
       "functions": [
         {
           "name": "getHealthColor",
@@ -677,7 +928,7 @@
             "{ throttle, shipRef }"
           ],
           "exported": true,
-          "lineCount": 310
+          "lineCount": 312
         }
       ],
       "classes": [],
@@ -735,12 +986,12 @@
       "exports": [
         "CockpitHUD"
       ],
-      "totalLines": 340,
+      "totalLines": 342,
       "hasStructuralAnalysis": true
     },
     "src/features/flight/Enemies.tsx": {
       "filePath": "src/features/flight/Enemies.tsx",
-      "contentHash": "e3ead72323f38fcd8cca762de9de64ba70fafbdb3874c3feb007315265533728",
+      "contentHash": "f9bac43aece982f4198e6937caba0d61cf2ea07d5c86f18750ee102dddb5a739",
       "functions": [
         {
           "name": "TargetBracket",
@@ -752,7 +1003,7 @@
           "name": "Enemies",
           "params": [],
           "exported": true,
-          "lineCount": 28
+          "lineCount": 41
         },
         {
           "name": "Explosion",
@@ -778,7 +1029,8 @@
           "specifiers": [
             "useRef",
             "useState",
-            "useMemo"
+            "useMemo",
+            "useEffect"
           ]
         },
         {
@@ -799,6 +1051,12 @@
           "specifiers": [
             "useCombatStore",
             "EnemyData"
+          ]
+        },
+        {
+          "source": "../../state/useMissionStore",
+          "specifiers": [
+            "useMissionStore"
           ]
         },
         {
@@ -829,7 +1087,54 @@
       "exports": [
         "Enemies"
       ],
-      "totalLines": 150,
+      "totalLines": 164,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/flight/enemyAI.ts": {
+      "filePath": "src/features/flight/enemyAI.ts",
+      "contentHash": "05fbf19b79d7411b1e9f7a1dd6e7ba8bf46de82815659532bc3999acb1715d7f",
+      "functions": [
+        {
+          "name": "selectBehavior",
+          "params": [
+            "behaviorState",
+            "behaviorTimer",
+            "distance",
+            "delta"
+          ],
+          "returnType": "{ behaviorState: EnemyBehavior; behaviorTimer: number }",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "computeSteering",
+          "params": [
+            "enemy",
+            "enemyIndex",
+            "allEnemies",
+            "playerPosition",
+            "playerVelocity"
+          ],
+          "returnType": "THREE.Vector3",
+          "exported": true,
+          "lineCount": 92
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "three",
+          "specifiers": [
+            "* as THREE"
+          ]
+        }
+      ],
+      "exports": [
+        "ENEMY_SPEED",
+        "selectBehavior",
+        "computeSteering"
+      ],
+      "totalLines": 134,
       "hasStructuralAnalysis": true
     },
     "src/features/flight/flight.css": {
@@ -841,6 +1146,54 @@
       "exports": [],
       "totalLines": 81,
       "hasStructuralAnalysis": false
+    },
+    "src/features/flight/FlightHUD.tsx": {
+      "filePath": "src/features/flight/FlightHUD.tsx",
+      "contentHash": "7b5a900f0779e2a87fbbc6502fb5a18fcaa3ffb67ca1ad239f47c5736439bbc4",
+      "functions": [
+        {
+          "name": "FlightHUD",
+          "params": [],
+          "exported": true,
+          "lineCount": 154
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../../state/useGameStore",
+          "specifiers": [
+            "useGameStore"
+          ]
+        },
+        {
+          "source": "../../state/useMissionStore",
+          "specifiers": [
+            "useMissionStore"
+          ]
+        },
+        {
+          "source": "../../state/useCombatStore",
+          "specifiers": [
+            "useCombatStore"
+          ]
+        },
+        {
+          "source": "../../components/ui/TerminalText",
+          "specifiers": [
+            "TerminalText"
+          ]
+        },
+        {
+          "source": "./flight.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [
+        "FlightHUD"
+      ],
+      "totalLines": 161,
+      "hasStructuralAnalysis": true
     },
     "src/features/flight/FlightScene.tsx": {
       "filePath": "src/features/flight/FlightScene.tsx",
@@ -1217,7 +1570,7 @@
     },
     "src/features/flight/PlayerShip.tsx": {
       "filePath": "src/features/flight/PlayerShip.tsx",
-      "contentHash": "835f5f436ab65bbc1a72c55211c2a37f3d87fcb4efd9912792ce643bdd088132",
+      "contentHash": "7830a128cd89ec8c6ef0e91d78f32e0902cdd92675ea2f71a1546c2c0e14bf5f",
       "functions": [
         {
           "name": "TargetingReticle",
@@ -1249,7 +1602,7 @@
           "name": "PlayerShip",
           "params": [],
           "exported": true,
-          "lineCount": 216
+          "lineCount": 218
         }
       ],
       "classes": [],
@@ -1343,7 +1696,7 @@
       "exports": [
         "PlayerShip"
       ],
-      "totalLines": 394,
+      "totalLines": 396,
       "hasStructuralAnalysis": true
     },
     "src/features/flight/shaders.ts": {
@@ -1527,7 +1880,7 @@
     },
     "src/hooks/usePlayerControls.ts": {
       "filePath": "src/hooks/usePlayerControls.ts",
-      "contentHash": "8005062cce2fb955b7493175fea5b9dbfa735ef2c1f9ca654b5bbac6b6786967",
+      "contentHash": "b4d4928fdf802657a75db7a77fabd3c397a4e2a918867b6c7865b53bd9d7a1d9",
       "functions": [
         {
           "name": "matchesSlot",
@@ -1553,7 +1906,7 @@
           "name": "usePlayerControls",
           "params": [],
           "exported": true,
-          "lineCount": 37
+          "lineCount": 23
         }
       ],
       "classes": [],
@@ -1562,7 +1915,7 @@
           "source": "react",
           "specifiers": [
             "useEffect",
-            "useState"
+            "useRef"
           ]
         },
         {
@@ -1576,7 +1929,7 @@
       "exports": [
         "usePlayerControls"
       ],
-      "totalLines": 74,
+      "totalLines": 70,
       "hasStructuralAnalysis": true
     },
     "src/index.css": {
@@ -1624,7 +1977,7 @@
     },
     "src/state/useCombatStore.ts": {
       "filePath": "src/state/useCombatStore.ts",
-      "contentHash": "2d1b88ab634399a16386ce0add19ecc982e531f15e4aa7955a2263c78601e393",
+      "contentHash": "fb1210ff4f984e040363db997dfd13a72df6fbb32e25474bf980347683a9b965",
       "functions": [],
       "classes": [],
       "imports": [
@@ -1652,12 +2005,24 @@
             "playLaserSound",
             "playExplosionSound"
           ]
+        },
+        {
+          "source": "../features/flight/enemyAI",
+          "specifiers": [
+            "selectBehavior",
+            "computeSteering",
+            "ENEMY_SPEED",
+            "EnemyBehavior",
+            "EnemyData"
+          ]
         }
       ],
       "exports": [
+        "EnemyBehavior",
+        "EnemyData",
         "useCombatStore"
       ],
-      "totalLines": 542,
+      "totalLines": 419,
       "hasStructuralAnalysis": true
     },
     "src/state/useGameStore.ts": {

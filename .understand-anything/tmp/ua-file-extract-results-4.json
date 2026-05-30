@@ -1,0 +1,1409 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 4,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "src/features/flight/CockpitHUD.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 341,
+      "nonEmptyLines": 305,
+      "functions": [
+        {
+          "name": "getHealthColor",
+          "startLine": 15,
+          "endLine": 19,
+          "params": [
+            "val"
+          ]
+        },
+        {
+          "name": "StatBar",
+          "startLine": 21,
+          "endLine": 28,
+          "params": [
+            "{ label, value, color }"
+          ]
+        },
+        {
+          "name": "CockpitHUD",
+          "startLine": 30,
+          "endLine": 341,
+          "params": [
+            "{ throttle, shipRef }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "CockpitHUD",
+          "line": 30,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "StatBar",
+          "callee": "Math.max",
+          "lineNumber": 25
+        },
+        {
+          "caller": "StatBar",
+          "callee": "Math.min",
+          "lineNumber": 25
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "usePlayerControls",
+          "lineNumber": 31
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useCombatStore",
+          "lineNumber": 32
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useCombatStore",
+          "lineNumber": 33
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "state.enemies.find",
+          "lineNumber": 33
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useRef",
+          "lineNumber": 34
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useGameStore",
+          "lineNumber": 35
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useRef",
+          "lineNumber": 36
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useRef",
+          "lineNumber": 38
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useRef",
+          "lineNumber": 39
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useFrame",
+          "lineNumber": 41
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "Math.round",
+          "lineNumber": 51
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "radarCanvasRef.current.getContext",
+          "lineNumber": 55
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.clearRect",
+          "lineNumber": 60
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.beginPath",
+          "lineNumber": 67
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.arc",
+          "lineNumber": 67
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.fill",
+          "lineNumber": 67
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.setLineDash",
+          "lineNumber": 72
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "[40, 75, 110].forEach",
+          "lineNumber": 73
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.beginPath",
+          "lineNumber": 74
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.arc",
+          "lineNumber": 74
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.stroke",
+          "lineNumber": 74
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.setLineDash",
+          "lineNumber": 76
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.beginPath",
+          "lineNumber": 80
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.moveTo",
+          "lineNumber": 80
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.lineTo",
+          "lineNumber": 80
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.stroke",
+          "lineNumber": 80
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.beginPath",
+          "lineNumber": 81
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.moveTo",
+          "lineNumber": 81
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.lineTo",
+          "lineNumber": 81
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.stroke",
+          "lineNumber": 81
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.save",
+          "lineNumber": 84
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.translate",
+          "lineNumber": 85
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.rotate",
+          "lineNumber": 86
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.createConicGradient",
+          "lineNumber": 87
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "gradient.addColorStop",
+          "lineNumber": 88
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "gradient.addColorStop",
+          "lineNumber": 89
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "gradient.addColorStop",
+          "lineNumber": 90
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.beginPath",
+          "lineNumber": 92
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.moveTo",
+          "lineNumber": 93
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.arc",
+          "lineNumber": 94
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.closePath",
+          "lineNumber": 95
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.fill",
+          "lineNumber": 96
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.restore",
+          "lineNumber": 97
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useCombatStore.getState",
+          "lineNumber": 102
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "enemies.forEach",
+          "lineNumber": 103
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "shipRef.current!.worldToLocal",
+          "lineNumber": 105
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "enemy.position.clone",
+          "lineNumber": 105
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.beginPath",
+          "lineNumber": 114
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.arc",
+          "lineNumber": 114
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.fill",
+          "lineNumber": 114
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "useMissionStore.getState",
+          "lineNumber": 120
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "activeMission.objectives.forEach",
+          "lineNumber": 122
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "shipRef.current!.worldToLocal",
+          "lineNumber": 125
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.beginPath",
+          "lineNumber": 134
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.moveTo",
+          "lineNumber": 134
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.lineTo",
+          "lineNumber": 134
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.lineTo",
+          "lineNumber": 134
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.fill",
+          "lineNumber": 134
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.beginPath",
+          "lineNumber": 145
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.moveTo",
+          "lineNumber": 145
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.lineTo",
+          "lineNumber": 145
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.lineTo",
+          "lineNumber": 145
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.lineTo",
+          "lineNumber": 145
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "ctx.fill",
+          "lineNumber": 145
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "[...Array(10)].map",
+          "lineNumber": 191
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "Array",
+          "lineNumber": 191
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "getHealthColor",
+          "lineNumber": 272
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "getHealthColor",
+          "lineNumber": 273
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "getHealthColor",
+          "lineNumber": 274
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "getHealthColor",
+          "lineNumber": 275
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "targetEnemy.id.substring(0, 6).toUpperCase",
+          "lineNumber": 320
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "targetEnemy.id.substring",
+          "lineNumber": 320
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "Math.round",
+          "lineNumber": 321
+        },
+        {
+          "caller": "CockpitHUD",
+          "callee": "shipRef.current.position.distanceTo",
+          "lineNumber": 321
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/features/flight/PlayerShip.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 395,
+      "nonEmptyLines": 343,
+      "functions": [
+        {
+          "name": "TargetingReticle",
+          "startLine": 21,
+          "endLine": 51,
+          "params": []
+        },
+        {
+          "name": "LeadIndicator",
+          "startLine": 56,
+          "endLine": 109,
+          "params": []
+        },
+        {
+          "name": "DirectionArrows",
+          "startLine": 112,
+          "endLine": 153,
+          "params": [
+            "{\n  meshRef,\n  velocityRef,\n}"
+          ]
+        },
+        {
+          "name": "CameraInfoLabel",
+          "startLine": 156,
+          "endLine": 174,
+          "params": []
+        },
+        {
+          "name": "PlayerShip",
+          "startLine": 176,
+          "endLine": 393,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "PlayerShip",
+          "line": 176,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "TargetingReticle",
+          "callee": "useMemo",
+          "lineNumber": 22
+        },
+        {
+          "caller": "TargetingReticle",
+          "callee": "geo.setAttribute",
+          "lineNumber": 32
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "useRef",
+          "lineNumber": 57
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "useThree",
+          "lineNumber": 58
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "useMemo",
+          "lineNumber": 60
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "useFrame",
+          "lineNumber": 71
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "useCombatStore.getState",
+          "lineNumber": 73
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "enemies.find",
+          "lineNumber": 74
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "camera.position.distanceTo",
+          "lineNumber": 83
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "target.position.clone().addScaledVector",
+          "lineNumber": 84
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "target.position.clone",
+          "lineNumber": 84
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "camera.position.distanceTo",
+          "lineNumber": 85
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "lead.copy(target.position).addScaledVector",
+          "lineNumber": 86
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "lead.copy",
+          "lineNumber": 86
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "groupRef.current.position.copy",
+          "lineNumber": 88
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "groupRef.current.quaternion.copy",
+          "lineNumber": 90
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "groupRef.current.scale.setScalar",
+          "lineNumber": 92
+        },
+        {
+          "caller": "LeadIndicator",
+          "callee": "Math.max",
+          "lineNumber": 92
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "useMemo",
+          "lineNumber": 119
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "useMemo",
+          "lineNumber": 123
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "useMemo",
+          "lineNumber": 127
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "useMemo",
+          "lineNumber": 132
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "useMemo",
+          "lineNumber": 133
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "useFrame",
+          "lineNumber": 135
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "velocityRef.current.length",
+          "lineNumber": 137
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "_invQuat.copy(meshRef.current.quaternion).invert",
+          "lineNumber": 139
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "_invQuat.copy",
+          "lineNumber": 139
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "_localVel.copy(velocityRef.current).applyQuaternion(_invQuat).normalize",
+          "lineNumber": 140
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "_localVel.copy(velocityRef.current).applyQuaternion",
+          "lineNumber": 140
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "_localVel.copy",
+          "lineNumber": 140
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "velocityArrow.setDirection",
+          "lineNumber": 141
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "velocityArrow.setLength",
+          "lineNumber": 142
+        },
+        {
+          "caller": "DirectionArrows",
+          "callee": "Math.min",
+          "lineNumber": 142
+        },
+        {
+          "caller": "CameraInfoLabel",
+          "callee": "useThree",
+          "lineNumber": 157
+        },
+        {
+          "caller": "CameraInfoLabel",
+          "callee": "useState",
+          "lineNumber": 158
+        },
+        {
+          "caller": "CameraInfoLabel",
+          "callee": "useRef",
+          "lineNumber": 159
+        },
+        {
+          "caller": "CameraInfoLabel",
+          "callee": "useFrame",
+          "lineNumber": 161
+        },
+        {
+          "caller": "CameraInfoLabel",
+          "callee": "setInfo",
+          "lineNumber": 166
+        },
+        {
+          "caller": "CameraInfoLabel",
+          "callee": "p.x.toFixed",
+          "lineNumber": 167
+        },
+        {
+          "caller": "CameraInfoLabel",
+          "callee": "p.y.toFixed",
+          "lineNumber": 167
+        },
+        {
+          "caller": "CameraInfoLabel",
+          "callee": "p.z.toFixed",
+          "lineNumber": 167
+        },
+        {
+          "caller": "CameraInfoLabel",
+          "callee": "fov.toFixed",
+          "lineNumber": 167
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 177
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "usePlayerControls",
+          "lineNumber": 178
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useCombatStore",
+          "lineNumber": 179
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useDebugStore",
+          "lineNumber": 180
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useDebugStore",
+          "lineNumber": 181
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 183
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 184
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 185
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useThree",
+          "lineNumber": 186
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useState",
+          "lineNumber": 188
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 189
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useGLTF",
+          "lineNumber": 191
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useMemo",
+          "lineNumber": 192
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "shipModel.clone",
+          "lineNumber": 192
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useMemo",
+          "lineNumber": 193
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "makeEngineGlowMaterial",
+          "lineNumber": 193
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useControls",
+          "lineNumber": 196
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useEffect",
+          "lineNumber": 207
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "cam.updateProjectionMatrix",
+          "lineNumber": 210
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useEffect",
+          "lineNumber": 214
+        },
+        {
+          "caller": "onKey",
+          "callee": "setIs3rdPerson",
+          "lineNumber": 217
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "window.addEventListener",
+          "lineNumber": 224
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "window.removeEventListener",
+          "lineNumber": 225
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 228
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 229
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 230
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 231
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 232
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 233
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 234
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 236
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 237
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useRef",
+          "lineNumber": 238
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useMemo",
+          "lineNumber": 239
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useMemo",
+          "lineNumber": 240
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useMemo",
+          "lineNumber": 241
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useMemo",
+          "lineNumber": 242
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useFrame",
+          "lineNumber": 247
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.rotateX",
+          "lineNumber": 253
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.rotateX",
+          "lineNumber": 254
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.rotateY",
+          "lineNumber": 255
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.rotateY",
+          "lineNumber": 256
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.rotateZ",
+          "lineNumber": 257
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.rotateZ",
+          "lineNumber": 258
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "Math.min",
+          "lineNumber": 261
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "Math.max",
+          "lineNumber": 262
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.getWorldDirection",
+          "lineNumber": 264
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "direction.negate",
+          "lineNumber": 265
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "targetVelocity.copy(direction).multiplyScalar",
+          "lineNumber": 268
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "targetVelocity.copy",
+          "lineNumber": 268
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "velocity.current.lerp",
+          "lineNumber": 269
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.position.addScaledVector",
+          "lineNumber": 270
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useGameStore.getState().rechargeShields",
+          "lineNumber": 272
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useGameStore.getState",
+          "lineNumber": 272
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useCombatStore.getState",
+          "lineNumber": 277
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "enemies.find",
+          "lineNumber": 283
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "shipPos.distanceTo",
+          "lineNumber": 285
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_leadPos.copy(lockedTarget.position).addScaledVector",
+          "lineNumber": 286
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_leadPos.copy",
+          "lineNumber": 286
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "shipPos.distanceTo",
+          "lineNumber": 287
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_leadPos.copy(lockedTarget.position).addScaledVector",
+          "lineNumber": 288
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_leadPos.copy",
+          "lineNumber": 288
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_leadPos.sub(shipPos).normalize",
+          "lineNumber": 289
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_leadPos.sub",
+          "lineNumber": 289
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "fireLaser",
+          "lineNumber": 291
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "enemies.find",
+          "lineNumber": 296
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "setTarget",
+          "lineNumber": 297
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "enemies.filter",
+          "lineNumber": 302
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "active.findIndex",
+          "lineNumber": 304
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "setTarget",
+          "lineNumber": 305
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useMissionStore.getState",
+          "lineNumber": 310
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "activeMission.objectives.forEach",
+          "lineNumber": 312
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_waypointPos.set",
+          "lineNumber": 314
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "shipPos.distanceTo",
+          "lineNumber": 315
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useMissionStore.getState().updateObjective",
+          "lineNumber": 316
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useMissionStore.getState",
+          "lineNumber": 316
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.position.length",
+          "lineNumber": 323
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useGameStore.getState().setBoundaryWarning",
+          "lineNumber": 329
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useGameStore.getState",
+          "lineNumber": 329
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useGameStore.getState().setBoundaryWarning",
+          "lineNumber": 334
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "useGameStore.getState",
+          "lineNumber": 334
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_autoTurnMat.lookAt",
+          "lineNumber": 338
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_autoTurnQuat.setFromRotationMatrix",
+          "lineNumber": 339
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "meshRef.current.quaternion.slerp",
+          "lineNumber": 340
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "Math.max",
+          "lineNumber": 341
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_localUp.set(0, 1, 0).applyQuaternion",
+          "lineNumber": 346
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_localUp.set",
+          "lineNumber": 346
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "camera.up.copy",
+          "lineNumber": 347
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_camOffset.set(0, 5, 18).applyQuaternion(shipRotation).add",
+          "lineNumber": 350
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_camOffset.set(0, 5, 18).applyQuaternion",
+          "lineNumber": 350
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_camOffset.set",
+          "lineNumber": 350
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "camera.position.lerp",
+          "lineNumber": 351
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_lookTarget.copy(direction).multiplyScalar(8).add",
+          "lineNumber": 352
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_lookTarget.copy(direction).multiplyScalar",
+          "lineNumber": 352
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_lookTarget.copy",
+          "lineNumber": 352
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "camera.lookAt",
+          "lineNumber": 353
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_camOffset.set(0, 0.4, 0.5).applyQuaternion(shipRotation).add",
+          "lineNumber": 355
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_camOffset.set(0, 0.4, 0.5).applyQuaternion",
+          "lineNumber": 355
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_camOffset.set",
+          "lineNumber": 355
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "camera.position.copy",
+          "lineNumber": 356
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_lookTarget.copy(direction).multiplyScalar(10).add",
+          "lineNumber": 357
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_lookTarget.copy(direction).multiplyScalar",
+          "lineNumber": 357
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "_lookTarget.copy",
+          "lineNumber": 357
+        },
+        {
+          "caller": "PlayerShip",
+          "callee": "camera.lookAt",
+          "lineNumber": 358
+        }
+      ],
+      "metrics": {
+        "importCount": 8,
+        "exportCount": 1,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/hooks/usePlayerControls.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 69,
+      "nonEmptyLines": 62,
+      "functions": [
+        {
+          "name": "matchesSlot",
+          "startLine": 26,
+          "endLine": 28,
+          "params": [
+            "code",
+            "slot"
+          ]
+        },
+        {
+          "name": "codeToAction",
+          "startLine": 30,
+          "endLine": 43,
+          "params": [
+            "code",
+            "bindings"
+          ]
+        },
+        {
+          "name": "usePlayerControls",
+          "startLine": 47,
+          "endLine": 69,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "usePlayerControls",
+          "line": 47,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "matchesSlot",
+          "callee": "slot.split('/').map((s) => s.trim()).includes",
+          "lineNumber": 27
+        },
+        {
+          "caller": "matchesSlot",
+          "callee": "slot.split('/').map",
+          "lineNumber": 27
+        },
+        {
+          "caller": "matchesSlot",
+          "callee": "slot.split",
+          "lineNumber": 27
+        },
+        {
+          "caller": "matchesSlot",
+          "callee": "s.trim",
+          "lineNumber": 27
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 31
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 32
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 33
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 34
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 35
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 36
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 37
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 38
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 39
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 40
+        },
+        {
+          "caller": "codeToAction",
+          "callee": "matchesSlot",
+          "lineNumber": 41
+        },
+        {
+          "caller": "usePlayerControls",
+          "callee": "useControlsConfig",
+          "lineNumber": 48
+        },
+        {
+          "caller": "usePlayerControls",
+          "callee": "useRef",
+          "lineNumber": 49
+        },
+        {
+          "caller": "usePlayerControls",
+          "callee": "useEffect",
+          "lineNumber": 51
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "codeToAction",
+          "lineNumber": 53
+        },
+        {
+          "caller": "handleKeyUp",
+          "callee": "codeToAction",
+          "lineNumber": 57
+        },
+        {
+          "caller": "usePlayerControls",
+          "callee": "window.addEventListener",
+          "lineNumber": 60
+        },
+        {
+          "caller": "usePlayerControls",
+          "callee": "window.addEventListener",
+          "lineNumber": 61
+        },
+        {
+          "caller": "usePlayerControls",
+          "callee": "window.removeEventListener",
+          "lineNumber": 63
+        },
+        {
+          "caller": "usePlayerControls",
+          "callee": "window.removeEventListener",
+          "lineNumber": 64
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/state/useMissionStore.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 109,
+      "nonEmptyLines": 98,
+      "exports": [
+        {
+          "name": "useMissionStore",
+          "line": 70,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

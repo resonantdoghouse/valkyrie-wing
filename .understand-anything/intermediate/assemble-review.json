@@ -1,0 +1,18 @@
+{
+  "fixedSectionOk": true,
+  "nodesRecovered": 0,
+  "edgesRestored": 0,
+  "crossBatchEdgesAdded": 0,
+  "typesRemapped": 0,
+  "complexityRemapped": 0,
+  "stalEdgesRemoved": 1,
+  "notes": [
+    "Fixed section: 37 duplicate nodes removed by keeping updated versions from re-analysis batches. No unusual patterns — deduplication ratio is consistent with 5 new/changed files replacing older batch-0 nodes.",
+    "Could not fix section: No nodes without IDs, no unknown types, no unknown complexity values, no dangling edges reported. Graph was clean after mechanical fixes.",
+    "All 106 nodes have valid IDs, types (file/function/class/config/document), and standard complexity values (simple/moderate/complex).",
+    "All import-map edges verified: every entry in scan-result.json importMap had a corresponding 'imports' edge in the graph. Zero missing cross-batch edges.",
+    "Key structural changes verified correct: useCombatStore->enemyAI.ts import present; App.tsx does NOT import useCombatStore; App.tsx->FlightHUD.tsx import present; BarUI->4 view sub-components present; Enemies->useMissionStore present.",
+    "Found and removed 1 stale edge: file:src/features/flight/Starfield.tsx -> file:src/state/useGameStore.ts (imports). The Starfield.tsx source file only imports 'react' and 'three' — no useGameStore import exists. This edge survived from a prior batch analysis. Confirmed via both source file inspection and import map.",
+    "Note: Starfield is also locally defined as a function inside FlightScene.tsx (line 43) independently from the standalone Starfield.tsx file. FlightScene does not import Starfield.tsx. The standalone file has no reverse import edge pointing to it, making it effectively a dead/unused file in the current codebase."
+  ]
+}

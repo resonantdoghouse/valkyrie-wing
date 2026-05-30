@@ -1,0 +1,855 @@
+{
+  "nodes": [
+    {
+      "id": "file:src/assets/models/enemy-ship.glb",
+      "type": "file",
+      "name": "enemy-ship.glb",
+      "filePath": "src/assets/models/enemy-ship.glb",
+      "summary": "Binary GLB 3D model asset for the enemy spacecraft used in the flight combat scene.",
+      "tags": ["asset", "3d-model", "game-asset"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/assets/models/low-poly-asteroid.glb",
+      "type": "file",
+      "name": "low-poly-asteroid.glb",
+      "filePath": "src/assets/models/low-poly-asteroid.glb",
+      "summary": "Binary GLB 3D model asset for the low-poly asteroid used in instanced rendering across the flight scene.",
+      "tags": ["asset", "3d-model", "game-asset"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/assets/models/mine.glb",
+      "type": "file",
+      "name": "mine.glb",
+      "filePath": "src/assets/models/mine.glb",
+      "summary": "Binary GLB 3D model asset for the space mine hazard object rendered in the flight combat scene.",
+      "tags": ["asset", "3d-model", "game-asset"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/assets/models/sun.glb",
+      "type": "file",
+      "name": "sun.glb",
+      "filePath": "src/assets/models/sun.glb",
+      "summary": "Binary GLB 3D model asset for the distant sun background object in the flight scene environment.",
+      "tags": ["asset", "3d-model", "game-asset"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/features/flight/Asteroids.tsx",
+      "type": "file",
+      "name": "Asteroids.tsx",
+      "filePath": "src/features/flight/Asteroids.tsx",
+      "summary": "React Three Fiber component that renders instanced asteroid meshes with per-instance rotation, collision detection against the player camera and enemy ships, and shader-based explosion visuals on detonation.",
+      "tags": ["component", "game-object", "collision-detection", "instanced-rendering"],
+      "complexity": "complex",
+      "languageNotes": "Uses InstancedMesh for performance-efficient rendering of 15-25 asteroid objects; collision detection runs inside useFrame per tick."
+    },
+    {
+      "id": "function:src/features/flight/Asteroids.tsx:AsteroidExplosion",
+      "type": "function",
+      "name": "AsteroidExplosion",
+      "filePath": "src/features/flight/Asteroids.tsx",
+      "lineRange": [12, 36],
+      "summary": "Local React component that renders a timed shader-based explosion sphere for a destroyed asteroid, fading out over 1.4 seconds.",
+      "tags": ["component", "vfx", "explosion"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/flight/Asteroids.tsx:Asteroids",
+      "type": "function",
+      "name": "Asteroids",
+      "filePath": "src/features/flight/Asteroids.tsx",
+      "lineRange": [38, 179],
+      "summary": "Exported React Three Fiber component managing asteroid field initialization, instanced mesh rendering, per-frame rotation and collision logic, and explosion effect tracking.",
+      "tags": ["component", "entry-point", "game-object", "collision-detection"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/features/flight/Enemies.tsx",
+      "type": "file",
+      "name": "Enemies.tsx",
+      "filePath": "src/features/flight/Enemies.tsx",
+      "summary": "React Three Fiber component rendering active enemy ships with engine glow shaders, health HUD labels, target bracket overlay, explosion visuals, and arcade wave progression via useMissionStore integration.",
+      "tags": ["component", "enemy-ai", "game-object", "hud"],
+      "complexity": "complex",
+      "languageNotes": "Updated to import useMissionStore and adds useEffect for arcade wave completion with clearTimeout cleanup to prevent stale timers."
+    },
+    {
+      "id": "function:src/features/flight/Enemies.tsx:TargetBracket",
+      "type": "function",
+      "name": "TargetBracket",
+      "filePath": "src/features/flight/Enemies.tsx",
+      "lineRange": [12, 59],
+      "summary": "Local component rendering world-space corner bracket geometry around the currently locked target enemy, scaling with camera distance and facing the camera billboard-style.",
+      "tags": ["component", "hud", "targeting"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Enemies.tsx:Enemies",
+      "type": "function",
+      "name": "Enemies",
+      "filePath": "src/features/flight/Enemies.tsx",
+      "lineRange": [61, 101],
+      "summary": "Exported component that drives enemy AI updates each frame via updateEnemies, detects arcade wave completion, and renders active EnemyShip instances and explosion effects.",
+      "tags": ["component", "enemy-ai", "game-object"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Enemies.tsx:EnemyShip",
+      "type": "function",
+      "name": "EnemyShip",
+      "filePath": "src/features/flight/Enemies.tsx",
+      "lineRange": [129, 161],
+      "summary": "Local component rendering a single enemy ship using a cloned GLB scene, engine glow shader, and health label, orienting the model toward its velocity vector each frame.",
+      "tags": ["component", "game-object", "shader"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/FlightScene.tsx",
+      "type": "file",
+      "name": "FlightScene.tsx",
+      "filePath": "src/features/flight/FlightScene.tsx",
+      "summary": "Top-level React Three Fiber scene component composing all flight gameplay elements — player ship, enemies, lasers, mines, asteroids, sun, starfield — with debug light helpers and leva-controlled ambient/hemisphere lighting.",
+      "tags": ["component", "entry-point", "scene-composition"],
+      "complexity": "complex",
+      "languageNotes": "Uses leva controls for runtime light tweaking; debug helpers conditionally rendered based on useDebugStore."
+    },
+    {
+      "id": "function:src/features/flight/FlightScene.tsx:FlightScene",
+      "type": "function",
+      "name": "FlightScene",
+      "filePath": "src/features/flight/FlightScene.tsx",
+      "lineRange": [69, 132],
+      "summary": "Exported root scene component that assembles all combat gameplay sub-components under a Three.js group with configurable lighting.",
+      "tags": ["component", "entry-point", "scene-composition"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/features/flight/Lasers.tsx",
+      "type": "file",
+      "name": "Lasers.tsx",
+      "filePath": "src/features/flight/Lasers.tsx",
+      "summary": "React Three Fiber component rendering player and enemy laser bolts as instanced cylinder meshes with custom glow shader materials, updated each frame from combat store state.",
+      "tags": ["component", "game-object", "instanced-rendering", "shader"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Lasers.tsx:Lasers",
+      "type": "function",
+      "name": "Lasers",
+      "filePath": "src/features/flight/Lasers.tsx",
+      "lineRange": [11, 73],
+      "summary": "Exported component managing two instanced meshes for player and enemy lasers, orienting each bolt along its velocity vector and animating shader uniforms per frame.",
+      "tags": ["component", "game-object", "instanced-rendering"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/Mines.tsx",
+      "type": "file",
+      "name": "Mines.tsx",
+      "filePath": "src/features/flight/Mines.tsx",
+      "summary": "React Three Fiber component rendering space mines from a GLB model with spinning animation, proximity-based collision detection against the player and enemies, and explosion visuals on detonation.",
+      "tags": ["component", "game-object", "collision-detection"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Mines.tsx:Mine",
+      "type": "function",
+      "name": "Mine",
+      "filePath": "src/features/flight/Mines.tsx",
+      "lineRange": [36, 74],
+      "summary": "Local component rendering a single rotating mine GLB model with per-frame collision checks against the player camera and enemy ship positions.",
+      "tags": ["component", "game-object", "collision-detection"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/features/flight/Mines.tsx:Mines",
+      "type": "function",
+      "name": "Mines",
+      "filePath": "src/features/flight/Mines.tsx",
+      "lineRange": [76, 123],
+      "summary": "Exported component that initializes the mine field in the combat store, tracks detonated mines, and renders active Mine instances alongside explosion effects.",
+      "tags": ["component", "game-object"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/features/flight/Sun.tsx",
+      "type": "file",
+      "name": "Sun.tsx",
+      "filePath": "src/features/flight/Sun.tsx",
+      "summary": "React Three Fiber component rendering a slowly rotating distant sun GLB with leva-tunable position, scale, and directional light intensity, converting materials to MeshBasicMaterial for a constant-brightness appearance.",
+      "tags": ["component", "environment", "lighting"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/flight/Sun.tsx:Sun",
+      "type": "function",
+      "name": "Sun",
+      "filePath": "src/features/flight/Sun.tsx",
+      "lineRange": [8, 54],
+      "summary": "Exported component cloning and patching the sun GLB scene to use DoubleSide MeshBasicMaterial, with runtime leva controls for all positional and lighting parameters.",
+      "tags": ["component", "environment", "lighting"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/features/flight/enemyAI.ts",
+      "type": "file",
+      "name": "enemyAI.ts",
+      "filePath": "src/features/flight/enemyAI.ts",
+      "summary": "Pure-function enemy AI module exporting the EnemyData type, EnemyBehavior FSM state type, selectBehavior for probabilistic state transitions, and computeSteering for per-behavior velocity computation including formation flying and separation forces.",
+      "tags": ["service", "enemy-ai", "utility", "game-logic"],
+      "complexity": "complex",
+      "languageNotes": "New file extracted from useCombatStore — pure functions with no side effects or React dependencies, enabling easier testing and reuse."
+    },
+    {
+      "id": "function:src/features/flight/enemyAI.ts:selectBehavior",
+      "type": "function",
+      "name": "selectBehavior",
+      "filePath": "src/features/flight/enemyAI.ts",
+      "lineRange": [23, 40],
+      "summary": "Pure function implementing the enemy FSM state transition: ticks the behavior timer down and rolls a distance/random weighted transition to approach, strafe, flank, evade, or formation.",
+      "tags": ["game-logic", "enemy-ai", "state-machine"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/flight/enemyAI.ts:computeSteering",
+      "type": "function",
+      "name": "computeSteering",
+      "filePath": "src/features/flight/enemyAI.ts",
+      "lineRange": [42, 133],
+      "summary": "Pure function computing a steering velocity vector for an enemy given its current behavior state, handling approach/strafe/flank/evade/formation modes with predictive intercept targeting, oscillation noise, and separation from other enemies.",
+      "tags": ["game-logic", "enemy-ai", "physics"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/features/flight/shaders.ts",
+      "type": "file",
+      "name": "shaders.ts",
+      "filePath": "src/features/flight/shaders.ts",
+      "summary": "GLSL shader source strings and Three.js ShaderMaterial factory functions for the engine glow plasma effect, laser bolt glow, and procedural explosion/fire visuals used throughout the flight scene.",
+      "tags": ["shader", "vfx", "utility", "three-js"],
+      "complexity": "complex",
+      "languageNotes": "Inline GLSL uses fractional Brownian motion (fbm) with 4-5 octave value noise for organic plasma and fire effects; laser uses additive blending with instancing support via #ifdef USE_INSTANCING."
+    },
+    {
+      "id": "function:src/features/flight/shaders.ts:makeEngineGlowMaterial",
+      "type": "function",
+      "name": "makeEngineGlowMaterial",
+      "filePath": "src/features/flight/shaders.ts",
+      "lineRange": [75, 90],
+      "summary": "Factory returning a transparent, additive-blended ShaderMaterial for the engine plasma glow effect with configurable core and flame colors.",
+      "tags": ["shader", "factory", "vfx"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/flight/shaders.ts:makeLaserMaterial",
+      "type": "function",
+      "name": "makeLaserMaterial",
+      "filePath": "src/features/flight/shaders.ts",
+      "lineRange": [148, 160],
+      "summary": "Factory returning a transparent, additive-blended ShaderMaterial for laser bolt rendering with instancing support and configurable bolt color.",
+      "tags": ["shader", "factory", "vfx"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/features/flight/shaders.ts:makeExplosionMaterial",
+      "type": "function",
+      "name": "makeExplosionMaterial",
+      "filePath": "src/features/flight/shaders.ts",
+      "lineRange": [249, 262],
+      "summary": "Factory returning a transparent DoubleSide ShaderMaterial for procedural explosion and fire sphere effects with animated vertex displacement and heat-gradient coloring.",
+      "tags": ["shader", "factory", "vfx"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/state/useCombatStore.ts",
+      "type": "file",
+      "name": "useCombatStore.ts",
+      "filePath": "src/state/useCombatStore.ts",
+      "summary": "Central Zustand combat state store managing lasers, enemy ships, mines, and asteroids with full simulation logic: laser movement and collision, enemy AI updates delegating to enemyAI.ts, ship-to-ship collision damage, and arcade wave spawning.",
+      "tags": ["service", "state-management", "game-logic", "singleton"],
+      "complexity": "complex",
+      "languageNotes": "Updated to import selectBehavior and computeSteering from enemyAI.ts; startArcadeWave now clears _enemyCollisionCooldowns Map to prevent stale cooldown state across waves."
+    },
+    {
+      "id": "function:src/state/useCombatStore.ts:updateEnemies",
+      "type": "function",
+      "name": "updateEnemies",
+      "filePath": "src/state/useCombatStore.ts",
+      "lineRange": [289, 371],
+      "summary": "Per-frame enemy update: invokes selectBehavior and computeSteering from enemyAI.ts, applies velocity lerp, handles probabilistic enemy laser firing with predictive aim, and applies ship-to-ship collision damage with cooldown tracking.",
+      "tags": ["game-logic", "enemy-ai", "simulation"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/state/useCombatStore.ts:updateLasers",
+      "type": "function",
+      "name": "updateLasers",
+      "filePath": "src/state/useCombatStore.ts",
+      "lineRange": [111, 215],
+      "summary": "Per-frame player laser update: advances positions, culls by lifetime, detects collisions with enemies/mines/asteroids, applies damage, updates mission objectives, and triggers audio on kills.",
+      "tags": ["game-logic", "collision-detection", "simulation"],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/state/useCombatStore.ts:updateEnemyLasers",
+      "type": "function",
+      "name": "updateEnemyLasers",
+      "filePath": "src/state/useCombatStore.ts",
+      "lineRange": [217, 262],
+      "summary": "Per-frame enemy laser update: advances positions, detects player collision with directional hit-side determination, and applies damage via dynamic import of useGameStore.",
+      "tags": ["game-logic", "collision-detection", "simulation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/state/useCombatStore.ts:startArcadeWave",
+      "type": "function",
+      "name": "startArcadeWave",
+      "filePath": "src/state/useCombatStore.ts",
+      "lineRange": [388, 417],
+      "summary": "Spawns a scaled enemy wave for the current arcade level: clears collision cooldowns, computes enemy count as 3 + (level-1)*2, and initializes enemies with flocked formation assignments.",
+      "tags": ["game-logic", "enemy-ai", "arcade-mode"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/utils/audio.ts",
+      "type": "file",
+      "name": "audio.ts",
+      "filePath": "src/utils/audio.ts",
+      "summary": "Web Audio API utility providing lazy AudioContext initialization and synthesized sound effects for laser fire and explosions using oscillator frequency sweeps.",
+      "tags": ["utility", "audio", "web-api"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/utils/audio.ts:initAudio",
+      "type": "function",
+      "name": "initAudio",
+      "filePath": "src/utils/audio.ts",
+      "lineRange": [3, 10],
+      "summary": "Lazily creates and resumes the shared AudioContext, supporting both standard and webkit-prefixed constructors for browser compatibility.",
+      "tags": ["utility", "audio", "initialization"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/utils/audio.ts:playLaserSound",
+      "type": "function",
+      "name": "playLaserSound",
+      "filePath": "src/utils/audio.ts",
+      "lineRange": [12, 32],
+      "summary": "Synthesizes a short 'pew' laser sound using a square wave oscillator with an exponential frequency drop from 880 Hz to 110 Hz over 100ms.",
+      "tags": ["utility", "audio", "sound-effect"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/utils/audio.ts:playExplosionSound",
+      "type": "function",
+      "name": "playExplosionSound",
+      "filePath": "src/utils/audio.ts",
+      "lineRange": [34, 54],
+      "summary": "Synthesizes a low-frequency rumble explosion sound using a sawtooth oscillator sweeping from 150 Hz to 10 Hz over 800ms.",
+      "tags": ["utility", "audio", "sound-effect"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "file:src/assets/models/low-poly-asteroid.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "file:src/features/flight/shaders.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "file:src/assets/models/enemy-ship.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "file:src/features/flight/flight.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "file:src/features/flight/shaders.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/debug/useDebugStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Asteroids.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Enemies.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/flight.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Lasers.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Mines.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/PlayerShip.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/features/flight/Sun.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Lasers.tsx",
+      "target": "file:src/features/flight/shaders.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Lasers.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "file:src/assets/models/mine.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "file:src/features/flight/shaders.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "file:src/state/useCombatStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "file:src/state/useGameStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Sun.tsx",
+      "target": "file:src/assets/models/sun.glb",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "file:src/features/flight/enemyAI.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "file:src/state/useMissionStore.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "file:src/utils/audio.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "function:src/features/flight/Asteroids.tsx:AsteroidExplosion",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "function:src/features/flight/Asteroids.tsx:Asteroids",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Asteroids.tsx",
+      "target": "function:src/features/flight/Asteroids.tsx:Asteroids",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "function:src/features/flight/Enemies.tsx:TargetBracket",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "function:src/features/flight/Enemies.tsx:Enemies",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "function:src/features/flight/Enemies.tsx:Enemies",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/Enemies.tsx",
+      "target": "function:src/features/flight/Enemies.tsx:EnemyShip",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "function:src/features/flight/FlightScene.tsx:FlightScene",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/FlightScene.tsx",
+      "target": "function:src/features/flight/FlightScene.tsx:FlightScene",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/Lasers.tsx",
+      "target": "function:src/features/flight/Lasers.tsx:Lasers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Lasers.tsx",
+      "target": "function:src/features/flight/Lasers.tsx:Lasers",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "function:src/features/flight/Mines.tsx:Mine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "function:src/features/flight/Mines.tsx:Mines",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Mines.tsx",
+      "target": "function:src/features/flight/Mines.tsx:Mines",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/Sun.tsx",
+      "target": "function:src/features/flight/Sun.tsx:Sun",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/Sun.tsx",
+      "target": "function:src/features/flight/Sun.tsx:Sun",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/enemyAI.ts",
+      "target": "function:src/features/flight/enemyAI.ts:selectBehavior",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/enemyAI.ts",
+      "target": "function:src/features/flight/enemyAI.ts:selectBehavior",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/enemyAI.ts",
+      "target": "function:src/features/flight/enemyAI.ts:computeSteering",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/enemyAI.ts",
+      "target": "function:src/features/flight/enemyAI.ts:computeSteering",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeEngineGlowMaterial",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeEngineGlowMaterial",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeLaserMaterial",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeLaserMaterial",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeExplosionMaterial",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/features/flight/shaders.ts",
+      "target": "function:src/features/flight/shaders.ts:makeExplosionMaterial",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "function:src/state/useCombatStore.ts:updateEnemies",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "function:src/state/useCombatStore.ts:updateLasers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "function:src/state/useCombatStore.ts:updateEnemyLasers",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "function:src/state/useCombatStore.ts:startArcadeWave",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:initAudio",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:initAudio",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:playLaserSound",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:playLaserSound",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:playExplosionSound",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:src/utils/audio.ts",
+      "target": "function:src/utils/audio.ts:playExplosionSound",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/state/useCombatStore.ts:updateEnemies",
+      "target": "function:src/features/flight/enemyAI.ts:selectBehavior",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/state/useCombatStore.ts:updateEnemies",
+      "target": "function:src/features/flight/enemyAI.ts:computeSteering",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/state/useCombatStore.ts:updateLasers",
+      "target": "function:src/utils/audio.ts:playExplosionSound",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "function:src/state/useCombatStore.ts:updateEnemies",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "function:src/state/useCombatStore.ts:updateLasers",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "function:src/state/useCombatStore.ts:updateEnemyLasers",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/state/useCombatStore.ts",
+      "target": "function:src/state/useCombatStore.ts:startArcadeWave",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}
