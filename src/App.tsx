@@ -5,6 +5,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay';
 import { LCDPanel } from './components/ui/LCDPanel';
 import { TerminalText } from './components/ui/TerminalText';
+import { LoadingBar } from './components/ui/LoadingBar';
 import { BarUI } from './features/bar/BarUI';
 import { DebugPanel } from './debug/DebugPanel';
 import { FlightHUD } from './features/flight/FlightHUD';
@@ -34,6 +35,7 @@ function App() {
             <TerminalText as="h1" className="terminal-title" text="Valkyrie Wing" />
             <TerminalText as="p" text="> SYSTEM INITIALIZED." delay={20} />
             <TerminalText as="p" text="> AWAITING PILOT INPUT..." delay={30} />
+            <LoadingBar />
             <button className="interactive-btn" onClick={() => {
               initAudio();
               setMode('BAR');

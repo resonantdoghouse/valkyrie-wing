@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Stats, GizmoHelper, GizmoViewport } from '@react-three/drei';
 import { useGameStore } from '../state/useGameStore';
@@ -50,7 +51,9 @@ export function GameCanvas() {
   return (
     <Canvas dpr={[1, 1.5]} camera={{ position: [0, 1, 5], far: 50000 }}>
       <color attach="background" args={['#050505']} />
-      <SceneManager />
+      <Suspense fallback={null}>
+        <SceneManager />
+      </Suspense>
       <DebugOverlays />
     </Canvas>
   );
