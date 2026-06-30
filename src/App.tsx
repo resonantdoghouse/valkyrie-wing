@@ -36,7 +36,7 @@ function App() {
             <TerminalText as="p" text="> SYSTEM INITIALIZED." delay={20} />
             <TerminalText as="p" text="> AWAITING PILOT INPUT..." delay={30} />
             <LoadingBar />
-            <button className="interactive-btn" onClick={() => {
+            <button className="interactive-btn interactive-btn--positive" onClick={() => {
               initAudio();
               setMode('BAR');
             }} style={{ marginTop: '1rem' }}>
@@ -56,13 +56,13 @@ function App() {
             <TerminalText as="h2" className="terminal-title" text="Briefing Room" />
             <TerminalText as="p" text="> Objective: Escort Vanguard Cargo to Waypoint Alpha." delay={20} />
             <TerminalText as="p" text="> Warning: Nebula Remnant interceptors detected." delay={20} />
-            <button className="interactive-btn" onClick={() => setMode('BAR')} style={{ marginTop: '1rem' }}>
+            <button className="interactive-btn interactive-btn--secondary" onClick={() => setMode('BAR')} style={{ marginTop: '1rem' }}>
               BACK TO BAR
             </button>
-            <button className="interactive-btn" onClick={() => {
+            <button className="interactive-btn interactive-btn--positive" onClick={() => {
               startMission('m1_escort_alpha');
               setMode('LAUNCH');
-            }} style={{ marginTop: '0.5rem', background: 'rgba(255, 51, 51, 0.2)' }}>
+            }} style={{ marginTop: '0.5rem' }}>
               LAUNCH MISSION
             </button>
           </LCDPanel>
@@ -75,7 +75,7 @@ function App() {
             <TerminalText as="h2" className="terminal-title" text="Crew Quarters" />
             <TerminalText as="p" text="> Status: Resting." delay={30} />
             <TerminalText as="p" text="> Rank: Ensign." delay={30} />
-            <button className="interactive-btn" onClick={() => setMode('BAR')} style={{ marginTop: '1rem' }}>
+            <button className="interactive-btn interactive-btn--secondary" onClick={() => setMode('BAR')} style={{ marginTop: '1rem' }}>
               BACK TO BAR
             </button>
           </LCDPanel>

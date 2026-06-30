@@ -108,9 +108,9 @@ export function FlightHUD() {
             style={{ color: 'var(--text-highlight)', textShadow: '0 0 20px var(--text-highlight)' }}
           />
           <button
-            className="interactive-btn"
+            className="interactive-btn interactive-btn--positive"
             onClick={() => { completeMission(); setMode('LANDING'); }}
-            style={{ marginTop: '1rem', padding: '1rem 2rem', fontSize: '1.5rem', background: 'rgba(51, 133, 255, 0.2)' }}
+            style={{ marginTop: '1rem', padding: '1rem 2rem', fontSize: '1.5rem' }}
           >
             RETURN TO BASE
           </button>
@@ -132,9 +132,9 @@ export function FlightHUD() {
             </div>
           )}
           <button
-            className="interactive-btn"
+            className="interactive-btn interactive-btn--danger"
             onClick={saveLeaderboardAndExit}
-            style={{ marginTop: '1rem', padding: '1rem 2rem', fontSize: '1.5rem', background: 'rgba(255, 51, 51, 0.2)' }}
+            style={{ marginTop: '1rem', padding: '1rem 2rem', fontSize: '1.5rem' }}
           >
             {isArcade ? 'EXIT SIMULATOR' : 'RESPAWN'}
           </button>
@@ -146,9 +146,9 @@ export function FlightHUD() {
         <div style={{ pointerEvents: 'auto' }}>
           {!isMissionComplete && !isPlayerDead && (
             <button
-              className="interactive-btn"
+              className="interactive-btn interactive-btn--danger"
               onClick={saveLeaderboardAndExit}
-              style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', background: 'rgba(0,0,0,0.5)' }}
+              style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
             >
               ABORT MISSION
             </button>

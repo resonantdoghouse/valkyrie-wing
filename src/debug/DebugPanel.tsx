@@ -94,7 +94,7 @@ function DebugControls() {
           onChange: (v: boolean) => store.setShowLightHelpers(v),
         },
       },
-      { collapsed: false }
+      { collapsed: true }
     ),
   });
 
@@ -117,7 +117,7 @@ export function DebugPanel() {
   return (
     <>
       <Leva
-        collapsed={false}
+        collapsed={true}
         titleBar={{ title: 'DEV PANEL  [`] to toggle', drag: true, filter: true }}
       />
       <DebugControls />

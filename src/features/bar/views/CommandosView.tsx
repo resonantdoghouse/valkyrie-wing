@@ -20,10 +20,10 @@ export function CommandosView({ onBack }: Props) {
 
   const [activeCharacter, setActiveCharacter] = useState<Character | null>(null);
   const [dialogue, setDialogue] = useState<string[]>([]);
-  const [conversationOptions, setConversationOptions] = useState<Array<{ label: string; action: () => void }>>([]);
+  const [conversationOptions, setConversationOptions] = useState<Array<{ label: string; action: () => void; variant?: string }>>([]);
 
   const buildOptions = (id: string, name: string, drank: boolean) => {
-    const opts: Array<{ label: string; action: () => void }> = [
+    const opts: Array<{ label: string; action: () => void; variant?: string }> = [
       { label: 'TELL ME ABOUT YOURSELF', action: () => handleChoice(id, name, drank, 'ABOUT') },
       { label: 'HEARD ANY RUMORS?',       action: () => handleChoice(id, name, drank, 'RUMORS') },
     ];
@@ -32,7 +32,7 @@ export function CommandosView({ onBack }: Props) {
     } else {
       opts.push({ label: 'ASK FOR A WAR STORY', action: () => handleChoice(id, name, drank, 'STORY') });
     }
-    opts.push({ label: 'LEAVE', action: () => { setActiveCharacter(null); setDialogue([]); } });
+    opts.push({ label: 'LEAVE', action: () => { setActiveCharacter(null); setDialogue([]); }, variant: 'secondary' });
     return opts;
   };
 
@@ -105,7 +105,7 @@ export function CommandosView({ onBack }: Props) {
           <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <TerminalText as="h3" text="RESPONSES & ACTIONS" style={{ margin: 0, marginBottom: '0.5rem', borderBottom: '1px solid var(--theme-color)', paddingBottom: '0.5rem', color: 'var(--text-highlight)' }} />
             {conversationOptions.map((opt, i) => (
-              <button key={i} className="interactive-btn" onClick={opt.action}>{opt.label}</button>
+              <button key={i} className={`interactive-btn${opt.variant ? ` interactive-btn--${opt.variant}` : ''}`} onClick={opt.action}>{opt.label}</button>
             ))}
           </div>
         </div>
@@ -136,7 +136,7 @@ export function CommandosView({ onBack }: Props) {
           <button className="interactive-btn" onClick={() => approach('GHOST', 'Ens. Elara "Ghost" Vance')}>
             APPROACH ENS. ELARA (GHOST)
           </button>
-          <button className="interactive-btn" onClick={onBack} style={{ marginTop: '1rem' }}>
+          <button className="interactive-btn interactive-btn--secondary" onClick={onBack} style={{ marginTop: '1rem' }}>
             BACK TO MAIN AREA
           </button>
         </div>

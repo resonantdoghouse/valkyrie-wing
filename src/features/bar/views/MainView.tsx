@@ -31,7 +31,7 @@ export function MainView({ onNavigate }: Props) {
         <button className="interactive-btn" onClick={() => setMode('QUARTERS')}>
           GO TO QUARTERS
         </button>
-        <button className="interactive-btn" onClick={() => setMode('MENU')} style={{ opacity: 0.7 }}>
+        <button className="interactive-btn interactive-btn--secondary" onClick={() => setMode('MENU')}>
           RETURN TO FLIGHT DECK
         </button>
       </div>

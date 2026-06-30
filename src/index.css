@@ -174,6 +174,45 @@ body {
   transform: translateY(2px) scale(0.98);
 }
 
+/* Positive / commit action (green) */
+.interactive-btn--positive {
+  background: rgba(0, 200, 80, 0.3);
+  border-color: rgba(0, 200, 80, 0.7);
+  color: #fff;
+}
+.interactive-btn--positive:hover {
+  background: rgba(0, 200, 80, 0.55);
+  border-color: #00c850;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 200, 80, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Danger / abort action (red) */
+.interactive-btn--danger {
+  background: rgba(255, 51, 51, 0.2);
+  border-color: rgba(255, 51, 51, 0.7);
+  color: #fff;
+}
+.interactive-btn--danger:hover {
+  background: rgba(255, 51, 51, 0.45);
+  border-color: var(--danger-color);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255, 51, 51, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Secondary / back / retreat (ghost) */
+.interactive-btn--secondary {
+  background: transparent;
+  border-color: rgba(51, 133, 255, 0.4);
+  color: rgba(255, 255, 255, 0.6);
+}
+.interactive-btn--secondary:hover {
+  background: rgba(51, 133, 255, 0.12);
+  border-color: rgba(51, 133, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 10px rgba(51, 133, 255, 0.3);
+}
+
 /* Sound reactive mock effect on hover */
 .interactive-btn:hover::before {
   content: '';

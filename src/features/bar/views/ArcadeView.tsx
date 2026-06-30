@@ -71,10 +71,10 @@ export function ArcadeView({ onBack }: Props) {
 
         <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <TerminalText as="h3" text="ARCADE OPTIONS" style={{ margin: 0, marginBottom: '0.5rem', borderBottom: '1px solid var(--theme-color)', paddingBottom: '0.5rem', color: 'var(--text-highlight)' }} />
-          <button className="interactive-btn" onClick={handlePlay}>
+          <button className="interactive-btn interactive-btn--positive" onClick={handlePlay}>
             INSERT 5 C & PLAY
           </button>
-          <button className="interactive-btn" onClick={onBack} style={{ marginTop: '1rem' }}>
+          <button className="interactive-btn interactive-btn--secondary" onClick={onBack} style={{ marginTop: '1rem' }}>
             STEP AWAY
           </button>
         </div>

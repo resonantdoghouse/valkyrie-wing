@@ -57,7 +57,7 @@ export function BartenderView({ onBack }: Props) {
           ])}>
             TELL ME ABOUT YOURSELF
           </button>
-          <button className="interactive-btn" onClick={onBack} style={{ marginTop: '1rem' }}>
+          <button className="interactive-btn interactive-btn--secondary" onClick={onBack} style={{ marginTop: '1rem' }}>
             STEP AWAY
           </button>
         </div>
