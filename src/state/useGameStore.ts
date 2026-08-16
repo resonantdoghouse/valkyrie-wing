@@ -34,6 +34,20 @@ interface GameState {
   rechargeShields: (delta: number) => void;
   isPlayerDead: boolean;
   setPlayerDead: (dead: boolean) => void;
+  
+  // Room Interactivity States
+  barView: 'MAIN' | 'BARTENDER' | 'COMMANDOS' | 'ARCADE';
+  setBarView: (view: 'MAIN' | 'BARTENDER' | 'COMMANDOS' | 'ARCADE') => void;
+  briefingMode: 'NAV' | 'HAZARDS' | 'TACTICAL';
+  setBriefingMode: (mode: 'NAV' | 'HAZARDS' | 'TACTICAL') => void;
+  quartersLogs: string[];
+  addQuartersLog: (log: string) => void;
+  setQuartersLogs: (logs: string[]) => void;
+  quartersLightsOn: boolean;
+  toggleQuartersLights: () => void;
+  cinematicViewMode: boolean;
+  toggleCinematicViewMode: () => void;
+  setCinematicViewMode: (active: boolean) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -55,6 +69,23 @@ export const useGameStore = create<GameState>((set) => ({
     hull: { front: 100, rear: 100, left: 100, right: 100 },
     shields: { front: 100, rear: 100, left: 100, right: 100 },
   },
+  
+  // Initial Room States
+  barView: 'MAIN',
+  setBarView: (view) => set({ barView: view, cinematicViewMode: false }),
+  briefingMode: 'NAV',
+  setBriefingMode: (mode) => set({ briefingMode: mode }),
+  quartersLogs: ['Status: Rest period active.', 'Rank: Ensign.', 'System diagnostics: Nominal.'],
+  addQuartersLog: (log) => set((state) => ({
+    quartersLogs: [...state.quartersLogs.slice(-4), log] // Keep last 5 lines for clean overlay display
+  })),
+  setQuartersLogs: (logs) => set({ quartersLogs: logs }),
+  quartersLightsOn: true,
+  toggleQuartersLights: () => set((state) => ({ quartersLightsOn: !state.quartersLightsOn })),
+  cinematicViewMode: false,
+  toggleCinematicViewMode: () => set((state) => ({ cinematicViewMode: !state.cinematicViewMode })),
+  setCinematicViewMode: (active) => set({ cinematicViewMode: active }),
+
   setMode: (mode) => set({ currentMode: mode }),
   startMission: (id) =>
     set({

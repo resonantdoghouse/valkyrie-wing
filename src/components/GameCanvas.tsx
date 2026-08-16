@@ -50,7 +50,7 @@ function DebugOverlays() {
 export function GameCanvas() {
   return (
     <Canvas dpr={[1, 1.5]} camera={{ position: [0, 1, 5], far: 50000 }}>
-      <color attach="background" args={['#050505']} />
+      <color attach="background" args={['#0a1329']} />
       <Suspense fallback={null}>
         <SceneManager />
       </Suspense>
@@ -58,3 +58,4 @@ export function GameCanvas() {
     </Canvas>
   );
 }
+

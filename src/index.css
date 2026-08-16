@@ -251,3 +251,200 @@ body {
   box-shadow: 0 0 8px var(--theme-glow);
   transition: width 0.15s ease;
 }
+
+/* ── SHIP HUD HEADER & TABS ── */
+.hud-tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 0.05rem;
+  transition: all 0.15s ease;
+}
+
+.hud-tab-btn:hover {
+  color: #fff;
+  background: rgba(51, 133, 255, 0.2);
+  border-color: rgba(51, 133, 255, 0.4);
+}
+
+.hud-tab-btn--active {
+  color: #00ffff;
+  background: rgba(0, 255, 255, 0.15);
+  border-color: rgba(0, 255, 255, 0.6);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+  box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.2);
+}
+
+/* ── DOCKED DIALOGUE CONSOLE ── */
+.dialogue-console-container {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(94vw, 1100px);
+  max-height: 46vh;
+  z-index: 500;
+  pointer-events: auto;
+  animation: slideUpHUD 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUpHUD {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.dialogue-console {
+  background: rgba(5, 10, 28, 0.82);
+  background-image:
+    linear-gradient(rgba(51, 133, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(51, 133, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border: 1.5px solid var(--theme-color);
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(5, 10, 35, 0.9), 0 0 15px var(--theme-glow), inset 0 0 30px rgba(51, 133, 255, 0.12);
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  overflow-y: auto;
+  max-height: 42vh;
+  scrollbar-gutter: stable;
+  position: relative;
+}
+
+.dialogue-console::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: 24px;
+  width: 40px; height: 3px;
+  background: #00ffff;
+  box-shadow: 0 0 8px #00ffff;
+}
+
+.dialogue-console::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; right: 24px;
+  width: 40px; height: 3px;
+  background: #00ffff;
+  box-shadow: 0 0 8px #00ffff;
+}
+
+/* Custom Scrollbar for Sci-Fi HUD */
+.dialogue-console::-webkit-scrollbar {
+  width: 6px;
+}
+.dialogue-console::-webkit-scrollbar-track {
+  background: rgba(5, 10, 31, 0.5);
+  border-radius: 3px;
+}
+.dialogue-console::-webkit-scrollbar-thumb {
+  background: rgba(51, 133, 255, 0.5);
+  border-radius: 3px;
+}
+.dialogue-console::-webkit-scrollbar-thumb:hover {
+  background: rgba(51, 133, 255, 0.8);
+}
+
+/* Character Avatar Hologram Frame */
+.character-avatar-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(51, 133, 255, 0.3);
+}
+
+.character-avatar-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(51, 133, 255, 0.15);
+  border: 1px solid #00ffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.35);
+  flex-shrink: 0;
+}
+
+/* Responsive grid for actions and speech */
+.dialogue-content-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.dialogue-speech-box {
+  background: rgba(3, 7, 22, 0.65);
+  border: 1px solid rgba(51, 133, 255, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow-y: auto;
+  max-height: 180px;
+}
+
+.dialogue-actions-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  overflow-y: auto;
+  max-height: 180px;
+  padding-right: 4px;
+}
+
+/* Mobile & Small Screen Breakpoints */
+@media (max-width: 860px) {
+  .dialogue-content-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .dialogue-console-container {
+    bottom: 8px;
+    width: 96vw;
+    max-height: 52vh;
+  }
+
+  .dialogue-console {
+    padding: 0.85rem 1rem;
+    max-height: 50vh;
+  }
+
+  .ship-hud-header {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+  }
+  
+  .ship-hud-location-card {
+    padding: 4px 8px !important;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+

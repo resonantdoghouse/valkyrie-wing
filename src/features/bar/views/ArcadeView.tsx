@@ -27,58 +27,69 @@ export function ArcadeView({ onBack }: Props) {
       useCombatStore.getState().startArcadeWave(1);
       setMode('FLIGHT');
     } else {
-      setError('> ERROR: Insufficient Credits.');
+      setError('> ERROR: Insufficient Credits (5 C Required).');
     }
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--theme-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-        <TerminalText as="h2" text="Vanguard Defender Cabinet" style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.1rem' }} />
-        <TerminalText as="p" text={`> Credits: ${credits} C`} style={{ margin: 0, color: 'var(--text-highlight)' }} />
-      </div>
-
-      <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-        <div style={{ flex: '1 1 400px' }}>
-          <div style={{ minHeight: '60px', padding: '10px', border: '1px solid var(--theme-color)', background: 'rgba(51, 133, 255, 0.1)' }}>
-            {error
-              ? <TerminalText as="p" text={error} delay={5} />
-              : (
-                <>
-                  <TerminalText as="p" text="> Insert 5 Credits to play 'Vanguard Defender'." delay={10} />
-                  <div style={{ marginTop: '1rem', borderTop: '1px solid var(--theme-color)', paddingTop: '0.5rem' }}>
-                    <TerminalText as="h3" text="HIGH SCORES" style={{ margin: 0, marginBottom: '0.5rem', color: 'var(--text-highlight)' }} />
-                    {leaderboard.length > 0
-                      ? leaderboard.map((entry, i) => (
-                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '250px', fontFamily: "'Share Tech Mono', monospace" }}>
-                          <span>{i + 1}. {entry.name}</span>
-                          <span style={{ color: 'var(--accent-orange)' }}>{entry.score}</span>
-                        </div>
-                      ))
-                      : (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '250px', fontFamily: "'Share Tech Mono', monospace" }}>
-                          <span>1. Lt. Viper</span>
-                          <span style={{ color: 'var(--accent-orange)' }}>500</span>
-                        </div>
-                      )
-                    }
-                  </div>
-                </>
-              )
-            }
+      {/* Header bar */}
+      <div className="character-avatar-badge">
+        <div className="character-avatar-icon" style={{ borderColor: '#3385ff', color: '#3385ff' }}>
+          🕹️
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#fff', letterSpacing: '0.08rem' }}>
+              VANGUARD DEFENDER // 3D CAB-SIMULATOR
+            </span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-highlight)' }}>
+              CREDITS: {credits} C
+            </span>
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+            COST: 5 CREDITS / PLAY &bull; MODE: ENDLESS WAVE COMBAT &bull; CRT HYPERDRIVE EMULATION
           </div>
         </div>
+      </div>
 
-        <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <TerminalText as="h3" text="ARCADE OPTIONS" style={{ margin: 0, marginBottom: '0.5rem', borderBottom: '1px solid var(--theme-color)', paddingBottom: '0.5rem', color: 'var(--text-highlight)' }} />
-          <button className="interactive-btn interactive-btn--positive" onClick={handlePlay}>
-            INSERT 5 C & PLAY
+      <div className="dialogue-content-grid" style={{ marginTop: '0.75rem' }}>
+        <div className="dialogue-speech-box">
+          {error ? (
+            <TerminalText as="p" text={error} delay={5} style={{ color: 'var(--danger-color)', margin: 0 }} />
+          ) : (
+            <>
+              <TerminalText as="p" text="> Test your dogfighting reflexes against holographic simulation waves." delay={8} style={{ margin: 0, fontSize: '0.95rem' }} />
+              <div style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(51,133,255,0.25)', paddingTop: '0.35rem' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-highlight)', fontWeight: 'bold', marginBottom: '2px' }}>TOP PILOT RECORDS:</div>
+                {leaderboard.length > 0 ? (
+                  leaderboard.slice(0, 3).map((entry, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '200px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)' }}>
+                      <span>{i + 1}. {entry.name}</span>
+                      <span style={{ color: 'var(--accent-orange)' }}>{entry.score} pts</span>
+                    </div>
+                  ))
+                ) : (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '200px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)' }}>
+                    <span>1. Lt. Viper</span>
+                    <span style={{ color: 'var(--accent-orange)' }}>500 pts</span>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="dialogue-actions-box">
+          <button className="interactive-btn interactive-btn--positive" onClick={handlePlay} style={{ padding: '0.65rem', fontSize: '1rem' }}>
+            🪙 INSERT 5 C & PLAY
           </button>
-          <button className="interactive-btn interactive-btn--secondary" onClick={onBack} style={{ marginTop: '1rem' }}>
-            STEP AWAY
+          <button className="interactive-btn interactive-btn--secondary" onClick={onBack} style={{ padding: '0.45rem', fontSize: '0.85rem', marginTop: '0.2rem' }}>
+            &larr; STEP AWAY FROM CABINET
           </button>
         </div>
       </div>
     </div>
   );
 }
+
