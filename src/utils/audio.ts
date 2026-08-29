@@ -640,3 +640,111 @@ export const playMenuClickSound = () => {
   osc2.stop(now + 0.06);
 };
 
+// Soft, satisfying retro data terminal typing tick
+let lastTypeSoundTime = 0;
+export const playTerminalKeySound = () => {
+  initAudio();
+  if (!audioCtx || isMuted) return;
+  const ctx = audioCtx;
+  const now = ctx.currentTime;
+
+  // Throttle so ultra-fast typing doesn't spam audio nodes
+  if (now - lastTypeSoundTime < 0.035) return;
+  lastTypeSoundTime = now;
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+
+  // Subtle randomized pitch between 1800Hz and 2400Hz for natural, non-repetitive typing sound
+  const freq = 1900 + Math.random() * 500;
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, now);
+  osc.frequency.exponentialRampToValueAtTime(freq * 0.5, now + 0.015);
+
+  filter.type = 'bandpass';
+  filter.frequency.value = 2200;
+  filter.Q.value = 1.2;
+
+  const duration = 0.018;
+  gain.gain.setValueAtTime(0.0035, now);
+  gain.gain.exponentialRampToValueAtTime(0.00001, now + duration);
+
+  osc.connect(filter);
+  filter.connect(gain);
+
+  if (masterGain) {
+    gain.connect(masterGain);
+  } else {
+    gain.connect(ctx.destination);
+  }
+
+  osc.start(now);
+  osc.stop(now + duration + 0.005);
+};
+
+// Tactical alert warning klaxon for incoming enemies / wave alerts
+let lastWarningTime = 0;
+export const playWarningKlaxonSound = () => {
+  initAudio();
+  if (!audioCtx || isMuted) return;
+  const ctx = audioCtx;
+  const now = ctx.currentTime;
+
+  // Prevent spamming within 2.5 seconds
+  if (now - lastWarningTime < 2.5) return;
+  lastWarningTime = now;
+
+  // Two-tone warning beep: Tone 1 (High) -> Tone 2 (Lower urgent)
+  [0, 0.22].forEach((delay, idx) => {
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    osc.type = 'sawtooth';
+    const startFreq = idx === 0 ? 880 : 660;
+    osc.frequency.setValueAtTime(startFreq, now + delay);
+    osc.frequency.exponentialRampToValueAtTime(startFreq * 0.85, now + delay + 0.16);
+
+    gainNode.gain.setValueAtTime(0.08, now + delay);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.18);
+
+    osc.connect(gainNode);
+    if (masterGain) gainNode.connect(masterGain);
+    else gainNode.connect(ctx.destination);
+
+    osc.start(now + delay);
+    osc.stop(now + delay + 0.2);
+  });
+};
+
+// Subtle, gentle cockpit proximity warning ping when an enemy first nears danger radius
+let lastProximityTime = 0;
+export const playProximityAlertSound = () => {
+  initAudio();
+  if (!audioCtx || isMuted) return;
+  const ctx = audioCtx;
+  const now = ctx.currentTime;
+
+  if (now - lastProximityTime < 2.0) return;
+  lastProximityTime = now;
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(1050, now);
+  osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+
+  gain.gain.setValueAtTime(0.012, now);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+
+  osc.connect(gain);
+  if (masterGain) gain.connect(masterGain);
+  else gain.connect(ctx.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.09);
+};
+
+
+

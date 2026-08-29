@@ -1,13 +1,58 @@
+import { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '../../state/useGameStore';
 import { useMissionStore } from '../../state/useMissionStore';
 import { useCombatStore } from '../../state/useCombatStore';
 import { TerminalText } from '../../components/ui/TerminalText';
+import { playWarningKlaxonSound, playProximityAlertSound } from '../../utils/audio';
 import './flight.css';
 
 export function FlightHUD() {
   const { setMode, isPlayerDead, boundaryWarning } = useGameStore();
   const { activeMission, completeMission, arcadeLevel, arcadeScore } = useMissionStore();
-  const activeEnemyCount = useCombatStore(state => state.enemies.filter(e => e.active).length);
+  const enemies = useCombatStore(state => state.enemies);
+  const tacticalWarning = useCombatStore(state => state.tacticalWarning);
+  const activeEnemies = enemies.filter(e => e.active);
+  const activeEnemyCount = activeEnemies.length;
+
+  const [visibleTacticalAlert, setVisibleTacticalAlert] = useState<string | null>(null);
+  const prevWarningRef = useRef<string | null>(null);
+
+  // Trigger sound and timed banner when tactical warning changes or active enemies detected
+  useEffect(() => {
+    if (tacticalWarning && tacticalWarning !== prevWarningRef.current) {
+      prevWarningRef.current = tacticalWarning;
+      setVisibleTacticalAlert(tacticalWarning);
+      playWarningKlaxonSound();
+
+      const timer = setTimeout(() => {
+        setVisibleTacticalAlert(null);
+      }, 7000);
+      return () => clearTimeout(timer);
+    }
+  }, [tacticalWarning]);
+
+  // Initial detection when entering flight with active enemies
+  useEffect(() => {
+    if (activeEnemyCount > 0 && !visibleTacticalAlert && !prevWarningRef.current) {
+      const defaultWarning = `⚠ WARNING: HOSTILE SQUADRON DETECTED (${activeEnemyCount} INBOUND)`;
+      setVisibleTacticalAlert(defaultWarning);
+      playWarningKlaxonSound();
+      const timer = setTimeout(() => {
+        setVisibleTacticalAlert(null);
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeEnemyCount]);
+
+  const closestEnemyDistance = useCombatStore(state => state.closestEnemyDistance);
+  const combatEngaged = useCombatStore(state => state.combatEngaged);
+  const isProximityDanger = !combatEngaged && closestEnemyDistance < 120 && activeEnemyCount > 0;
+
+  useEffect(() => {
+    if (isProximityDanger) {
+      playProximityAlertSound();
+    }
+  }, [isProximityDanger, Math.floor(closestEnemyDistance / 20)]);
 
   const isMissionComplete =
     activeMission &&
@@ -78,10 +123,24 @@ export function FlightHUD() {
 
         <TerminalText
           as="h2"
-          text="TARGETING: ACQUIRED"
+          text={activeEnemyCount > 0 ? `HOSTILES: ${activeEnemyCount} DETECTED` : "TARGETING: ACQUIRED"}
           className="terminal-text"
-          style={{ color: 'var(--danger-color)', textShadow: '0 0 10px var(--danger-color)' }}
+          style={{ color: activeEnemyCount > 0 ? 'var(--danger-color)' : 'var(--theme-color)', textShadow: `0 0 10px ${activeEnemyCount > 0 ? 'var(--danger-color)' : 'var(--theme-glow)'}` }}
         />
+      </div>
+
+      {/* Tactical & Hostile Warning Alerts */}
+      <div className="tactical-alert-container">
+        {visibleTacticalAlert && boundaryWarning === 'none' && !isProximityDanger && (
+          <div className="tactical-alert-banner">
+            ⚠ {visibleTacticalAlert}
+          </div>
+        )}
+        {isProximityDanger && boundaryWarning === 'none' && (
+          <div className="proximity-alert-banner">
+            ⚠ PROXIMITY: HOSTILE {Math.round(closestEnemyDistance)}M
+          </div>
+        )}
       </div>
 
       {/* Boundary Warning */}

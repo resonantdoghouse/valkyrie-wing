@@ -324,13 +324,30 @@ export function CockpitHUD({ throttle, shipRef }: CockpitHUDProps) {
                 </div>
               </>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: 0.6 }}>
-                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="1" strokeDasharray="4 4" style={{ animation: 'hud-spin 8s linear infinite', marginBottom: '25px' }}>
-                   <circle cx="12" cy="12" r="10" />
-                   <path d="M12 2 L12 22 M2 12 L22 12" />
-                 </svg>
-                 <span style={{ fontSize: '1.1rem', letterSpacing: '2px' }}>NO SIGNAL</span>
-                 <span style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '5px' }}>SEARCHING SECTOR...</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: 0.85 }}>
+                {useCombatStore.getState().enemies.filter(e => e.active).length > 0 ? (
+                  <>
+                    <div style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '15px' }}>
+                      <div style={{ position: 'absolute', width: '100%', height: '100%', border: '2px dashed #ffaa00', borderRadius: '50%', animation: 'hud-spin 6s linear infinite' }} />
+                      <span style={{ fontSize: '1.6rem', color: '#ffaa00', textShadow: '0 0 10px #ffaa00' }}>⚠</span>
+                    </div>
+                    <span style={{ fontSize: '1rem', letterSpacing: '2px', color: '#ffaa00', fontWeight: 'bold', textShadow: '0 0 8px rgba(255,170,0,0.5)' }}>
+                      {useCombatStore.getState().enemies.filter(e => e.active).length} HOSTILES DETECTED
+                    </span>
+                    <span style={{ fontSize: '0.8rem', color: '#00e5ff', marginTop: '6px', letterSpacing: '1px' }}>
+                      PRESS [T] TO ACQUIRE LOCK
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="1" strokeDasharray="4 4" style={{ animation: 'hud-spin 8s linear infinite', marginBottom: '25px' }}>
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 2 L12 22 M2 12 L22 12" />
+                    </svg>
+                    <span style={{ fontSize: '1.1rem', letterSpacing: '2px' }}>SECTOR CLEAR</span>
+                    <span style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '5px' }}>SEARCHING SECTOR...</span>
+                  </>
+                )}
               </div>
             )}
           </div>

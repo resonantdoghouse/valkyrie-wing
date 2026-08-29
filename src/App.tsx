@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useGameStore } from './state/useGameStore';
 import { useMissionStore } from './state/useMissionStore';
+import { useCombatStore } from './state/useCombatStore';
 import { GameCanvas } from './components/GameCanvas';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ScanlineOverlay } from './components/ui/ScanlineOverlay';
@@ -150,6 +151,7 @@ function App() {
                   <div className="dialogue-actions-box">
                     <button className="interactive-btn interactive-btn--positive" onClick={() => {
                       startMission('m1_escort_alpha');
+                      useCombatStore.getState().initMissionEnemies('m1_escort_alpha');
                       setMode('LAUNCH');
                     }} style={{ padding: '0.65rem', fontSize: '1rem' }}>
                       🚀 LAUNCH MISSION

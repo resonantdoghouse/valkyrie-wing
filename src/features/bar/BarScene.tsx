@@ -7,16 +7,31 @@ import { useGameStore } from '../../state/useGameStore';
 import { RoomCameraManager } from '../../components/RoomCameraManager';
 import { InteractiveMarker3D } from '../../components/ui/InteractiveMarker3D';
 import { CosmicBackdrop } from '../../components/CosmicBackdrop';
-import { playLightClickSound, playChimeSound } from '../../utils/audio';
+import { JUKEBOX_TRACKS, jukeboxSynth } from '../../utils/jukeboxMusic';
+import { playLightClickSound } from '../../utils/audio';
 
 export function BarScene() {
   const tableRef = useRef<THREE.Mesh>(null);
   const bartenderRef = useRef<THREE.Group>(null);
   const jukeboxRef = useRef<THREE.Mesh>(null);
+  const jukeRing2Ref = useRef<THREE.Mesh>(null);
+  const jukeBeamRef = useRef<THREE.Mesh>(null);
   
   const showLightHelpers = useDebugStore(state => state.showLightHelpers);
   const barView = useGameStore(state => state.barView);
   const setBarView = useGameStore(state => state.setBarView);
+
+  const [isPlayingMusic, setIsPlayingMusic] = useState(jukeboxSynth.getIsPlaying());
+  const [currentTrackId, setCurrentTrackId] = useState(jukeboxSynth.getCurrentTrack());
+
+  useEffect(() => {
+    return jukeboxSynth.subscribeTrack((trackId, playing) => {
+      setCurrentTrackId(trackId);
+      setIsPlayingMusic(playing);
+    });
+  }, []);
+
+  const activeTrack = JUKEBOX_TRACKS.find(t => t.id === currentTrackId) || JUKEBOX_TRACKS[0];
 
   // Dynamic Camera Framing per Bar Sub-View
   const getCameraTarget = (): { pos: [number, number, number]; lookAt: [number, number, number] } => {
@@ -27,6 +42,8 @@ export function BarScene() {
         return { pos: [0.6, -0.2, 1.8], lookAt: [0.0, -0.6, 0.0] };
       case 'ARCADE':
         return { pos: [1.2, -0.2, 0.3], lookAt: [2.0, -0.4, -1.2] };
+      case 'JUKEBOX':
+        return { pos: [0.8, -0.2, 1.8], lookAt: [1.5, -0.4, 0.9] };
       default: // 'MAIN'
         return { pos: [0, 0.4, 4.4], lookAt: [0, -0.3, 0] };
     }
@@ -90,10 +107,20 @@ export function BarScene() {
       bartenderRef.current.rotation.y = t * 0.4;
     }
     
-    // Animate jukebox spin
+    // Animate jukebox spin & pulse
+    const spinSpeed = isPlayingMusic ? 1.8 : 0.5;
     if (jukeboxRef.current) {
-      jukeboxRef.current.rotation.y = t * 0.6;
-      jukeboxRef.current.rotation.z = Math.sin(t * 1.1) * 0.1;
+      jukeboxRef.current.rotation.y = t * spinSpeed;
+      jukeboxRef.current.rotation.z = Math.sin(t * 1.5) * (isPlayingMusic ? 0.25 : 0.08);
+      const pulseScale = isPlayingMusic ? 1.0 + Math.sin(t * 8) * 0.12 : 1.0;
+      jukeboxRef.current.scale.set(pulseScale, pulseScale, pulseScale);
+    }
+    if (jukeRing2Ref.current) {
+      jukeRing2Ref.current.rotation.y = -t * (spinSpeed * 1.2);
+      jukeRing2Ref.current.rotation.x = Math.cos(t * 1.8) * (isPlayingMusic ? 0.3 : 0.1);
+    }
+    if (jukeBeamRef.current) {
+      jukeBeamRef.current.scale.y = isPlayingMusic ? 1.0 + Math.sin(t * 10) * 0.2 : 0.8;
     }
   });
 
@@ -489,7 +516,7 @@ export function BarScene() {
         position={[1.5, -0.6, 0.9]}
         onClick={(e) => {
           e.stopPropagation();
-          playChimeSound();
+          setBarView('JUKEBOX');
         }}
         onPointerOver={(e) => {
           e.stopPropagation();
@@ -498,12 +525,12 @@ export function BarScene() {
         onPointerOut={() => setHoveredJukebox(false)}
       >
         <InteractiveMarker3D 
-          position={[0, 0.65, 0]}
-          label="JUKEBOX"
-          actionHint="CHIME"
-          accentColor="#ff55ff"
+          position={[0, 0.75, 0]}
+          label={isPlayingMusic ? `JUKEBOX: ${activeTrack.title}` : "HOLO JUKEBOX"}
+          actionHint={isPlayingMusic ? "NOW PLAYING" : "TUNE IN"}
+          accentColor={isPlayingMusic ? activeTrack.color : "#ff55ff"}
           icon="🎵"
-          onClick={() => playChimeSound()}
+          onClick={() => setBarView('JUKEBOX')}
         />
 
         {/* Pedestal stand */}
@@ -511,22 +538,62 @@ export function BarScene() {
           <cylinderGeometry args={[0.15, 0.25, 0.6, 12]} />
           <meshStandardMaterial color="#3a4b66" metalness={0.8} />
         </mesh>
+        
         {/* Projector Lens */}
         <mesh position={[0, 0.1, 0]}>
-          <cylinderGeometry args={[0.1, 0.1, 0.06, 12]} />
+          <cylinderGeometry args={[0.12, 0.12, 0.06, 12]} />
           <meshStandardMaterial color="#1a2538" metalness={0.9} />
         </mesh>
-        {/* Spinning Holographic Ring */}
-        <mesh ref={jukeboxRef} position={[0, 0.35, 0]}>
-          <torusGeometry args={[0.18, 0.03, 8, 16]} />
+
+        {/* Vertical Holographic Light Beam */}
+        <mesh ref={jukeBeamRef} position={[0, 0.4, 0]}>
+          <cylinderGeometry args={[0.22, 0.1, 0.6, 16, 1, true]} />
           <meshBasicMaterial 
-            color={hoveredJukebox ? "#00ffff" : "#ff55ff"} 
-            wireframe 
+            color={isPlayingMusic ? activeTrack.color : (hoveredJukebox ? "#00ffff" : "#ff55ff")} 
             transparent 
-            opacity={0.85} 
+            opacity={isPlayingMusic ? 0.25 : 0.08} 
+            side={THREE.DoubleSide} 
           />
         </mesh>
-        <pointLight position={[0, 0.35, 0]} color={hoveredJukebox ? "#00ffff" : "#ff55ff"} intensity={1.2} distance={3.0} />
+
+        {/* Spinning Outer Holographic Ring */}
+        <mesh ref={jukeboxRef} position={[0, 0.38, 0]}>
+          <torusGeometry args={[0.22, 0.025, 8, 20]} />
+          <meshBasicMaterial 
+            color={isPlayingMusic ? activeTrack.color : (hoveredJukebox ? "#00ffff" : "#ff55ff")} 
+            wireframe 
+            transparent 
+            opacity={0.9} 
+          />
+        </mesh>
+
+        {/* Spinning Inner Holographic Orbit Ring */}
+        <mesh ref={jukeRing2Ref} position={[0, 0.38, 0]}>
+          <torusGeometry args={[0.14, 0.018, 6, 16]} />
+          <meshBasicMaterial 
+            color={isPlayingMusic ? "#00ffff" : (hoveredJukebox ? "#ff55ff" : "#ffaa00")} 
+            wireframe 
+            transparent 
+            opacity={0.8} 
+          />
+        </mesh>
+
+        {/* Center Floating Core Orb */}
+        <mesh position={[0, 0.38, 0]}>
+          <sphereGeometry args={[0.06, 12, 12]} />
+          <meshStandardMaterial 
+            color={isPlayingMusic ? activeTrack.color : "#ff55ff"} 
+            emissive={isPlayingMusic ? activeTrack.color : "#ff55ff"}
+            emissiveIntensity={isPlayingMusic ? 2.5 : 0.8} 
+          />
+        </mesh>
+
+        <pointLight 
+          position={[0, 0.4, 0]} 
+          color={isPlayingMusic ? activeTrack.color : (hoveredJukebox ? "#00ffff" : "#ff55ff")} 
+          intensity={isPlayingMusic ? 3.0 : 1.2} 
+          distance={3.5} 
+        />
       </group>
     </group>
   );

@@ -4,6 +4,7 @@ import { MainView } from './views/MainView';
 import { BartenderView } from './views/BartenderView';
 import { CommandosView } from './views/CommandosView';
 import { ArcadeView } from './views/ArcadeView';
+import { JukeboxView } from './views/JukeboxView';
 
 export function BarUI() {
   const barView = useGameStore((state) => state.barView);
@@ -24,6 +25,7 @@ export function BarUI() {
             {barView === 'BARTENDER' && <BartenderView onBack={() => setBarView('MAIN')} />}
             {barView === 'COMMANDOS' && <CommandosView onBack={() => setBarView('MAIN')} />}
             {barView === 'ARCADE'    && <ArcadeView    onBack={() => setBarView('MAIN')} />}
+            {barView === 'JUKEBOX'   && <JukeboxView   onBack={() => setBarView('MAIN')} />}
           </div>
         </div>
       ) : (

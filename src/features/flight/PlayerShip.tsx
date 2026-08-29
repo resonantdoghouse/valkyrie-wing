@@ -225,6 +225,9 @@ export function PlayerShip() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  const angularVelocity = useRef({ pitch: 0, yaw: 0, roll: 0 });
+  const activeBoostScale = useRef(1.0);
+
   const direction = useRef(new THREE.Vector3()).current;
   const targetVelocity = useRef(new THREE.Vector3()).current;
   const _camOffset = useRef(new THREE.Vector3()).current;
@@ -250,23 +253,68 @@ export function PlayerShip() {
     const c = controls.current;
 
     if (boundaryPhaseRef.current !== 'turning') {
-      if (c.pitchUp)   meshRef.current.rotateX( TURN_SPEED * delta);
-      if (c.pitchDown) meshRef.current.rotateX(-TURN_SPEED * delta);
-      if (c.yawLeft)   meshRef.current.rotateY( TURN_SPEED * delta);
-      if (c.yawRight)  meshRef.current.rotateY(-TURN_SPEED * delta);
-      if (c.rollLeft)  meshRef.current.rotateZ( TURN_SPEED * 1.5 * delta);
-      if (c.rollRight) meshRef.current.rotateZ(-TURN_SPEED * 1.5 * delta);
+      // ── Physics-based Rotational Easing (Ease-in & Ease-out / Inertia) ───────
+      const targetPitch = ((c.pitchUp ? 1 : 0) - (c.pitchDown ? 1 : 0)) * TURN_SPEED;
+      const targetYaw   = ((c.yawLeft ? 1 : 0) - (c.yawRight ? 1 : 0)) * TURN_SPEED;
+      let targetRoll    = ((c.rollLeft ? 1 : 0) - (c.rollRight ? 1 : 0)) * (TURN_SPEED * 1.6);
+
+      // Subtle aerodynamic/thruster banking into turns when yawing without manual roll
+      if (!c.rollLeft && !c.rollRight && Math.abs(targetYaw) > 0.01) {
+        targetRoll = targetYaw * 0.45;
+      }
+
+      // Smooth acceleration (ease-in) vs rotational damping (ease-out)
+      const pitchResponse = targetPitch !== 0 ? delta * 7.0 : delta * 5.0;
+      const yawResponse   = targetYaw !== 0   ? delta * 7.0 : delta * 5.0;
+      const rollResponse  = targetRoll !== 0  ? delta * 8.5 : delta * 5.5;
+
+      angularVelocity.current.pitch = THREE.MathUtils.lerp(
+        angularVelocity.current.pitch,
+        targetPitch,
+        Math.min(1, pitchResponse)
+      );
+      angularVelocity.current.yaw = THREE.MathUtils.lerp(
+        angularVelocity.current.yaw,
+        targetYaw,
+        Math.min(1, yawResponse)
+      );
+      angularVelocity.current.roll = THREE.MathUtils.lerp(
+        angularVelocity.current.roll,
+        targetRoll,
+        Math.min(1, rollResponse)
+      );
+
+      // Apply physics angular velocity to ship rotation
+      if (Math.abs(angularVelocity.current.pitch) > 0.0001) {
+        meshRef.current.rotateX(angularVelocity.current.pitch * delta);
+      }
+      if (Math.abs(angularVelocity.current.yaw) > 0.0001) {
+        meshRef.current.rotateY(angularVelocity.current.yaw * delta);
+      }
+      if (Math.abs(angularVelocity.current.roll) > 0.0001) {
+        meshRef.current.rotateZ(angularVelocity.current.roll * delta);
+      }
+    } else {
+      // Damp angular velocity during auto-turn
+      angularVelocity.current.pitch *= 0.9;
+      angularVelocity.current.yaw *= 0.9;
+      angularVelocity.current.roll *= 0.9;
     }
 
-    if (c.throttleUp)   throttle.current = Math.min(throttle.current + delta * 0.5, 1);
-    if (c.throttleDown) throttle.current = Math.max(throttle.current - delta * 0.5, 0);
+    if (c.throttleUp)   throttle.current = Math.min(throttle.current + delta * 0.6, 1);
+    if (c.throttleDown) throttle.current = Math.max(throttle.current - delta * 0.6, 0);
 
     meshRef.current.getWorldDirection(direction);
     direction.negate();
 
-    const activeMaxSpeed = c.boost ? MAX_SPEED * 2.5 : MAX_SPEED;
+    // Smooth boost easing
+    const targetBoostScale = c.boost ? 2.5 : 1.0;
+    activeBoostScale.current = THREE.MathUtils.lerp(activeBoostScale.current, targetBoostScale, Math.min(1, delta * 6.0));
+
+    const activeMaxSpeed = MAX_SPEED * activeBoostScale.current;
     targetVelocity.copy(direction).multiplyScalar(activeMaxSpeed * throttle.current);
-    velocity.current.lerp(targetVelocity, delta * 2);
+    // Smooth translational inertia / drift
+    velocity.current.lerp(targetVelocity, Math.min(1, delta * 2.2));
     meshRef.current.position.addScaledVector(velocity.current, delta);
 
     useGameStore.getState().rechargeShields(delta);
@@ -362,9 +410,9 @@ export function PlayerShip() {
   return (
     <>
     <group ref={meshRef}>
-      <primitive object={clonedShipScene} scale={3} rotation-y={Math.PI / 2} visible={is3rdPerson} />
+      <primitive object={clonedShipScene} scale={3} rotation-y={-Math.PI / 2} visible={is3rdPerson} />
 
-      <mesh position={[0, 0, 1]} material={engineMat}>
+      <mesh position={[0, 0, 2.2]} material={engineMat}>
         <sphereGeometry args={[0.5, 16, 16]} />
       </mesh>
 

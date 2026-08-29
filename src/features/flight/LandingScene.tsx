@@ -69,7 +69,7 @@ export function LandingScene() {
 
       {/* Ship */}
       <group ref={shipRef} position={[0, 0, 150]}>
-        <primitive object={shipScene} scale={3} rotation-y={Math.PI / 2} />
+        <primitive object={shipScene} scale={3} rotation-y={-Math.PI / 2} />
 
         {/* Engine Glow (Fading) */}
         <mesh position={[0, 0, 2.2]}>

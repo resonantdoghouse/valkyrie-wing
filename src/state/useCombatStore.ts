@@ -45,7 +45,13 @@ interface CombatState {
   updateEnemies: (delta: number, playerPosition: THREE.Vector3, playerVelocity: THREE.Vector3) => void;
   targetId: string | null;
   setTarget: (id: string | null) => void;
+  closestEnemyDistance: number;
+  combatEngaged: boolean;
+  setCombatEngaged: (engaged: boolean) => void;
+  initMissionEnemies: (missionId: string) => void;
   startArcadeWave: (level: number) => void;
+  tacticalWarning: string | null;
+  setTacticalWarning: (warning: string | null) => void;
   mines: MineData[];
   initMines: (mines: MineData[]) => void;
   hitMine: (id: string) => void;
@@ -90,7 +96,7 @@ export const useCombatStore = create<CombatState>((set) => ({
         
         playLaserSound();
       }
-      return { lasers };
+      return { lasers, combatEngaged: true };
     });
   },
 
@@ -104,7 +110,7 @@ export const useCombatStore = create<CombatState>((set) => ({
         inactiveLaser.position.copy(position).add(direction.clone().multiplyScalar(2));
         inactiveLaser.velocity.copy(direction).multiplyScalar(LASER_SPEED * 0.8).add(shipVelocity);
       }
-      return { enemyLasers };
+      return { enemyLasers, combatEngaged: true };
     });
   },
 
@@ -262,9 +268,9 @@ export const useCombatStore = create<CombatState>((set) => ({
   },
 
   enemies: [
-    { id: 'enemy_1', position: new THREE.Vector3(0, 0, -100), velocity: new THREE.Vector3(10, 0, 0), health: 100, active: true, behaviorState: 'approach' as EnemyBehavior, behaviorTimer: 2, phaseOffset: 0, time: 0, formationIndex: 0, flockId: 0 },
-    { id: 'enemy_2', position: new THREE.Vector3(50, 20, -150), velocity: new THREE.Vector3(-10, 5, 0), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 2, phaseOffset: 2.09, time: 0, formationIndex: 1, flockId: 0 },
-    { id: 'enemy_3', position: new THREE.Vector3(-40, -10, -200), velocity: new THREE.Vector3(0, -5, 10), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 2.5, phaseOffset: 4.19, time: 0, formationIndex: 2, flockId: 0 },
+    { id: 'm1_enemy_1', position: new THREE.Vector3(0, 15, -460), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'approach' as EnemyBehavior, behaviorTimer: 3, phaseOffset: 0, time: 0, formationIndex: 0, flockId: 0 },
+    { id: 'm1_enemy_2', position: new THREE.Vector3(-65, -5, -520), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 3, phaseOffset: 2.09, time: 0, formationIndex: 1, flockId: 0 },
+    { id: 'm1_enemy_3', position: new THREE.Vector3(65, -5, -520), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 3.5, phaseOffset: 4.19, time: 0, formationIndex: 2, flockId: 0 },
   ],
 
   spawnEnemy: (id, position) => set(state => ({
@@ -367,11 +373,52 @@ export const useCombatStore = create<CombatState>((set) => ({
       });
     }
 
-    return { enemies: newEnemies };
+    let minDistance = Infinity;
+    for (const e of newEnemies) {
+      if (e.active) {
+        const dist = playerPosition.distanceTo(e.position);
+        if (dist < minDistance) minDistance = dist;
+      }
+    }
+
+    return { enemies: newEnemies, closestEnemyDistance: minDistance };
   }),
 
   targetId: null,
   setTarget: (id) => set({ targetId: id }),
+  closestEnemyDistance: Infinity,
+  combatEngaged: false,
+  setCombatEngaged: (combatEngaged) => set({ combatEngaged }),
+
+  tacticalWarning: null,
+  setTacticalWarning: (tacticalWarning) => set({ tacticalWarning }),
+
+  initMissionEnemies: (missionId: string) => set(() => {
+    _enemyCollisionCooldowns.clear();
+    let newEnemies: EnemyData[] = [];
+    let warning = 'HOSTILE SQUADRON DETECTED';
+
+    if (missionId === 'm2_defend_carrier') {
+      warning = 'HOSTILE FLEET DETECTED: 5 REMNANT STRIKE CRAFT INBOUND';
+      newEnemies = [
+        { id: 'm2_enemy_1', position: new THREE.Vector3(0, 20, -500), velocity: new THREE.Vector3(0, 0, 5), health: 120, active: true, behaviorState: 'approach' as EnemyBehavior, behaviorTimer: 3, phaseOffset: 0, time: 0, formationIndex: 0, flockId: 0 },
+        { id: 'm2_enemy_2', position: new THREE.Vector3(-70, 5, -560), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 3, phaseOffset: 1.25, time: 0, formationIndex: 1, flockId: 0 },
+        { id: 'm2_enemy_3', position: new THREE.Vector3(70, 5, -560), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 3, phaseOffset: 2.5, time: 0, formationIndex: 2, flockId: 0 },
+        { id: 'm2_enemy_4', position: new THREE.Vector3(-140, -15, -620), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 3.5, phaseOffset: 3.75, time: 0, formationIndex: 3, flockId: 0 },
+        { id: 'm2_enemy_5', position: new THREE.Vector3(140, -15, -620), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 3.5, phaseOffset: 5.0, time: 0, formationIndex: 4, flockId: 0 },
+      ];
+    } else {
+      // Default / m1_escort_alpha: 3-ship arrowhead V-formation
+      warning = 'HOSTILE SQUADRON DETECTED: 3 REMNANT INTERCEPTORS INBOUND';
+      newEnemies = [
+        { id: 'm1_enemy_1', position: new THREE.Vector3(0, 15, -460), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'approach' as EnemyBehavior, behaviorTimer: 3, phaseOffset: 0, time: 0, formationIndex: 0, flockId: 0 },
+        { id: 'm1_enemy_2', position: new THREE.Vector3(-65, -5, -520), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 3, phaseOffset: 2.09, time: 0, formationIndex: 1, flockId: 0 },
+        { id: 'm1_enemy_3', position: new THREE.Vector3(65, -5, -520), velocity: new THREE.Vector3(0, 0, 5), health: 100, active: true, behaviorState: 'formation' as EnemyBehavior, behaviorTimer: 3.5, phaseOffset: 4.19, time: 0, formationIndex: 2, flockId: 0 },
+      ];
+    }
+
+    return { enemies: newEnemies, targetId: newEnemies[0]?.id ?? null, tacticalWarning: warning, combatEngaged: false };
+  }),
 
   mines: [] as MineData[],
   initMines: (mines) => set(() => ({ mines })),
@@ -388,31 +435,51 @@ export const useCombatStore = create<CombatState>((set) => ({
   startArcadeWave: (level) => set(() => {
     _enemyCollisionCooldowns.clear();
     const numEnemies = 3 + (level - 1) * 2;
+    const numFlocks = Math.max(1, Math.ceil(numEnemies / 3));
+
     const newEnemies: EnemyData[] = Array.from({ length: numEnemies }).map((_, i) => {
       const flockId = Math.floor(i / 3);
       const formationIndex = i % 3;
+
+      // Group into tactical V-wings placed safely at distance (Z = -420 to -600)
+      const flockCenterX = (flockId - (numFlocks - 1) / 2) * 160;
+      const flockCenterY = (flockId % 2 === 0 ? 15 : -15);
+      const flockCenterZ = -440 - flockId * 80;
+
+      let posX = flockCenterX;
+      let posY = flockCenterY;
+      let posZ = flockCenterZ;
+
+      if (formationIndex === 1) {
+        posX -= 55;
+        posY -= 10;
+        posZ -= 60;
+      } else if (formationIndex === 2) {
+        posX += 55;
+        posY -= 10;
+        posZ -= 60;
+      }
+
       return {
         id: `arcade_enemy_${level}_${i}`,
-        position: new THREE.Vector3(
-          (Math.random() - 0.5) * 400,
-          (Math.random() - 0.5) * 200,
-          -150 - Math.random() * 400,
-        ),
-        velocity: new THREE.Vector3(
-          (Math.random() - 0.5) * 15,
-          (Math.random() - 0.5) * 10,
-          (Math.random() - 0.5) * 15,
-        ),
+        position: new THREE.Vector3(posX, posY, posZ),
+        velocity: new THREE.Vector3(0, 0, 8),
         health: 100,
         active: true,
         behaviorState: formationIndex === 0 ? 'approach' : 'formation',
-        behaviorTimer: 1 + Math.random() * 2,
-        phaseOffset: (i / numEnemies) * Math.PI * 2 + Math.random() * 0.5,
+        behaviorTimer: 2 + Math.random() * 2,
+        phaseOffset: (i / numEnemies) * Math.PI * 2,
         time: 0,
         formationIndex,
         flockId,
       };
     });
-    return { enemies: newEnemies };
+
+    return {
+      enemies: newEnemies,
+      targetId: newEnemies[0]?.id ?? null,
+      tacticalWarning: `SIMULATION WAVE ${level}: ${numEnemies} HOSTILE TARGETS DETECTED`,
+      combatEngaged: false,
+    };
   }),
 }));

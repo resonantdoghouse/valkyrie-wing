@@ -61,7 +61,7 @@ export function LaunchScene() {
 
       {/* Ship */}
       <group ref={shipRef} position={[0, 0, 0]}>
-        <primitive object={shipScene} scale={3} rotation-y={Math.PI / 2} />
+        <primitive object={shipScene} scale={3} rotation-y={-Math.PI / 2} />
 
         {/* Engine Glow */}
         <mesh position={[0, 0, 2.2]}>

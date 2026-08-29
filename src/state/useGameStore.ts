@@ -36,8 +36,8 @@ interface GameState {
   setPlayerDead: (dead: boolean) => void;
   
   // Room Interactivity States
-  barView: 'MAIN' | 'BARTENDER' | 'COMMANDOS' | 'ARCADE';
-  setBarView: (view: 'MAIN' | 'BARTENDER' | 'COMMANDOS' | 'ARCADE') => void;
+  barView: 'MAIN' | 'BARTENDER' | 'COMMANDOS' | 'ARCADE' | 'JUKEBOX';
+  setBarView: (view: 'MAIN' | 'BARTENDER' | 'COMMANDOS' | 'ARCADE' | 'JUKEBOX') => void;
   briefingMode: 'NAV' | 'HAZARDS' | 'TACTICAL';
   setBriefingMode: (mode: 'NAV' | 'HAZARDS' | 'TACTICAL') => void;
   quartersLogs: string[];

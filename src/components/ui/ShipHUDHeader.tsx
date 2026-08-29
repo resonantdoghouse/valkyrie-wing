@@ -62,6 +62,27 @@ export function ShipHUDHeader() {
         </div>
       </div>
 
+      {/* Center: Controls Hint */}
+      <div className="ship-hud-controls-hint" style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        background: 'rgba(5, 10, 31, 0.65)',
+        border: '1px solid rgba(0, 255, 255, 0.25)',
+        padding: '5px 12px',
+        borderRadius: '6px',
+        backdropFilter: 'blur(6px)',
+        fontSize: '0.75rem',
+        color: 'rgba(255, 255, 255, 0.8)',
+        letterSpacing: '0.04rem',
+        pointerEvents: 'auto'
+      }}>
+        <span style={{ color: '#00ffff', fontWeight: 'bold' }}>🎮 LOOK:</span>
+        <span>WASD / ARROWS</span>
+        <span style={{ opacity: 0.4 }}>&bull;</span>
+        <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>[C] CENTER</span>
+      </div>
+
       {/* Right: Room Navigation Tabs, View Mode Toggle & Audio Controls */}
       <div style={{
         display: 'flex',
